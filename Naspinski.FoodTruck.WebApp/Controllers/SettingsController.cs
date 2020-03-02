@@ -1,4 +1,4 @@
-﻿using CohesiveSoftware.Messaging.Email;
+﻿using Naspinski.Messaging.Email;
 using Microsoft.AspNetCore.Mvc;
 using Naspinski.Data.Interfaces;
 using Naspinski.FoodTruck.Data;
@@ -6,27 +6,27 @@ using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Naspinski.FoodTruck.WebApp.Models;
 using System;
-using System.Net.Mail;
 using System.Text;
 using static Naspinski.FoodTruck.Data.Constants;
 
 namespace Naspinski.FoodTruck.WebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/settings")]
     [ApiController]
-    public class HomeController : BaseController
+    public class SettingsController : BaseController
     {
         private ICrudHandler<SettingModel, FoodTruckContext, SettingModel> _handler;
         private readonly AzureSettings _azureSettings;
-        private readonly SquareSettings _squareSettings;
 
-        public HomeController(FoodTruckContext context, AzureSettings azureSettings, ElmahSettings elmahSettings, SquareSettings squareSettings) : base(context, elmahSettings)
+        public SettingsController(FoodTruckContext context, AzureSettings azureSettings) : base(context)
         {
             _azureSettings = azureSettings;
-            _squareSettings = squareSettings;
+            _handler = new SettingHandler(_context);
         }
 
-        public HomeModel Index()
+        [HttpGet]
+        [Route("")]
+        public HomeModel Get()
         {
             var system = new SystemModel(new SettingHandler(_context).GetAll());
             return new HomeModel(new Uri(_azureSettings.HomeUrl), system);
@@ -35,7 +35,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [HttpPost]
         public IActionResult Contact(ContactModel model)
         {
-            var system = new SystemModel(new SettingHandler(_context).GetAll());
+            var system = new SystemModel(_handler.GetAll());
             if (model != null)
             {
                 var contactEmail = system.Settings[SettingName.ContactEmail];
@@ -47,7 +47,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return Ok();
         }
 
-        private string MakeMessage(ContactModel model)
+        private static string MakeMessage(ContactModel model)
         {
             var n = Environment.NewLine;
             var sb = new StringBuilder($"{model.Email}{n}{n}{model.Message}{n}{n}");

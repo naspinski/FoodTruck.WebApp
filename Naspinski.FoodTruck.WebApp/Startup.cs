@@ -33,8 +33,8 @@ namespace Naspinski.FoodTruck.WebApp
 
             services.AddSingleton(Configuration.GetSection("AzureSettings").Get<AzureSettings>());
             services.AddSingleton(Configuration.GetSection("SquareSettings").Get<SquareSettings>());
+            
             var elmah = Configuration.GetSection("ElmahSettings").Get<ElmahSettings>();
-            services.AddSingleton(elmah);
             services.AddElmahIo(o => { o.ApiKey = elmah.ApiKey; o.LogId = elmah.LogId; });
 
             services.AddDbContext<FoodTruckContext>(options =>
@@ -79,6 +79,7 @@ namespace Naspinski.FoodTruck.WebApp
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
         }

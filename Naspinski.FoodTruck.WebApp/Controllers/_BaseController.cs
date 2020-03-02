@@ -9,12 +9,10 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
     public class BaseController : ControllerBase
     {
         protected readonly FoodTruckContext _context;
-        protected readonly ElmahSettings _elmahSettings;
 
-        public BaseController(FoodTruckContext context, ElmahSettings elmahSettings)
+        public BaseController(FoodTruckContext context)
         {
             _context = context;
-            _elmahSettings = elmahSettings;
         }
 
         protected void Log(Exception ex)
