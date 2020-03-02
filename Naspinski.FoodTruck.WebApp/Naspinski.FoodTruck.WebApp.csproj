@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Elmah.Io.AspNetCore" Version="3.8.100" />
+    <PackageReference Include="Ical.Net" Version="4.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
@@ -36,16 +37,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Calendar - Copy.tsx" />
+    <None Remove="ClientApp\src\components\Calendar.tsx" />
+    <None Remove="ClientApp\src\components\CalendarEvent.tsx" />
     <None Remove="ClientApp\src\components\Counter.tsx" />
+    <None Remove="ClientApp\src\components\Faq.tsx" />
+    <None Remove="ClientApp\src\models\Event.ts" />
     <None Remove="ClientApp\src\models\ISystemState.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\Counter.tsx" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,10 +7,11 @@ interface IProps {
 
 const StoreHours = ({ schedule }: IProps) => {
     return (<div>
+        <h2>Store Hours</h2>
         {
             [...schedule.keys()].map(day =>
                 (
-                    <div>{day}: {schedule.get(day)?.hours}</div>
+                    <div key={day}>{day}: {schedule.get(day)?.hours}</div>
                 )
             )
         }

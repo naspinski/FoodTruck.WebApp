@@ -3,20 +3,20 @@ import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 
 interface IProps {
-  children: Object[]
+    title: string,
+    logo: string,
+    children: Object[]
 }
 
 export class Layout extends Component<IProps> {
-  static displayName = Layout.name;
-
-  render () {
-    return (
-      <div>
-        <NavMenu />
-        <Container>
-          {this.props.children}
-        </Container>
-      </div>
-    );
-  }
+    render () {
+        return (
+            <div>
+                <NavMenu title={this.props.title} logo={this.props.logo} />
+                <Container>
+                    {this.props.children}
+                </Container>
+            </div>
+        );
+    }
 }

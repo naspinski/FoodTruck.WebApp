@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import Home from './components/Home';
-import StoreHours from './components/StoreHours';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
+import { Faq } from './components/Faq';
+import { Main } from './components/Main';
 import { SystemState } from './models/SystemState'
 
 import './custom.css'
 import { SiteSettings } from './models/SiteSettings';
+import Home from './components/Home';
 
 
 export default class App extends Component<{}, SystemState> {
@@ -26,11 +25,9 @@ export default class App extends Component<{}, SystemState> {
 
     render () {
         return (
-            <Layout>
-                <Home settings={this.state.settings} />
-                <Route path='/counter' component={Counter} />
-                <Route path='/fetch-data' component={FetchData} />
-                <StoreHours schedule={this.state.settings.scheduleMap} />
+            <Layout title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
+                <Route path='/' exact={true} render={props => <Main settings={this.state.settings} />} />
+                <Route path='/faq' component={Faq} />
             </Layout>
         );
     }
