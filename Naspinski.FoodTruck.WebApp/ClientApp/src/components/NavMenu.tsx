@@ -24,6 +24,9 @@ export class NavMenu extends Component<IProps> {
                             <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                         </NavItem>
                         <NavItem>
+                            <NavLink tag={Link} className="text-dark" to="/contact">Contact</NavLink>
+                        </NavItem>
+                        <NavItem>
                             <NavLink tag={Link} className="text-dark" to="/faq">FAQ</NavLink>
                         </NavItem>
                     </ul>

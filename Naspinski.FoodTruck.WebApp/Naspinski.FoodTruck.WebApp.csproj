@@ -37,9 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\Calendar - Copy.tsx" />
+    <None Remove="ClientApp\src\components\Address.tsx" />
     <None Remove="ClientApp\src\components\Calendar.tsx" />
     <None Remove="ClientApp\src\components\CalendarEvent.tsx" />
+    <None Remove="ClientApp\src\components\Contact.tsx" />
     <None Remove="ClientApp\src\components\Counter.tsx" />
     <None Remove="ClientApp\src\components\Faq.tsx" />
     <None Remove="ClientApp\src\models\Event.ts" />

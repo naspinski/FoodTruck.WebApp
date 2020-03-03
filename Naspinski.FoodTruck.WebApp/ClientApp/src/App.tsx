@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Faq } from './components/Faq';
 import { Main } from './components/Main';
+import Contact from './components/Contact';
 import { SystemState } from './models/SystemState'
 
 import './custom.css'
@@ -26,7 +27,8 @@ export default class App extends Component<{}, SystemState> {
     render () {
         return (
             <Layout title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
-                <Route path='/' exact={true} render={props => <Main settings={this.state.settings} />} />
+                <Route path='/' exact={true} render={x => <Main settings={this.state.settings} />} />
+                <Route path='/contact' render={x => <Contact location={this.state.settings.location} />} />
                 <Route path='/faq' component={Faq} />
             </Layout>
         );

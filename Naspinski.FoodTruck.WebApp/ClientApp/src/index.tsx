@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import 'tachyons';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') ?? undefined;
 const rootElement = document.getElementById('root');
