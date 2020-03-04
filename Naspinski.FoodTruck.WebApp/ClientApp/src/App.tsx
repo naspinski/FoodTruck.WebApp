@@ -8,7 +8,6 @@ import { SystemState } from './models/SystemState'
 
 import './custom.css'
 import { SiteSettings } from './models/SiteSettings';
-import Home from './components/Home';
 
 
 export default class App extends Component<{}, SystemState> {
