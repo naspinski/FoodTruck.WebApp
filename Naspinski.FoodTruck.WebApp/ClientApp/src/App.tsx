@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import { Layout } from './components/Layout';
-import { Faq } from './components/Faq';
-import { Main } from './components/Main';
-import Contact from './components/Contact';
-import { SystemState } from './models/SystemState'
 
 import './custom.css'
+import { Layout } from './components/Layout';
+import { Faq } from './pages/Faq';
+import { Main } from './pages/Main';
+import { Contact } from './pages/Contact';
+import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
+import { MapLoader } from './components/Map';
 
 
 export default class App extends Component<{}, SystemState> {
@@ -23,23 +24,27 @@ export default class App extends Component<{}, SystemState> {
       this.populate();
     }
 
-    render () {
+    render() {
         return (
-            <Layout title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
+            <Layout homeUrl={this.state.settings.homeUrl} title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
                 <Route path='/' exact={true} render={x => <Main settings={this.state.settings} />} />
-                <Route path='/contact' render={x => <Contact location={this.state.settings.location} />} />
+                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/faq' component={Faq} />
             </Layout>
         );
     }
 
     async populate() {
-      this.populateSettings();
+        this.populateSettings();
     }
 
     async populateSettings() {
-        const response = await fetch('api/settings');
-        const data = await response.json();
-        this.setState({ settings: new SiteSettings(data) });
+        await fetch('api/settings')
+            .then((resp) => resp.json())
+            .then((data) => {
+                const settings = new SiteSettings(data);
+                this.setState({ settings: settings });
+                MapLoader.loadGoogleMaps(settings.googleMapsApiKey);
+            });
     }
 }

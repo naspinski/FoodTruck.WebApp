@@ -3,7 +3,8 @@ import { Event } from '../models/Event';
 import Address from './Address';
 
 interface IProps {
-    event: Event
+    event: Event,
+    key: string
 }
 
 const CalendarEvent = ({ event }: IProps) => {
@@ -12,7 +13,7 @@ const CalendarEvent = ({ event }: IProps) => {
         ? <h5>{event.beginsTime}{event.endsTime && event.endsTime.length > 0 ? '-' + event.endsTime : ''}</h5>
         : '';
 
-    return (<div key={event.id} className='flex'>
+    return (<div className='flex'>
         <div>
             <h4>{event.beginsMonth} {event.beginsDay}</h4>
             {time}

@@ -1,5 +1,4 @@
 ﻿import { Schedule } from "./Schedule";
-import { Location } from "./Location";
 
 export class SiteSettings {
     isLoaded: boolean = false;
@@ -12,8 +11,8 @@ export class SiteSettings {
     logoImageUrl: string = '';
     homeUrl: string = '';
     deliveryServiceImageToUrl: Object = {};
-    location: Location = new Location();
     schedule: Object = {};
+    googleMapsApiKey: string = '';
 
     public get deliveryServiceImageToUrlMap(): Map<string, string> {
         return new Map<string, string>(Object.entries(this.deliveryServiceImageToUrl));

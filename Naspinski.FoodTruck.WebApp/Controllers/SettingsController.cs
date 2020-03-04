@@ -26,10 +26,10 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
 
         [HttpGet]
         [Route("")]
-        public HomeModel Get()
+        public SettingsModel Get()
         {
             var system = new SystemModel(new SettingHandler(_context).GetAll());
-            return new HomeModel(new Uri(_azureSettings.HomeUrl), system);
+            return new SettingsModel(new Uri(_azureSettings.HomeUrl), system, _context);
         }
 
         [HttpPost]

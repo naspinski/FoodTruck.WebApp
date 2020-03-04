@@ -1,4 +1,6 @@
-﻿using Naspinski.FoodTruck.Data.Distribution.Models.Events;
+﻿using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Distribution.Handlers.Events;
+using Naspinski.FoodTruck.Data.Distribution.Models.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,7 @@ using static Naspinski.FoodTruck.Data.Constants;
 
 namespace Naspinski.FoodTruck.WebApp.Models
 {
-    public class HomeModel
+    public class SettingsModel
     {
         public string Title { get; set; }
         public string TagLine { get; set; }
@@ -16,14 +18,14 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public bool IsOrderingOn { get; set; }
         public bool IsApplyOn { get; set; }
         public string HomeUrl { get; set; }
+        public string GoogleMapsApiKey { get; set; }
         public Dictionary<string, string> DeliveryServiceImageToUrl { get; set; } = new Dictionary<string, string>();
-        public LocationModel Location { get; set; }
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
         
         private SystemModel _system;
         
-        public HomeModel(Uri homeUrl, SystemModel system)
+        public SettingsModel(Uri homeUrl, SystemModel system, FoodTruckContext context)
         {
             _system = system;
             HomeUrl = homeUrl?.ToString() ?? string.Empty;
@@ -38,6 +40,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 IsBrickAndMortar = SetBool(SettingName.BrickAndMortarMode, true);
                 IsApplyOn = SetBool(SettingName.IsApplyOn);
                 IsOrderingOn = SetBool(SettingName.IsOrderingOn);
+
+                GoogleMapsApiKey = _system.Get(SettingName.GoogleMapsApiKey);
 
                 SetLink(SettingName.DoorDashLink, "https://cdn.doordash.com/media/button/209x45_white.png");
                 SetLink(SettingName.GrubHubLink, "grubhub.jpg");

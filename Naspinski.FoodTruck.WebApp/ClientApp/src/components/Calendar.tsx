@@ -31,7 +31,7 @@ export class Calendar extends Component<{}, IState> {
                         ? <p><em>Loading...</em></p>
                         : this.state.events.length === 0
                             ? <div>no events scheduled</div>
-                            : <div>{this.state.events.map(event => <CalendarEvent event={event} />)}</div>
+                            : <div>{this.state.events.map(event => <CalendarEvent key={event.id} event={event} />)}</div>
                 }
             </div>
         )
