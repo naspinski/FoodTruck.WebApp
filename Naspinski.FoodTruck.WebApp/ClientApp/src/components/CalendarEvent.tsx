@@ -34,7 +34,7 @@ export class CalendarEvent extends Component<IProps, IState> {
             : '';
 
         const location = this.props.event.location;
-        const mapButton = location && location.address && location.address.length > 0
+        const mapButton = location && location.longitude !== 0 && location.latitude !== 0
             ? <button onClick={this.mapVisibilityChange}>{this.state.isMapHidden ? 'show on map' : 'hide map'}</button>
             : '';
 

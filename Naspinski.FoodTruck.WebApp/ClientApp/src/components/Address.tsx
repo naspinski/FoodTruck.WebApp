@@ -7,7 +7,7 @@ interface IProps {
 
 const Address = ({ location }: IProps) => {
 
-    return location && location.address && location.address.length > 0
+    return location && location.address.length > 0
         ? 
             <address>
                 <div>{location.address}</div>

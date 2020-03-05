@@ -5,7 +5,7 @@ interface IProps {
   settings: SiteSettings
 }
 
-const Home = ({ settings }: IProps) => {
+const Splash = ({ settings }: IProps) => {
 
     return (
       <div>
@@ -15,4 +15,4 @@ const Home = ({ settings }: IProps) => {
     );
 
 }
-export default Home;
+export default Splash;
