@@ -4,7 +4,8 @@ import { Calendar } from './../components/Calendar';
 import { SiteSettings } from '../models/SiteSettings';
 
 interface IProps {
-    settings: SiteSettings
+    settings: SiteSettings,
+    googleMapsApiKey: string
 }
 
 export class Main extends Component<IProps> {
@@ -13,7 +14,7 @@ export class Main extends Component<IProps> {
         return (this.props.settings.isLoaded
             ? <div>loading</div>
             : <div>
-                <Calendar />
+                <Calendar googleMapsApiKey={this.props.googleMapsApiKey} />
                 <StoreHours schedule={this.props.settings.scheduleMap} />
             </div>
         );

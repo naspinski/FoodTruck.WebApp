@@ -6,40 +6,48 @@ interface IProps {
     location: Location,
     id?: string,
     zoom: number,
-    googleMapsApiKey: string
+    googleMapsApiKey: string,
+    isHidden?: boolean
 }
 
 export class Map extends Component<IProps> {
-
+    
     elementId: string = `map-${this.props.id ?? 'default'}`;
-
+    public populated: boolean = false;
+    public mounted: boolean = false;
+    
     componentDidMount() {
         this.populate();
+        this.mounted = true;
     }
 
     render() {
-        return <div id={this.elementId} className='map'></div>
+        if (this.mounted)
+            this.populate();
+        return <div id={this.elementId} className={this.props.isHidden ? '' : 'map'}></div>
     }
 
     populate() {
-        MapLoader.loadGoogleMaps(this.props.googleMapsApiKey)
-            .then(() => {
-                const uluru = { lat: this.props.location.latitude, lng: this.props.location.longitude };
-                let element = document.getElementById(this.elementId);
-                console.log(this.props.location, element);
-                if (element !== null) {
-                    const map = new google.maps.Map(element, {
-                        zoom: this.props.zoom,
-                        center: uluru
-                    });
-                    new google.maps.Marker({
-                        position: uluru,
-                        map: map
-                    });
-                } else {
-                    console.warn('unable to find map element');
-                }
-            });
+        if (!this.props.isHidden && !this.populated) {
+            MapLoader.loadGoogleMaps(this.props.googleMapsApiKey)
+                .then(() => {
+                    const uluru = { lat: this.props.location.latitude, lng: this.props.location.longitude };
+                    let element = document.getElementById(this.elementId);
+                    if (element !== null) {
+                        const map = new google.maps.Map(element, {
+                            zoom: this.props.zoom,
+                            center: uluru
+                        });
+                        new google.maps.Marker({
+                            position: uluru,
+                            map: map
+                        });
+                        this.populated = true;
+                    } else {
+                        console.warn('unable to find map element');
+                    }
+                });
+        }
     }
 }
 

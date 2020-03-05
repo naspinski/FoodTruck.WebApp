@@ -27,7 +27,7 @@ export default class App extends Component<{}, SystemState> {
     render() {
         return (
             <Layout homeUrl={this.state.settings.homeUrl} title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
-                <Route path='/' exact={true} render={x => <Main settings={this.state.settings} />} />
+                <Route path='/' exact={true} render={x => <Main settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/faq' component={Faq} />
             </Layout>

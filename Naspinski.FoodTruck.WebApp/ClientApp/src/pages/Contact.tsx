@@ -30,7 +30,7 @@ export class Contact extends Component<IProps, IState> {
         const address = this.state.location && this.state.location.address && this.state.location.address.length > 0
             ? <div>
                 <h3>Location</h3>
-                <Map key='contact-map' location={this.state.location} zoom={15} googleMapsApiKey={this.state.googleMapsApiKey} />
+                <Map location={this.state.location} zoom={15} googleMapsApiKey={this.state.googleMapsApiKey} />
                 <Address location={this.state.location} />
             </div>
             : '';
