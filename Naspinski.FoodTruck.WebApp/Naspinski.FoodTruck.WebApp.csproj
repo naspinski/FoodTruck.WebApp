@@ -24,7 +24,7 @@
     <PackageReference Include="Naspinski.Data" Version="1.0.20200221.215248" />
     <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200224.94659" />
     <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200224.94659" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200304.134159" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200311.173300" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20200222.104518" />
     <PackageReference Include="SendGrid" Version="9.12.7" />
   </ItemGroup>
@@ -40,16 +40,40 @@
     <None Remove="ClientApp\src\components\Address.tsx" />
     <None Remove="ClientApp\src\components\Calendar.tsx" />
     <None Remove="ClientApp\src\components\CalendarEvent.tsx" />
+    <None Remove="ClientApp\src\components\Category.tsx" />
     <None Remove="ClientApp\src\components\Contact.tsx" />
     <None Remove="ClientApp\src\components\Counter.tsx" />
     <None Remove="ClientApp\src\components\Faq.tsx" />
+    <None Remove="ClientApp\src\components\Item.tsx" />
     <None Remove="ClientApp\src\components\Map.tsx" />
+    <None Remove="ClientApp\src\models\BaseModel.ts" />
     <None Remove="ClientApp\src\models\Event.ts" />
     <None Remove="ClientApp\src\models\ISystemState.ts" />
+    <None Remove="ClientApp\src\models\MenuBase.ts" />
+    <None Remove="ClientApp\src\models\MenuCategory.ts" />
+    <None Remove="ClientApp\src\models\MenuComboPart.ts" />
+    <None Remove="ClientApp\src\models\MenuItem.ts" />
+    <None Remove="ClientApp\src\models\MenuPrice.ts" />
+    <None Remove="ClientApp\src\pages\Menu.tsx" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ClientApp\src\models\MenuComboPart.js.map">
+      <DependentUpon>MenuComboPart.js</DependentUpon>
+    </None>
+    <None Update="ClientApp\src\models\MenuPrice.js.map">
+      <DependentUpon>MenuPrice.js</DependentUpon>
+    </None>
+    <None Update="ClientApp\src\models\MenuBase.js.map">
+      <DependentUpon>MenuBase.js</DependentUpon>
+    </None>
+    <None Update="ClientApp\src\models\MenuItem.js.map">
+      <DependentUpon>MenuItem.js</DependentUpon>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

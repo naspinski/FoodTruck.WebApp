@@ -1,9 +1,8 @@
 import { Location } from './Location';
+import { BaseModel } from './BaseModel';
 
-export class Event {
+export class Event extends BaseModel{
 
-    id: string = '';
-    name: string = '';
     location: Location = new Location();
     beginsDay: string = '';
     beginsMonth: string = '';
@@ -11,6 +10,7 @@ export class Event {
     endsTime: string = '';
 
     constructor(init?: Partial<Event>) {
+        super(init);
         Object.assign(this, init);
     }
 }

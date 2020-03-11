@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import * as React from 'react';
 import { Route } from 'react-router';
 
 import './custom.css'
@@ -6,6 +7,7 @@ import { Layout } from './components/Layout';
 import { Faq } from './pages/Faq';
 import { Main } from './pages/Main';
 import { Contact } from './pages/Contact';
+import { Menu } from './pages/Menu';
 import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
 import { MapLoader } from './components/Map';
@@ -26,8 +28,9 @@ export default class App extends Component<{}, SystemState> {
 
     render() {
         return (
-            <Layout homeUrl={this.state.settings.homeUrl} title={this.state.settings.title} logo={this.state.settings.logoImageUrl} >
+            <Layout settings={this.state.settings} menuCategoryCount={this.state.menuCategories.length}  >
                 <Route path='/' exact={true} render={x => <Main settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
+                <Route path='/menu' render={x => <Menu menuCategories={this.state.menuCategories} />} />
                 <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/faq' component={Faq} />
             </Layout>
@@ -36,6 +39,7 @@ export default class App extends Component<{}, SystemState> {
 
     async populate() {
         this.populateSettings();
+        this.populateMenu();
     }
 
     async populateSettings() {
@@ -45,6 +49,15 @@ export default class App extends Component<{}, SystemState> {
                 const settings = new SiteSettings(data);
                 this.setState({ settings: settings });
                 MapLoader.loadGoogleMaps(settings.googleMapsApiKey);
+            });
+    }
+
+    async populateMenu() {
+        await fetch('api/menu')
+            .then((resp) => resp.json())
+            .then((data) => {
+                this.setState({ menuCategories: data });
+                console.log(this.state.menuCategories);
             });
     }
 }

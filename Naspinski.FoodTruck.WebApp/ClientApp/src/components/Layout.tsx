@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import * as React from 'react';
 import { NavMenu } from './NavMenu';
+import { SiteSettings } from '../models/SiteSettings';
 
 interface IProps {
-    title: string,
-    logo: string,
-    homeUrl: string,
+    settings: SiteSettings,
+    menuCategoryCount: number,
     children: Object[]
 }
 
@@ -12,7 +13,7 @@ export class Layout extends Component<IProps> {
     render () {
         return (
             <div>
-                <NavMenu homeUrl={this.props.homeUrl} title={this.props.title} logo={this.props.logo} />
+                <NavMenu settings={this.props.settings} menuCategoryCount={this.props.menuCategoryCount} />
                 <div>
                     {this.props.children}
                 </div>

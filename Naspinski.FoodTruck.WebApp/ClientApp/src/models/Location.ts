@@ -1,6 +1,6 @@
-export class Location {
-    id: string = '';
-    name: string = '';
+import { BaseModel } from "./BaseModel";
+
+export class Location extends BaseModel {
     address: string = '';
     city: string = '';
     state: string = '';
@@ -9,6 +9,7 @@ export class Location {
     longitude: number = 0;
     
     constructor(init?: Partial<Location>) {
+        super(init);
         Object.assign(this, init);
     }
 }

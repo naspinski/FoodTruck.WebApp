@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import * as React from 'react';
 import StoreHours from './../components/StoreHours';
 import { Calendar } from './../components/Calendar';
 import { SiteSettings } from '../models/SiteSettings';
