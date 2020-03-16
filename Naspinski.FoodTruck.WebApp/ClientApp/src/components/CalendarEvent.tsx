@@ -7,7 +7,8 @@ import { Map } from './Map';
 interface IProps {
     event: Event,
     key: string,
-    googleMapsApiKey: string
+    googleMapsApiKey: string,
+    isGoogleMapsLoaded: boolean
 }
 
 interface IState {
@@ -54,6 +55,7 @@ export class CalendarEvent extends Component<IProps, IState> {
                 <Map location={this.props.event.location}
                     key={mapKey}
                     googleMapsApiKey={this.props.googleMapsApiKey}
+                    isGoogleMapsLoaded={this.props.isGoogleMapsLoaded}
                     zoom={8}
                     isHidden={this.state.isMapHidden}
                 />

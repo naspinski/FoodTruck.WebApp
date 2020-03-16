@@ -11,6 +11,7 @@ using Naspinski.Messaging.Sms;
 using Naspinski.Messaging.Sms.Twilio;
 using System;
 using System.Linq;
+using System.Text;
 using static Naspinski.FoodTruck.Data.Constants;
 using static Naspinski.FoodTruck.Data.Models.Storage.Document;
 
@@ -125,6 +126,36 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 return true;
 
             return false;
+        }
+
+        [HttpPost]
+        [Route("contact")]
+        public IActionResult Contact(ContactModel model)
+        {
+            var system = new SystemModel(_settingHandler.GetAll());
+            if (model != null)
+            {
+                var contactEmail = system.Settings[SettingName.ContactEmail];
+                EmailSender.Send(_azureSettings.SendgridApiKey,
+                    $"{system.Settings[SettingName.Title]} - {model.Type} - {model.Email}",
+                    MakeMessage(model), contactEmail, model.Email,
+                    model.Attachment == null || model.Attachment.Length == 0 ? null : new[] { model.Attachment });
+            }
+            return Ok();
+        }
+
+        private static string MakeMessage(ContactModel model)
+        {
+            var n = Environment.NewLine;
+            var sb = new StringBuilder($"{model.Email}{n}{n}{model.Message}{n}{n}");
+
+            if (!string.IsNullOrWhiteSpace(model.Location))
+                sb.AppendLine($" - Location: {model.Location}");
+
+            if (!string.IsNullOrWhiteSpace(model.DateTime))
+                sb.AppendLine($" - Date/Time: {model.DateTime}");
+
+            return sb.ToString();
         }
     }
 }

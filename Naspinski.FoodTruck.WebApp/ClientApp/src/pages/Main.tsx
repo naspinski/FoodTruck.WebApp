@@ -6,7 +6,8 @@ import { SiteSettings } from '../models/SiteSettings';
 
 interface IProps {
     settings: SiteSettings,
-    googleMapsApiKey: string
+    googleMapsApiKey: string,
+    isGoogleMapsLoaded: boolean
 }
 
 export class Main extends Component<IProps> {
@@ -15,7 +16,7 @@ export class Main extends Component<IProps> {
         return (this.props.settings.isLoaded
             ? <div>loading</div>
             : <div>
-                <Calendar googleMapsApiKey={this.props.googleMapsApiKey} />
+                <Calendar isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} googleMapsApiKey={this.props.googleMapsApiKey} />
                 <StoreHours schedule={this.props.settings.scheduleMap} />
             </div>
         );

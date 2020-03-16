@@ -10,7 +10,7 @@ import { Contact } from './pages/Contact';
 import { Menu } from './pages/Menu';
 import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
-import { MapLoader } from './components/Map';
+import { LoaderOptions, Loader } from 'google-maps';
 
 
 export default class App extends Component<{}, SystemState> {
@@ -29,9 +29,9 @@ export default class App extends Component<{}, SystemState> {
     render() {
         return (
             <Layout settings={this.state.settings} menuCategoryCount={this.state.menuCategories.length}  >
-                <Route path='/' exact={true} render={x => <Main settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
+                <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/menu' render={x => <Menu menuCategories={this.state.menuCategories} />} />
-                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
+                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
                 <Route path='/faq' component={Faq} />
             </Layout>
         );
@@ -48,16 +48,16 @@ export default class App extends Component<{}, SystemState> {
             .then((data) => {
                 const settings = new SiteSettings(data);
                 this.setState({ settings: settings });
-                MapLoader.loadGoogleMaps(settings.googleMapsApiKey);
+
+                const options: LoaderOptions = { /* todo */ };
+                const loader = new Loader(settings.googleMapsApiKey, options);
+                loader.load().then(() => this.setState({ isGoogleMapsLoaded: true }));
             });
     }
 
     async populateMenu() {
         await fetch('api/menu')
             .then((resp) => resp.json())
-            .then((data) => {
-                this.setState({ menuCategories: data });
-                console.log(this.state.menuCategories);
-            });
+            .then((data) => this.setState({ menuCategories: data }));
     }
 }

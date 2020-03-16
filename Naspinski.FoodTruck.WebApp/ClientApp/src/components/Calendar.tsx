@@ -4,7 +4,8 @@ import { Event } from '../models/Event';
 import { CalendarEvent } from './CalendarEvent';
 
 interface IProps {
-    googleMapsApiKey: string
+    googleMapsApiKey: string,
+    isGoogleMapsLoaded: boolean
 }
 
 interface IState {
@@ -30,7 +31,7 @@ export class Calendar extends Component<IProps, IState> {
     render() {
         let events = this.state.isLoaded
             ?   ((this.state.events.length > 0)
-                ? this.state.events.map(event => <CalendarEvent key={event.id} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />)
+                ? this.state.events.map(event => <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={event.id} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />)
                 : 'no events scheduled')
             : 'loading events';
         return (
