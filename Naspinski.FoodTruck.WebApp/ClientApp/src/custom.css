@@ -7,3 +7,7 @@
 img.menu-image {
     height: 50px;
 }
+
+.selected {
+    text-decoration:underline;
+}

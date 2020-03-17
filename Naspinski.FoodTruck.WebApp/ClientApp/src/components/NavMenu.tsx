@@ -33,13 +33,10 @@ export class NavMenu extends Component<IProps> {
             <ul className="navbar-nav flex-grow">
                 <li>
                     <Link to="/">Home</Link>
-                    </li>
-                    {menuLink}
+                </li>
+                {menuLink}
                 <li>
                     <Link to="/contact">Contact</Link>
-                </li>
-                <li>
-                    <Link to="/faq">FAQ</Link>
                 </li>
             </ul>
         </header>

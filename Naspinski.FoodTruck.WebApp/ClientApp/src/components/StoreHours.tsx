@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Schedule } from '../models/Schedule';
 
 interface IProps {
@@ -9,9 +9,12 @@ const StoreHours = ({ schedule }: IProps) => {
     return (<div>
         <h2>Store Hours</h2>
         {
-            [...schedule.keys()].map(day =>
+            Array.from(schedule.keys()).map(day =>
                 (
-                    <div key={day}>{day}: {schedule.get(day)?.hours}</div>
+                    <div className='flex' key={'hours-' + day}>
+                        <div className='day'>{day}</div>
+                        <div>{schedule.get(day)?.hours}</div>
+                    </div>
                 )
             )
         }

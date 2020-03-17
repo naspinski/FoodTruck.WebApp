@@ -9,8 +9,7 @@ interface IProps {
 }
 
 interface IState {
-    events: Event[],
-    isLoaded: boolean
+    events: Event[]
 }
 
 export class Calendar extends Component<IProps, IState> {
@@ -19,8 +18,7 @@ export class Calendar extends Component<IProps, IState> {
         super(props);
 
         this.state = {
-            events: [],
-            isLoaded: false
+            events: []
         }
     }
 
@@ -29,22 +27,20 @@ export class Calendar extends Component<IProps, IState> {
     }
     
     render() {
-        let events = this.state.isLoaded
-            ?   ((this.state.events.length > 0)
-                ? this.state.events.map(event => <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={event.id} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />)
-                : 'no events scheduled')
-            : 'loading events';
-        return (
+        return this.state.events.length === 0 ? '' :
             <div id='calendar'>
                 <h2>Calendar</h2>
-                <div id='events'>{events}</div>
-            </div>
-        )
+                <div id='events'>
+                    {this.state.events.map(event =>
+                        <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={event.id} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />
+                    )}
+                </div>
+            </div>;
     }
 
     async populate() {
         const response = await fetch('api/events');
         const data = await response.json();
-        this.setState({ events: data, isLoaded: true });
+        this.setState({ events: data });
     }
 }

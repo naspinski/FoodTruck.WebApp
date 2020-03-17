@@ -32,7 +32,6 @@ export default class App extends Component<{}, SystemState> {
                 <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/menu' render={x => <Menu menuCategories={this.state.menuCategories} />} />
                 <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
-                <Route path='/faq' component={Faq} />
             </Layout>
         );
     }

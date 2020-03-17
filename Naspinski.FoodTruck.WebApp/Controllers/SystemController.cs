@@ -144,6 +144,14 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [Route("test")]
+        public IActionResult Test()
+        {
+            var test = this.Request;
+            return Ok();
+        }
+
         private static string MakeMessage(ContactModel model)
         {
             var n = Environment.NewLine;

@@ -13,11 +13,9 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
     public class MenuController : BaseController
     {
         private ICrudHandler<MenuItemModel, FoodTruckContext, MenuItemModel> _handler;
-        private readonly AzureSettings _azureSettings;
 
-        public MenuController(FoodTruckContext context, AzureSettings azureSettings) : base(context)
+        public MenuController(FoodTruckContext context) : base(context)
         {
-            _azureSettings = azureSettings;
             _handler = new MenuItemHandler(_context, "system");
         }
 
