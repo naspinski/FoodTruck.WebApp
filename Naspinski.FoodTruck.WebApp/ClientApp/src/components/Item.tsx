@@ -17,9 +17,9 @@ export class Item extends Component<IProps> {
             <div>
                 {this.props.item.comboParts.map(part =>
                     <select>
-                        {part.options.map(opt => {
+                        {part.options.map(opt => 
                             <option value={opt.id}>{opt.name}</option>
-                        })}
+                        )}
                     </select>
                 )}
             </div>;
