@@ -10,11 +10,6 @@ interface IProps {
 export class Menu extends Component<IProps> {
 
     render() {
-
-        const menu = this.props.menuCategories.length === 0
-            ? <div>no menu items loaded</div>
-            : <div>{this.props.menuCategories.length} menu items loaded</div>;
-
         return ( 
             <div id='menu'>
                 <h2>Menu</h2>

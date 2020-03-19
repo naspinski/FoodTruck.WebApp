@@ -2,6 +2,7 @@ import { Component } from 'react';
 import * as React from 'react';
 import { NavMenu } from './NavMenu';
 import { SiteSettings } from '../models/SiteSettings';
+import { MDBContainer } from 'mdbreact';
 
 interface IProps {
     settings: SiteSettings,
@@ -12,12 +13,12 @@ interface IProps {
 export class Layout extends Component<IProps> {
     render () {
         return (
-            <div>
+            <MDBContainer fluid>
                 <NavMenu settings={this.props.settings} menuCategoryCount={this.props.menuCategoryCount} />
-                <div>
+                <MDBContainer fluid>
                     {this.props.children}
-                </div>
-            </div>
+                </MDBContainer>
+            </MDBContainer>
         );
     }
 }

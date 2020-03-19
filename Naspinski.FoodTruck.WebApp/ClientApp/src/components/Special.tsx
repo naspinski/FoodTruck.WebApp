@@ -7,14 +7,16 @@ interface IProps {
 }
 
 export class Special extends Component<IProps> {
-        
     render() {
+        const special = new SpecialModel(this.props.special);
         return (
-            <div>
-                <h5>{this.props.special.name}</h5>
-                <h6>{this.props.special.description}</h6>
-                {this.props.special.timeDisplay}
-            </div>
+            <span className='db mt1'>
+                <span className='brown lighten-2 text-white pa2 db flex justify-between'>
+                    <span>{special.timeDisplay}</span>
+                    <span className='b'>{special.name}</span>
+                </span>
+                <span className='p2 brown lighten-4 pa2 db'>{special.description}</span>
+            </span>
         )
     }
 }

@@ -32,8 +32,16 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\assets\scss\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\assets\scss\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ClientApp\src\assets\scss\**" />
+    <EmbeddedResource Remove="ClientApp\src\assets\scss\**" />
+    <TypeScriptCompile Remove="ClientApp\src\assets\scss\**" />
   </ItemGroup>
 
   <ItemGroup>

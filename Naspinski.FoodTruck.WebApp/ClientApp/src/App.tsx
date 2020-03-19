@@ -2,7 +2,7 @@ import { Component } from 'react';
 import * as React from 'react';
 import { Route } from 'react-router';
 
-import './custom.css'
+import './custom.scss'
 import { Layout } from './components/Layout';
 import { Faq } from './pages/Faq';
 import { Main } from './pages/Main';

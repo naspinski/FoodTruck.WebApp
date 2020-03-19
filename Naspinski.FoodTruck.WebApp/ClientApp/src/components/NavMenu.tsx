@@ -1,45 +1,68 @@
 import { Component } from 'react';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import './NavMenu.css';
+import { Link, NavLink } from 'react-router-dom';
+import './NavMenu.scss';
 import { SiteSettings } from '../models/SiteSettings';
+import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse } from 'mdbreact';
 
 interface IProps {
     settings: SiteSettings,
     menuCategoryCount: number
 }
 
-export class NavMenu extends Component<IProps> {
+interface IState {
+    isMenuOpen: boolean
+}
 
-    render () {
+export class NavMenu extends Component<IProps, IState> {
 
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            isMenuOpen: true
+        };
+    }
+
+
+
+    toggleCollapse = () => {
+        this.setState({ isMenuOpen: !this.state.isMenuOpen });
+    }
+
+    render() {
+        
         const isHomeUrlInternal = this.props.settings.homeUrl == null || this.props.settings.homeUrl.length === 0;
         const homeChild = this.props.settings.logoImageUrl.length === 0
-            ? <h1>{this.props.settings.title}</h1>
+            ? <strong className='white-text'>{this.props.settings.title}</strong>
             : <img className='title-logo' src={this.props.settings.logoImageUrl} alt={this.props.settings.title} />;
 
         const homeLink = isHomeUrlInternal
-            ? <Link to='/home/'>{homeChild}</Link>
-            : <a href={this.props.settings.homeUrl}>{homeChild}</a>;
+            ? <MDBNavLink activeClassName='default-color' to='/home/'>{homeChild}</MDBNavLink>
+            : <a className='white-text' href={this.props.settings.homeUrl}>{homeChild}</a>;
 
         const menuLink = this.props.menuCategoryCount === 0 ? '' :
-            <li>
-                <Link to="/menu">Menu</Link>
-            </li>
+            <MDBNavLink activeClassName='default-color' to="/menu">Menu</MDBNavLink>;
 
         return (
-        <header>
-            {homeLink}
-            <ul className="navbar-nav flex-grow">
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                {menuLink}
-                <li>
-                    <Link to="/contact">Contact</Link>
-                </li>
-            </ul>
-        </header>
+            <MDBNavbar color='default-color-dark' expand='md'>
+                <MDBNavbarBrand>
+                    {homeLink}
+                </MDBNavbarBrand>
+                <MDBNavbarToggler onClick={this.toggleCollapse} />
+                <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu'>
+                    <MDBNavbarNav right>
+                        <MDBNavItem>
+                            <MDBNavLink exact activeClassName='default-color' to="/">Home</MDBNavLink>
+                        </MDBNavItem>
+                        <MDBNavItem>
+                            {menuLink}
+                        </MDBNavItem>
+                        <MDBNavItem>
+                            <MDBNavLink activeClassName='default-color' to="/contact">Contact</MDBNavLink>
+                        </MDBNavItem>
+                    </MDBNavbarNav>
+                </MDBCollapse>
+            </MDBNavbar>
     );
   }
 }
