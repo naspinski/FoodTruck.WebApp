@@ -25,27 +25,23 @@ export class Specials extends Component<{}, IState> {
         let count = 0;
         return this.state.specials.size === 0 ? ''
             : (
-                <MDBCard className='mt3'>
-                    <MDBCardHeader color='primary-color-dark'>
-                        <MDBCardTitle className='ma0 b'>Daily Specials</MDBCardTitle>
-                    </MDBCardHeader>
-                    <MDBCardBody>
-                        <MDBRow className='flex items-stretch'>
+                <div className='amber darken-2'>
+                    <div className='inner-container'>
+                        <h2 className='bottom-border'>Daily Specials</h2>
                         {Array.from(this.state.specials.keys()).map(day =>
-                            <MDBCol md='4' key={'special-' + day}>
-                                <MDBCard className='h-100'>
-                                    <MDBCardHeader color='default-color-dark' className='b'>{day}</MDBCardHeader>
-                                    <MDBCardText>
-                                    {this.state.specials.get(day)?.map(special =>
+                            <div key={'special-' + day} className='inner-container-row'>
+                                <div className='left-frame'>{day}</div>
+                                <div className='right-frame'>
+                                {this.state.specials.get(day)?.map(special =>
+                                    <div className='flex-grow'>
                                         <Special special={special} key={'spec-' + day + '-' + (count++)} />
-                                        )}
-                                    </MDBCardText>
-                                </MDBCard>
-                            </MDBCol>
-                            )}
-                        </MDBRow>
-                    </MDBCardBody>
-                </MDBCard>)
+                                    </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>)
     }
 
     async populate() {

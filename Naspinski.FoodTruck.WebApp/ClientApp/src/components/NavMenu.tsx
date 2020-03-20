@@ -37,28 +37,28 @@ export class NavMenu extends Component<IProps, IState> {
             : <img className='title-logo' src={this.props.settings.logoImageUrl} alt={this.props.settings.title} />;
 
         const homeLink = isHomeUrlInternal
-            ? <MDBNavLink activeClassName='default-color' to='/home/'>{homeChild}</MDBNavLink>
+            ? <MDBNavLink activeClassName='primary-color' to='/home/'>{homeChild}</MDBNavLink>
             : <a className='white-text' href={this.props.settings.homeUrl}>{homeChild}</a>;
 
         const menuLink = this.props.menuCategoryCount === 0 ? '' :
-            <MDBNavLink activeClassName='default-color' to="/menu">Menu</MDBNavLink>;
+            <MDBNavLink activeClassName='primary-color' to="/menu">Menu</MDBNavLink>;
 
         return (
-            <MDBNavbar color='default-color-dark' expand='md'>
+            <MDBNavbar color='primary-color-dark' expand='md'>
                 <MDBNavbarBrand>
                     {homeLink}
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={this.toggleCollapse} />
-                <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu'>
+                <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
                         <MDBNavItem>
-                            <MDBNavLink exact activeClassName='default-color' to="/">Home</MDBNavLink>
+                            <MDBNavLink exact activeClassName='primary-color' to="/">Home</MDBNavLink>
                         </MDBNavItem>
                         <MDBNavItem>
                             {menuLink}
                         </MDBNavItem>
                         <MDBNavItem>
-                            <MDBNavLink activeClassName='default-color' to="/contact">Contact</MDBNavLink>
+                            <MDBNavLink activeClassName='primary-color' to="/contact">Contact</MDBNavLink>
                         </MDBNavItem>
                     </MDBNavbarNav>
                 </MDBCollapse>
