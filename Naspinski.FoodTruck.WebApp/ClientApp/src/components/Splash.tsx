@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { SiteSettings } from '../models/SiteSettings';
-import './NavMenu.scss';
 import { MDBBtn, MDBRow, MDBCol } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
 

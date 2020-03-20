@@ -10,13 +10,17 @@ export class Special extends Component<IProps> {
     render() {
         const special = new SpecialModel(this.props.special);
         return (
-            <React.Fragment>
-                <div className='flex justify-between b'>
-                    <div className='f3'>{special.name}</div>
-                    <div>{special.timeDisplay}</div>
+            <div className='right-frame'>
+                <div className='border-left pl1'>
+                    <div className='flex justify-between'>
+                        <div className='f3'>{special.name}</div>
+                        <div>{special.timeDisplay}</div>
+                    </div>
+                    <div className='pl4'>
+                        {special.description}
+                    </div>
                 </div>
-                <span className='stylish-color-text'>{special.description}</span>
-            </React.Fragment>
+            </div>
         )
     }
 }
