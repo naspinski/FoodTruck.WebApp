@@ -20,6 +20,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string HomeUrl { get; set; }
         public string GoogleMapsApiKey { get; set; }
         public Dictionary<string, string> DeliveryServiceImageToUrl { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
         
@@ -47,6 +48,9 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 SetLink(SettingName.GrubHubLink, "grubhub.jpg");
                 SetLink(SettingName.PostmatesLink, "postmates.png");
 
+                foreach (string s in new[] { SettingName.Facebook, SettingName.Twitter, SettingName.Instagram, SettingName.LinkedIn, SettingName.Pinterest })
+                    AddValueToDictionaryIfValid(Social, s);
+
                 foreach (var d in Enumerable.Range(0, 7))
                 {
                     var day = ((DayOfWeek)d).ToString();
@@ -65,6 +69,12 @@ namespace Naspinski.FoodTruck.WebApp.Models
         {
             if (!string.IsNullOrWhiteSpace(_system.Settings[setting]))
                 DeliveryServiceImageToUrl.Add(imageUrl, _system.Settings[setting]);
+        }
+
+        private void AddValueToDictionaryIfValid<T>(Dictionary<string, T> dictionary, string setting) where T: class
+        {
+            if (!string.IsNullOrWhiteSpace(_system.Settings[setting]))
+                dictionary.Add(setting, _system.Settings[setting] as T);
         }
     }
 

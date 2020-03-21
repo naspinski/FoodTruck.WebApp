@@ -52,6 +52,7 @@
     <None Remove="ClientApp\src\components\Contact.tsx" />
     <None Remove="ClientApp\src\components\Counter.tsx" />
     <None Remove="ClientApp\src\components\Faq.tsx" />
+    <None Remove="ClientApp\src\components\Footer.tsx" />
     <None Remove="ClientApp\src\components\Item.tsx" />
     <None Remove="ClientApp\src\components\Map.tsx" />
     <None Remove="ClientApp\src\components\Special.tsx" />

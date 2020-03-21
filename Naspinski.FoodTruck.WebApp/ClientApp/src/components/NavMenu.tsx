@@ -1,13 +1,11 @@
 import { Component } from 'react';
 import * as React from 'react';
-import { Link, NavLink } from 'react-router-dom';
 import './NavMenu.scss';
 import { SiteSettings } from '../models/SiteSettings';
 import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse } from 'mdbreact';
 
 interface IProps {
-    settings: SiteSettings,
-    menuCategoryCount: number
+    settings: SiteSettings
 }
 
 interface IState {
@@ -30,36 +28,35 @@ export class NavMenu extends Component<IProps, IState> {
     }
 
     render() {
-        
-        const isHomeUrlInternal = this.props.settings.homeUrl == null || this.props.settings.homeUrl.length === 0;
-        const homeChild = this.props.settings.logoImageUrl.length === 0
-            ? <strong className='white-text'>{this.props.settings.title}</strong>
-            : <img className='title-logo' src={this.props.settings.logoImageUrl} alt={this.props.settings.title} />;
 
-        const homeLink = isHomeUrlInternal
+        const settings = this.props.settings;
+        let links = settings.links;
+
+        const isHomeUrlInternal = settings.homeUrl == null || settings.homeUrl.length === 0;
+        const homeChild = settings.logoImageUrl.length === 0
+            ? <strong className='white-text'>{settings.title}</strong>
+            : <img className='title-logo' src={settings.logoImageUrl} alt={settings.title} />;
+
+        const returnLink = isHomeUrlInternal
             ? <MDBNavLink activeClassName='primary-color' to='/home/'>{homeChild}</MDBNavLink>
-            : <a className='white-text' href={this.props.settings.homeUrl}>{homeChild}</a>;
+            : <a className='white-text' href={settings.homeUrl}>{homeChild}</a>;
 
-        const menuLink = this.props.menuCategoryCount === 0 ? '' :
-            <MDBNavLink activeClassName='primary-color' to="/menu">Menu</MDBNavLink>;
 
         return (
             <MDBNavbar color='primary-color-dark' expand='md'>
                 <MDBNavbarBrand>
-                    {homeLink}
+                    {returnLink}
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={this.toggleCollapse} />
                 <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
-                        <MDBNavItem>
-                            <MDBNavLink exact activeClassName='primary-color' to="/">Home</MDBNavLink>
-                        </MDBNavItem>
-                        <MDBNavItem>
-                            {menuLink}
-                        </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBNavLink activeClassName='primary-color' to="/contact">Contact</MDBNavLink>
-                        </MDBNavItem>
+                        {Array.from(links.keys()).map(link =>
+                            <MDBNavItem key={`header-link-${link}`}>
+                                <MDBNavLink to={settings.links.get(link)}
+                                    exact={link === 'Home'}
+                                    activeClassName='primary-color'>{link}</MDBNavLink>
+                            </MDBNavItem>
+                        )}
                     </MDBNavbarNav>
                 </MDBCollapse>
             </MDBNavbar>

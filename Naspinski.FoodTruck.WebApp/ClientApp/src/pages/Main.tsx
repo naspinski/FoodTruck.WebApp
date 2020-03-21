@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import * as React from 'react';
-import StoreHours from './../components/StoreHours';
 import { Calendar } from './../components/Calendar';
 import { SiteSettings } from '../models/SiteSettings';
 import { Specials } from '../components/Specials';
@@ -21,7 +20,6 @@ export class Main extends Component<IProps> {
                 <Splash settings={this.props.settings} />
                 <Specials /> 
                 <Calendar isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} googleMapsApiKey={this.props.googleMapsApiKey} />
-                <StoreHours schedule={this.props.settings.scheduleMap} />
             </div>
         );
     }

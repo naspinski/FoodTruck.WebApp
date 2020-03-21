@@ -25,7 +25,7 @@ export class Specials extends Component<{}, IState> {
         let count = 0;
         return this.state.specials.size === 0 ? ''
             : (
-                <div className='amber darken-2'>
+                <div className='amber darken-2 pb2'>
                     <div className='inner-container'>
                         <h2 className='border-bottom'>Daily Specials</h2>
                         {Array.from(this.state.specials.keys()).map(day =>
@@ -33,8 +33,8 @@ export class Specials extends Component<{}, IState> {
                                 <div className='left-frame'>{day}</div>
                                 <div className='right-frame'>
                                 {this.state.specials.get(day)?.map(special =>
-                                    <div className='flex-grow'>
-                                        <Special special={special} key={'spec-' + day + '-' + (count++)} />
+                                    <div className='flex-grow' key={`spec-${day}-${(count++)}`} >
+                                        <Special special={special} />
                                     </div>
                                     )}
                                 </div>

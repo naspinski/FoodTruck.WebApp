@@ -28,7 +28,7 @@ export default class App extends Component<{}, SystemState> {
 
     render() {
         return (
-            <Layout settings={this.state.settings} menuCategoryCount={this.state.menuCategories.length}  >
+            <Layout settings={this.state.settings}>
                 <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
                 <Route path='/menu' render={x => <Menu menuCategories={this.state.menuCategories} />} />
                 <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
@@ -57,6 +57,23 @@ export default class App extends Component<{}, SystemState> {
     async populateMenu() {
         await fetch('api/menu')
             .then((resp) => resp.json())
-            .then((data) => this.setState({ menuCategories: data }));
+            .then((data) => {
+                let settings = this.state.settings;
+                settings.links = this.getNavLinks(data.length);
+                this.setState({ menuCategories: data, settings: settings })
+            });
+    }
+
+    getNavLinks = (menuCategoryCount: number): Map<string, string> => {
+
+        let links = new Map<string, string>();
+
+        links.set('Home', '/');
+        if (menuCategoryCount > 0) {
+            links.set('Menu', '/menu');
+        }
+        links.set('Contact', '/contact');
+
+        return links;
     }
 }

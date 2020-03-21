@@ -7,22 +7,15 @@ interface IProps {
 }
 
 const StoreHours = ({ schedule }: IProps) => {
-    return (
-        <MDBCard className='mt3'>
-            <MDBCardHeader color='primary-color-dark'>
-                <MDBCardTitle className='ma0 b'>Operating Hours</MDBCardTitle>
-            </MDBCardHeader>
-            <MDBCardBody className='flex-column'>{
-                    Array.from(schedule.keys()).map(day =>
-                        (
-                            <span className='flex justify-between' key={'hours-' + day}>
-                                <span className='day'>{day}</span>
-                                <span>{schedule.get(day)?.hours}</span>
-                            </span>
-                        )
-                    )
-                }
-            </MDBCardBody>
-        </MDBCard>);
+    return (<React.Fragment>
+        {Array.from(schedule.keys()).map(day =>
+            (
+                <span className='flex justify-between' key={`hours-${day}`}>
+                    <span className='day'>{day}</span>
+                    <span>{schedule.get(day)?.hours}</span>
+                </span>
+            )
+        )}
+    </React.Fragment>);
 }
 export default StoreHours;

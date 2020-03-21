@@ -13,12 +13,17 @@ export class SiteSettings {
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};
     googleMapsApiKey: string = '';
-
+    links: Map<string, string> = new Map<string, string>();
+    social: Object = {};
+    
     public get deliveryServiceImageToUrlMap(): Map<string, string> {
         return new Map<string, string>(Object.entries(this.deliveryServiceImageToUrl));
     }
     public get scheduleMap(): Map<string, Schedule> {
         return new Map<string, Schedule>(Object.entries(this.schedule));
+    }
+    public get socialMap(): Map<string, string> {
+        return new Map<string, string>(Object.entries(this.social));
     }
 
     constructor(init?: Partial<SiteSettings>) {
