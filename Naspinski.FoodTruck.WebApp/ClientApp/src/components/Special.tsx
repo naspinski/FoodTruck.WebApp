@@ -11,7 +11,7 @@ export class Special extends Component<IProps> {
         const special = new SpecialModel(this.props.special);
         return (
             <div className='right-frame'>
-                <div className='border-left pl1'>
+                <div className='border-left pl2'>
                     <div className='flex justify-between'>
                         <div className='f3'>{special.name}</div>
                         <div>{special.timeDisplay}</div>

@@ -12,6 +12,11 @@ import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
 import { LoaderOptions, Loader } from 'google-maps';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
+
+library.add(faCommentAlt, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
 export default class App extends Component<{}, SystemState> {
 

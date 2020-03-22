@@ -11,7 +11,7 @@ const StoreHours = ({ schedule }: IProps) => {
         {Array.from(schedule.keys()).map(day =>
             (
                 <span className='flex justify-between' key={`hours-${day}`}>
-                    <span className='day'>{day}</span>
+                    <span className='day pr1'>{day}</span>
                     <span>{schedule.get(day)?.hours}</span>
                 </span>
             )

@@ -9,6 +9,11 @@ interface IProps {
 
 const Splash = ({ settings }: IProps) => {
 
+    const menuLink = !settings.links.has('Menu') ? '' :
+        <NavLink to='/menu'>
+            <MDBBtn color='default'>Menu</MDBBtn>
+        </NavLink>;
+
     return (
         <div className='primary-color'>
             <MDBRow className='inner-container'>
@@ -23,9 +28,7 @@ const Splash = ({ settings }: IProps) => {
                         <NavLink to='/#calendar'>
                             <MDBBtn color='pink'>Calendar</MDBBtn>
                         </NavLink>
-                        <NavLink to='/menu'>
-                            <MDBBtn color='default'>Menu</MDBBtn>
-                        </NavLink>
+                        {menuLink}
                         <NavLink to='/contact'>
                             <MDBBtn color='amber'>Contact</MDBBtn>
                         </NavLink>

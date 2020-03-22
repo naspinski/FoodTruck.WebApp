@@ -3,6 +3,8 @@ import * as React from 'react';
 import { SiteSettings } from '../models/SiteSettings';
 import { MDBNavLink, MDBFooter, MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from 'mdbreact';
 import StoreHours from './StoreHours';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface IProps {
     settings: SiteSettings
@@ -14,40 +16,39 @@ export class Footer extends Component<IProps> {
         const settings = this.props.settings;
         
         var socialLinks = Array.from(settings.socialMap.keys()).map(network => {
-            let icon: string = '';
-            let social: string = '';
+            let icon: IconProp;
             switch (network) {
-                case 'Instagram': social = 'ins'; icon = 'instagram'; break;
-                case 'Facebook': social = 'fb'; icon = 'facebook-f'; break;
-                case 'LinkedIn': social = 'li'; icon = 'linked-in-in'; break;
-                case 'Pinterest': social = 'pin'; icon = 'pinterest'; break;
-                case 'Twitter': social = 'tw'; icon = 'twitter'; break;
-                default: social = 'comm'; icon = 'comments';
+                case 'Instagram': icon = 'instagram-square'; break;
+                case 'Facebook': icon = 'facebook-square'; break;
+                case 'LinkedIn': icon = 'linkedin'; break;
+                case 'Pinterest': icon = 'pinterest-square'; break;
+                case 'Twitter': icon = 'twitter-square'; break;
+                default: icon = 'comment-alt';
             }
 
             return (
-                <a href={settings.socialMap.get(network)} key={`social-link-${network}`}>
-                    <MDBBtn social={social}>
-                        <MDBIcon fab icon={icon} className="pr-1" />{network}
-                    </MDBBtn>
+                <a key={`social-link-${network}`} href={settings.socialMap.get(network)} title={network}>
+                    <FontAwesomeIcon className='f3' icon={['fab', icon]} /> <span className='pb1 pl1'>{network}</span>
                 </a>
             )
         });
 
         return (
             <MDBFooter color="primary-color" className="font-small pt-4 mt-4">
-                <MDBContainer fluid className="text-center text-md-left">
+                <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
-                        <MDBCol md="3">
-                            {socialLinks}
+                        <MDBCol md="6">
+                            <div className='pl1'>
+                                {socialLinks}
+                            </div>
                         </MDBCol>
-                        <MDBCol md="5"></MDBCol>
-                        <MDBCol md="1">
-                            <div className='tr'>
+                        <MDBCol md="3">
+                            Navigation
+                            <div className='pt1'>
                                 {Array.from(settings.links.keys()).map(link =>
                                     <React.Fragment key={`footer-link-${link}`}>
                                         <MDBNavLink to={settings.links.get(link)}
-                                            className='dib'
+                                            className='dib pb0 pt0'
                                             exact={link === 'Home'}
                                             activeClassName='primary-color-dark'>{link}</MDBNavLink>
                                         <br />
