@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { MenuItem } from '../models/MenuItem';
+import { MDBRow, MDBCol } from 'mdbreact';
 
 interface IProps {
     item: MenuItem,
@@ -10,38 +11,53 @@ interface IProps {
 export class Item extends Component<IProps> {
 
     render() {
-        const img = !this.props.item.hasImage ? '' :
-            <img className='menu-image' src={this.props.item.imageLocation} alt={this.props.item.name} />;
 
-        const parts = !this.props.item.isCombo ? '' :
+        const item = this.props.item;
+
+        const img = !item.hasImage ? '' :
+            <MDBCol md='1'>
+                <img className='menu-image' src={item.imageLocation} alt={item.name} />
+            </MDBCol>
+
+        const parts = !item.comboParts === null || item.comboParts.length === 0 ? '' :
             <div>
-                {this.props.item.comboParts.map(part =>
-                    <select>
-                        {part.options.map(opt => 
-                            <option value={opt.id}>{opt.name}</option>
-                        )}
-                    </select>
+                {item.comboParts.map(part =>
+                    <div className='dib pr2 pt1'>
+                        <select className='browser-default custom-select'>
+                            {part.options.map(opt => 
+                                <option value={opt.id}>{opt.name}</option>
+                            )}
+                        </select>
+                    </div>
                 )}
             </div>;
 
-        const numberOfPrices = this.props.item.prices.length;
-        const prices = numberOfPrices === 0 ? '' :
-            <div>{this.props.item.prices.map(price =>
-                <span className='price-container' key={'price-' + price.id}>
-                    {numberOfPrices === 1 ? <strong>{price.priceTypeName}</strong> : ''}
+        const prices = item.prices.length === 0 ? '' :
+            <div className='dib'>{item.prices.map(price =>
+                <div className='price-container dib ml2' key={'price-' + price.id}>
+                    {price.priceTypeName !== null && price.priceTypeName.length > 0  ? <strong>{price.priceTypeName}: </strong> : ''}
                     {price.amountAsCurrency}
-                </span>)}
+                </div>)}
             </div>;
 
         return (
-            <div key={'item-' + this.props.item.id}>
-                <h4>{this.props.item.name}</h4>
-                <div>{prices}</div>
-                <div>
+            <div className='pa1'>
+                <MDBRow>
+                    <MDBCol md='6'>
+                        <h5 className='b'>{item.name}</h5>
+                    </MDBCol>
+                    <MDBCol md='6' className='tr'>
+                        {prices}
+                    </MDBCol>
+                </MDBRow>
+                
+                <MDBRow className='pl2'>
                     {img}
-                    {this.props.item.description}
-                </div>
-                <div>{parts}</div>
+                    <MDBCol md={item.hasImage ? '11' : '12'} className='tal'>
+                        <div>{item.description}</div>
+                        <div>{parts}</div>
+                    </MDBCol>
+                </MDBRow>
             </div>
         )
     }

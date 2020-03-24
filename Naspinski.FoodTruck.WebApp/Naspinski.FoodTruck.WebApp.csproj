@@ -11,22 +11,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.AspNetCore" Version="3.8.100" />
+    <PackageReference Include="Elmah.Io.AspNetCore" Version="3.8.101" />
     <PackageReference Include="Ical.Net" Version="4.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.8.2">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.8.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Naspinski.Data" Version="1.0.20200221.215248" />
-    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200317.134724" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200317.134724" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200317.134724" />
+    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200324.105149" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200324.105149" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200324.105149" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20200222.104518" />
-    <PackageReference Include="SendGrid" Version="9.12.7" />
+    <PackageReference Include="SendGrid" Version="9.13.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +72,12 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Naspinski.FoodTruck.Data.Distribution">
+      <HintPath>..\..\FoodTruck.Data\Naspinski.FoodTruck.Data.Distribution\bin\Debug\netcoreapp3.1\Naspinski.FoodTruck.Data.Distribution.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

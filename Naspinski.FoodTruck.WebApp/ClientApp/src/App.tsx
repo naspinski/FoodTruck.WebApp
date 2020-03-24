@@ -15,8 +15,8 @@ import { LoaderOptions, Loader } from 'google-maps';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
-
 library.add(faCommentAlt, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
+
 
 export default class App extends Component<{}, SystemState> {
 
@@ -51,6 +51,7 @@ export default class App extends Component<{}, SystemState> {
             .then((resp) => resp.json())
             .then((data) => {
                 const settings = new SiteSettings(data);
+                settings.links = this.state.settings.links;
                 this.setState({ settings: settings });
 
                 const options: LoaderOptions = { /* todo */ };

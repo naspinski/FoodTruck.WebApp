@@ -21,14 +21,11 @@ export class NavMenu extends Component<IProps, IState> {
         };
     }
 
-
-
     toggleCollapse = () => {
         this.setState({ isMenuOpen: !this.state.isMenuOpen });
     }
 
     render() {
-
         const settings = this.props.settings;
         let links = settings.links;
 
@@ -46,6 +43,7 @@ export class NavMenu extends Component<IProps, IState> {
             <MDBNavbar color='primary-color-dark' expand='md'>
                 <MDBNavbarBrand>
                     {returnLink}
+                    [{links.size}]
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={this.toggleCollapse} />
                 <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu b ttu'>

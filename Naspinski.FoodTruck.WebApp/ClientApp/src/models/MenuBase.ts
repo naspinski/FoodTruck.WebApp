@@ -4,10 +4,7 @@ export class MenuBase extends BaseModel{
 
     description: string = '';
     sortOrder: number = 0;
-
-    public get hasDescription(): boolean {
-        return this.description !== null && this.description.length > 0;
-    }
+    hasDescription: boolean = false;
 
     constructor(init?: Partial<MenuBase>) {
         super(init);

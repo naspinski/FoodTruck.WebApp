@@ -4,7 +4,6 @@ import { MenuComboPart } from "./MenuComboPart";
 
 export class MenuItem extends MenuBase {
 
-    isCombo: boolean = false;
     imageLocation: string = '';
     prices: MenuPrice[] = [];
     comboParts: MenuComboPart[] = []

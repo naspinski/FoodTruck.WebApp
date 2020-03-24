@@ -26,16 +26,37 @@ div h2 {
     padding:1em 0 .5em 0;
 }
 
+div.inner-container, .mha {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.border-dotted.bottom {
+    border-bottom: dashed 1px $grey-lighten-4;
+}
+.border-dotted.left {
+    border-left: dashed 1px $grey-lighten-4;
+}
+.border-dotted.top {
+    border-top: dashed 1px $grey-lighten-4;
+}
 
 div.inner-container {
     max-width: 64rem;
-    margin-left: auto;
-    margin-right: auto;
+
+    a {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: $white;
+    }
+
+    align-content:hover {
+        text-decoration: underline
+    }
 
 
     div.inner-container-row {
         padding: 1em;
-        border-bottom: 1px solid;
         display: flex;
         align-items: stretch;
 
@@ -50,7 +71,7 @@ div.inner-container {
         }
 
         div.right-frame {
-            font-weight:bold;
+            font-weight: bold;
             padding: .5em 1em;
             flex-grow: 1;
         }

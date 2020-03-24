@@ -37,13 +37,14 @@ export class Footer extends Component<IProps> {
             <MDBFooter color="primary-color" className="font-small pt-4 mt-4">
                 <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
-                        <MDBCol md="6">
-                            <div className='pl1'>
+                        <MDBCol md='4' className='pb2'>
+                            <div className='underline'>Social</div>
+                            <div className='pl2 tl'>
                                 {socialLinks}
                             </div>
                         </MDBCol>
-                        <MDBCol md="3">
-                            Navigation
+                        <MDBCol md='4' className='tl pb2'>
+                            <div className='underline'>Navigation</div>
                             <div className='pt1'>
                                 {Array.from(settings.links.keys()).map(link =>
                                     <React.Fragment key={`footer-link-${link}`}>
@@ -56,7 +57,8 @@ export class Footer extends Component<IProps> {
                                 )}
                             </div>
                         </MDBCol>
-                        <MDBCol md="3">
+                        <MDBCol md='4' className='pb2'>
+                            <div className='underline'>Operating Hours</div>
                             <div className='pb3 pl3'>
                                 <StoreHours schedule={this.props.settings.scheduleMap} />
                             </div>

@@ -27,7 +27,7 @@ export class Specials extends Component<{}, IState> {
             : (
                 <div className='amber darken-2 pb2'>
                     <div className='inner-container'>
-                        <h2 className='border-bottom'>Daily Specials</h2>
+                        <h2 className='border-dotted bottom'>Daily Specials</h2>
                         {Array.from(this.state.specials.keys()).map(day =>
                             <div key={'special-' + day} className='inner-container-row'>
                                 <div className='left-frame'>{day}</div>

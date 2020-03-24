@@ -25,7 +25,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             var model = new MenuItemsModel(_handler.GetAll(false));
             model.Categories.ForEach(cat => {
-                cat.MenuItems.ForEach(item => item.Prices.ForEach(p => p.PriceTypeName = p.PriceTypeName.Replace(" ", "&nbsp;")));
+                //cat.MenuItems.ForEach(item => item.Prices.ForEach(p => p.PriceTypeName = p.PriceTypeName.Replace(" ", "&nbsp;")));
                 cat.MenuItems = cat.MenuItems.OrderBy(x => x.SortOrder).ToList();
             });
 
