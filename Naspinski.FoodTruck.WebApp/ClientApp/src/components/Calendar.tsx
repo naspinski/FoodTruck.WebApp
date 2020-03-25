@@ -42,8 +42,8 @@ export class Calendar extends Component<IProps, IState> {
     }
 
     async populate() {
-        const response = await fetch('api/events');
-        const data = await response.json();
-        this.setState({ events: data });
+        await fetch('api/events')
+            .then((resp) => resp.json())
+            .then((data) => this.setState({ events: data }));
     }
 }

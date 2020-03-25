@@ -8,6 +8,7 @@ import { MDBRow, MDBCol, MDBBtnGroup, MDBBtn, MDBAlert } from 'mdbreact';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import { SiteSettings } from '../models/SiteSettings';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps {
     googleMapsApiKey: string,
@@ -174,7 +175,9 @@ export class Contact extends Component<IProps, IState> {
                                         {error}
                                     </div>
                                     <div>
-                                        <MDBBtn color='pink' type='submit' disabled={disableSend} >Send</MDBBtn>
+                                        <MDBBtn color='pink' type='submit' disabled={disableSend} >
+                                            <FontAwesomeIcon icon='chevron-circle-right' /> Send
+                                        </MDBBtn>
                                     </div>
                                 </div>
                             </form>

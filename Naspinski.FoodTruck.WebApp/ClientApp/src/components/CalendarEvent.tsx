@@ -4,6 +4,7 @@ import { Event } from '../models/Event';
 import Address from './Address';
 import { Map } from './Map';
 import { MDBBtn, MDBRow, MDBCol } from 'mdbreact';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps {
     event: Event,
@@ -40,7 +41,9 @@ export class CalendarEvent extends Component<IProps, IState> {
         const location = this.props.event.location;
         const mapButton = location && location.longitude === 0 || location.latitude === 0 ? '' :
             <div className='pl1'>
-                <MDBBtn size='sm' onClick={this.mapVisibilityChange}>{this.state.isMapHidden ? 'show on map' : 'hide map'}</MDBBtn>
+                <MDBBtn size='sm' onClick={this.mapVisibilityChange}>
+                    <FontAwesomeIcon icon='map-marker-alt' /> {this.state.isMapHidden ? 'show on map' : 'hide map'}
+                </MDBBtn>
             </div>;
 
         return (

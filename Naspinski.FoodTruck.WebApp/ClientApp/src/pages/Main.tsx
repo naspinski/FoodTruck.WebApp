@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Calendar } from './../components/Calendar';
 import { SiteSettings } from '../models/SiteSettings';
 import { Specials } from '../components/Specials';
-import Splash from '../components/Splash';
+import { Splash } from '../components/Splash';
 
 interface IProps {
     settings: SiteSettings,
