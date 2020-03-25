@@ -18,7 +18,7 @@ export class Layout extends Component<IProps> {
                 <MDBContainer fluid>
                     {this.props.children}
                 </MDBContainer>
-                <Footer settings = { this.props.settings } />
+                <Footer settings={this.props.settings} />
             </MDBContainer>
         );
     }

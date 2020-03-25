@@ -15,6 +15,8 @@ import { LoaderOptions, Loader } from 'google-maps';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import { Specials } from './components/Specials';
+import { Calendar } from './components/Calendar';
 library.add(faCommentAlt, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
 
@@ -28,22 +30,24 @@ export default class App extends Component<{}, SystemState> {
     static displayName = App.name;
 
     componentDidMount() {
-      this.populate();
+        this.populate();
     }
 
     render() {
         return (
             <Layout settings={this.state.settings}>
                 <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                <Route path='/menu' render={x => <Menu menuCategories={this.state.menuCategories} />} />
-                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
+                <Route path='/menu' component={Menu} />
+                <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
+                <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
+                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
             </Layout>
         );
     }
 
     async populate() {
         this.populateSettings();
-        this.populateMenu();
+        this.populateLinks();
     }
 
     async populateSettings() {
@@ -60,26 +64,17 @@ export default class App extends Component<{}, SystemState> {
             });
     }
 
-    async populateMenu() {
-        await fetch('api/menu')
+    async populateLinks() {
+        await fetch('api/sections')
             .then((resp) => resp.json())
-            .then((data) => {
+            .then((data: string[]) => {
+                let links = new Map<string, string>();
+                links.set('home', '/');
+                data.forEach((link) => links.set(link, `/${link}`));
+                links.set('contact', '/contact');
                 let settings = this.state.settings;
-                settings.links = this.getNavLinks(data.length);
-                this.setState({ menuCategories: data, settings: settings })
+                settings.links = links;
+                this.setState({ settings: settings })
             });
-    }
-
-    getNavLinks = (menuCategoryCount: number): Map<string, string> => {
-
-        let links = new Map<string, string>();
-
-        links.set('Home', '/');
-        if (menuCategoryCount > 0) {
-            links.set('Menu', '/menu');
-        }
-        links.set('Contact', '/contact');
-
-        return links;
     }
 }

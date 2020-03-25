@@ -5,7 +5,9 @@ body, .card {
     color: $white !important;
 }
 
-button.btn { font-weight: bold; }
+button.btn {
+    font-weight: bold;
+}
 img.menu-image { height: 50px; }
 
 .flex-grow { flex-grow: 1; }
@@ -58,22 +60,23 @@ div.inner-container {
     div.inner-container-row {
         padding: 1em;
         display: flex;
-        align-items: stretch;
 
-        div.left-frame {
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            background-color: $white;
-            padding: 1em;
-            width: 165px;
-            color: $stylish-color-dark
-        }
 
         div.right-frame {
             font-weight: bold;
             padding: .5em 1em;
             flex-grow: 1;
         }
+    }
+
+    div.left-frame {
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        background-color: $white;
+        padding: 1em;
+        width: 165px;
+        height: 100%;
+        color: $stylish-color-dark
     }
 }

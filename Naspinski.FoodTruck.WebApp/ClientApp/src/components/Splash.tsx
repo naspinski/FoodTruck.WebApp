@@ -9,9 +9,14 @@ interface IProps {
 
 const Splash = ({ settings }: IProps) => {
 
-    const menuLink = !settings.links.has('Menu') ? '' :
+    const menuLink = !settings.links.has('menu') ? '' :
         <NavLink to='/menu'>
             <MDBBtn color='default'>Menu</MDBBtn>
+        </NavLink>;
+
+    const calendarLink = !settings.links.has('calendar') ? '' :
+        <NavLink to='/#calendar'>
+            <MDBBtn color='pink'>Calendar</MDBBtn>
         </NavLink>;
 
     return (
@@ -25,12 +30,10 @@ const Splash = ({ settings }: IProps) => {
                     <h3 className='b'>{settings.tagLine}</h3>
                     <p>{settings.description}</p>
                     <p>
-                        <NavLink to='/#calendar'>
-                            <MDBBtn color='pink'>Calendar</MDBBtn>
-                        </NavLink>
+                        {calendarLink}
                         {menuLink}
                         <NavLink to='/contact'>
-                            <MDBBtn color='amber'>Contact</MDBBtn>
+                            <MDBBtn color='amber'>Contact{settings.isBrickAndMortar ? '' : '/Book'}</MDBBtn>
                         </NavLink>
                     </p>
                 </MDBCol>

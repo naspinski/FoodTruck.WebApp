@@ -14,12 +14,14 @@ interface IProps {
 export class Main extends Component<IProps> {
 
     render() {
-        return (this.props.settings.isLoaded
-            ? <div>loading</div>
-            : <div>
+
+        const secondPane = this.props.settings.isBrickAndMortar
+            ? <Specials containerClassName='amber darken-2' />
+            : <Calendar isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} googleMapsApiKey={this.props.googleMapsApiKey} containerClassName='amber darken-2' />
+        return (
+            <div>
                 <Splash settings={this.props.settings} />
-                <Specials /> 
-                <Calendar isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} googleMapsApiKey={this.props.googleMapsApiKey} />
+                {secondPane}
             </div>
         );
     }

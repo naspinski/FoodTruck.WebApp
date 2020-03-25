@@ -9,7 +9,7 @@ const Address = ({ location }: IProps) => {
 
     return location && location.address.length > 0
         ? 
-            <address>
+            <address className='f4 pt2 left pl2'>
                 <div>{location.address}</div>
                 <div>
                 {location.city ? (location.city + ', ') : ''}

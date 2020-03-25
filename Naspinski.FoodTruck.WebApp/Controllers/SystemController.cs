@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Events;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
@@ -10,6 +11,7 @@ using Naspinski.Messaging.Email;
 using Naspinski.Messaging.Sms;
 using Naspinski.Messaging.Sms.Twilio;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static Naspinski.FoodTruck.Data.Constants;
@@ -128,11 +130,18 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return false;
         }
 
+        [HttpGet]
+        [Route("sections")]
+        public List<string> Sections()
+        {
+            return _settingHandler.GetAvailableSections();
+        }
+
         [HttpPost]
         [Route("contact")]
-        public IActionResult Contact(ContactModel model)
+        public IActionResult Contact([FromForm]ContactModel model)
         {
-            var system = new SystemModel(_settingHandler.GetAll());
+            var system = new SystemModel(_settingHandler.Get(new[] { SettingName.Title, SettingName.ContactEmail }));
             if (model != null)
             {
                 var contactEmail = system.Settings[SettingName.ContactEmail];
@@ -141,14 +150,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     MakeMessage(model), contactEmail, model.Email,
                     model.Attachment == null || model.Attachment.Length == 0 ? null : new[] { model.Attachment });
             }
-            return Ok();
-        }
-
-        [HttpPost]
-        [Route("test")]
-        public IActionResult Test()
-        {
-            var test = this.Request;
             return Ok();
         }
 

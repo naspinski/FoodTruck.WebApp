@@ -1,7 +1,6 @@
 ﻿import { Schedule } from "./Schedule";
 
 export class SiteSettings {
-    isLoaded: boolean = false;
     isBrickAndMortar: boolean = false;
     isOrderingOn: boolean = false;
     isApplyOn: boolean = false;

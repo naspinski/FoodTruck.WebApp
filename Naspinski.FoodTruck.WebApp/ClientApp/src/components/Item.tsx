@@ -9,9 +9,8 @@ interface IProps {
 }
 
 export class Item extends Component<IProps> {
-
     render() {
-
+        let count = 0;
         const item = this.props.item;
 
         const img = !item.hasImage ? '' :
@@ -21,11 +20,11 @@ export class Item extends Component<IProps> {
 
         const parts = !item.comboParts === null || item.comboParts.length === 0 ? '' :
             <div>
-                {item.comboParts.map(part =>
-                    <div className='dib pr2 pt1'>
+                {item.comboParts.map(part => 
+                    <div className='dib pr2 pt1' key={`comboparts-options-${count++}`}>
                         <select className='browser-default custom-select'>
-                            {part.options.map(opt => 
-                                <option value={opt.id}>{opt.name}</option>
+                            {part.options.map(opt =>
+                                <option key={`comboparts-option-${count++}`} value={opt.id}>{opt.name}</option>
                             )}
                         </select>
                     </div>
@@ -34,7 +33,7 @@ export class Item extends Component<IProps> {
 
         const prices = item.prices.length === 0 ? '' :
             <div className='dib'>{item.prices.map(price =>
-                <div className='price-container dib ml2' key={'price-' + price.id}>
+                <div className='price-container dib ml2' key={`item-${item.id}-price-${price.id}`}>
                     {price.priceTypeName !== null && price.priceTypeName.length > 0  ? <strong>{price.priceTypeName}: </strong> : ''}
                     {price.amountAsCurrency}
                 </div>)}

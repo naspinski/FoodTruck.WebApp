@@ -41,17 +41,14 @@ export class NavMenu extends Component<IProps, IState> {
 
         return (
             <MDBNavbar color='primary-color-dark' expand='md'>
-                <MDBNavbarBrand>
-                    {returnLink}
-                    [{links.size}]
-                </MDBNavbarBrand>
+                <MDBNavbarBrand>{returnLink}</MDBNavbarBrand>
                 <MDBNavbarToggler onClick={this.toggleCollapse} />
                 <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
                         {Array.from(links.keys()).map(link =>
                             <MDBNavItem key={`header-link-${link}`}>
                                 <MDBNavLink to={settings.links.get(link)}
-                                    exact={link === 'Home'}
+                                    exact={link === 'home'}
                                     activeClassName='primary-color'>{link}</MDBNavLink>
                             </MDBNavItem>
                         )}

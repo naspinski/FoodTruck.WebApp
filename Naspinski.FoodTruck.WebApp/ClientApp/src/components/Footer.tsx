@@ -50,7 +50,7 @@ export class Footer extends Component<IProps> {
                                     <React.Fragment key={`footer-link-${link}`}>
                                         <MDBNavLink to={settings.links.get(link)}
                                             className='dib pb0 pt0'
-                                            exact={link === 'Home'}
+                                            exact={link === 'home'}
                                             activeClassName='primary-color-dark'>{link}</MDBNavLink>
                                         <br />
                                     </React.Fragment>

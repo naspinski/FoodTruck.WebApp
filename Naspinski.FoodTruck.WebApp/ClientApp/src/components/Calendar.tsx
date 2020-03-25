@@ -5,7 +5,8 @@ import { CalendarEvent } from './CalendarEvent';
 
 interface IProps {
     googleMapsApiKey: string,
-    isGoogleMapsLoaded: boolean
+    isGoogleMapsLoaded: boolean,
+    containerClassName: string
 }
 
 interface IState {
@@ -27,12 +28,14 @@ export class Calendar extends Component<IProps, IState> {
     }
     
     render() {
+        let eventCount = 0;
+
         return this.state.events.length === 0 ? '' :
-            <div id='calendar'>
-                <h2>Calendar</h2>
-                <div id='events'>
+            <div className={`${this.props.containerClassName} pb3`}>
+                <div className='inner-container'>
+                    <h2 className='border-dotted bottom'>Calendar</h2>
                     {this.state.events.map(event =>
-                        <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={event.id} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />
+                        <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={`event-${eventCount + 1}`} id={eventCount++} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />
                     )}
                 </div>
             </div>;
