@@ -27,6 +27,7 @@ export class Splash extends React.Component<IProps, IState> {
 
     render() {
         const settings = this.props.settings;
+        let serviceCount = 0;
 
         const menuDownload = this.state.menuUrl === null || this.state.menuUrl.length === 0 ? '' : 
             <a href={this.state.menuUrl}>
@@ -67,6 +68,13 @@ export class Splash extends React.Component<IProps, IState> {
                                 <FontAwesomeIcon icon='envelope' /> Contact{settings.isBrickAndMortar ? '' : '/Book'}
                             </MDBBtn>
                         </NavLink>
+                    </p>
+                    <p className='pl1'>
+                        {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map(svc =>
+                            <a key={`service-${serviceCount++}`} href={settings.deliveryServiceImageToUrlMap.get(svc)}>
+                                <img src={svc} />
+                            </a>
+                        )}
                     </p>
                 </MDBCol>
             </MDBRow>

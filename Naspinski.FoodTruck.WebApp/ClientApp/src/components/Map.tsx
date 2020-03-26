@@ -4,7 +4,7 @@ import { Location } from '../models/Location';
 
 interface IProps {
     location: Location,
-    id?: string,
+    id: string,
     zoom: number,
     googleMapsApiKey: string,
     isHidden?: boolean,
@@ -26,22 +26,46 @@ export class Map extends Component<IProps> {
     }
 
     populate() {
+        const location = this.props.location;
+
         if (this.props.isGoogleMapsLoaded && !this.props.isHidden && !this.isPopulated) {
-            const uluru = { lat: this.props.location.latitude, lng: this.props.location.longitude };
+            const uluru = { lat: location.latitude, lng: location.longitude };
             let element = document.getElementById(this.elementId);
             if (element !== null) {
-                const map = new window.google.maps.Map(element, {
-                    zoom: this.props.zoom,
-                    center: uluru
-                });
-                new window.google.maps.Marker({
-                    position: uluru,
-                    map: map
-                });
-                this.isPopulated = true;
+                if (uluru.lat === 0 || uluru.lng === 0) {
+                    if (location.address === null || location.address.length === 0) {
+                        console.warn('not a valid address');
+                    } else {
+                        fetch(`/api/events/map/${location.address}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.location !== null) {
+                                    uluru.lat = data.location.latitude;
+                                    uluru.lng = data.location.longitude;
+                                    this.callMap(element, uluru);
+                                } else {
+                                    console.error('error loading map');
+                                }
+                            });
+                    }
+                } else {
+                    this.callMap(element, uluru);
+                }
             } else {
                 console.warn('unable to find map element');
             }
         }
+    }
+
+    callMap(element: HTMLElement, uluru: any) {
+        const map = new window.google.maps.Map(element, {
+            zoom: this.props.zoom,
+            center: uluru
+        });
+        new window.google.maps.Marker({
+            position: uluru,
+            map: map
+        });
+        this.isPopulated = true;
     }
 }

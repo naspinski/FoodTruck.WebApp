@@ -34,7 +34,7 @@ export class Footer extends Component<IProps> {
         });
 
         return (
-            <MDBFooter color="primary-color" className="font-small pt-4 mt-4">
+            <MDBFooter color="primary-color-dark" className="font-small pt-4 mt-4">
                 <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
@@ -51,7 +51,7 @@ export class Footer extends Component<IProps> {
                                         <MDBNavLink to={settings.links.get(link)}
                                             className='dib pb0 pt0'
                                             exact={link === 'home'}
-                                            activeClassName='primary-color-dark'>{link}</MDBNavLink>
+                                            activeClassName='primary-color'>{link}</MDBNavLink>
                                         <br />
                                     </React.Fragment>
                                 )}
@@ -65,7 +65,7 @@ export class Footer extends Component<IProps> {
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
-                <div className="footer-copyright text-center py-3 primary-color-dark">
+                <div className="footer-copyright text-center py-3 primary-color">
                     <MDBContainer fluid>
                         &copy; {new Date().getFullYear()} Copyright {settings.title} | developed by <a href="https://naspinski.net">Stan Naspinski</a>
                     </MDBContainer>

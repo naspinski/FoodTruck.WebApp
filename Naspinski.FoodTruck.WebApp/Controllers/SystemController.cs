@@ -64,7 +64,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
 
         [HttpPost]
         [Route("subscribe")]
-        public SubscriptionModel Subscribe([FromBody]SubscriptionModel model)
+        public SubscriptionModel Subscribe(SubscribeModel model)
         {
             var n = Environment.NewLine;
             var subscription = _handler.Insert(model.Subscriber, model.Location);
@@ -166,5 +166,11 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
 
             return sb.ToString();
         }
+    }
+
+    public class SubscribeModel
+    {
+        public string Subscriber { get; set; }
+        public string Location { get; set; }
     }
 }

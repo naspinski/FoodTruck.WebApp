@@ -30,9 +30,9 @@ export class NavMenu extends Component<IProps, IState> {
         let links = settings.links;
 
         const isHomeUrlInternal = settings.homeUrl == null || settings.homeUrl.length === 0;
-        const homeChild = settings.logoImageUrl.length === 0
+        const homeChild = settings.bannerImageUrl.length === 0
             ? <strong className='white-text'>{settings.title}</strong>
-            : <img className='title-logo' src={settings.logoImageUrl} alt={settings.title} />;
+            : <img className='title-logo' src={settings.bannerImageUrl} alt={settings.title} />;
 
         const returnLink = isHomeUrlInternal
             ? <MDBNavLink activeClassName='primary-color' to='/home/'>{homeChild}</MDBNavLink>

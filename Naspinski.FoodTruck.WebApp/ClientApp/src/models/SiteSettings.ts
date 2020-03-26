@@ -8,6 +8,7 @@ export class SiteSettings {
     tagLine: string = '';
     description: string = '';
     logoImageUrl: string = '';
+    bannerImageUrl: string = '';
     homeUrl: string = '';
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};

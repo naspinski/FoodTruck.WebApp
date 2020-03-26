@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Distribution.Models.Events;
+using Naspinski.Maps.Implementations.Google;
+using Naspinski.Maps.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,6 +93,15 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             events.ForEach(x => x.Id = 0 - (count++));
 
             return events;
+        }
+
+        [HttpGet]
+        [Route("map/{address}")]
+        public IAddress Map(string address)
+        {
+            var apiKey = new Data.Access.Queries.Settings.Get(_context, new[] { SettingName.GoogleMapsDeveloperApiKey }).ExecuteAndReturnResults().FirstOrDefault()?.Value;
+            IAddress _address = new GoogleMap(apiKey).GetAddress(address);
+            return _address;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string TagLine { get; set; }
         public string Description { get; set; }
         public string LogoImageUrl { get; set; }
+        public string BannerImageUrl { get; set; }
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
         public bool IsApplyOn { get; set; }
@@ -35,6 +36,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             TagLine = system.Settings[SettingName.Tagline];
             Description = system.Settings[SettingName.Description];
             LogoImageUrl = system.Settings[SettingName.LogoImageUrl];
+            BannerImageUrl = system.Settings[SettingName.BannerImageUrl];
 
             if (system != null)
             {

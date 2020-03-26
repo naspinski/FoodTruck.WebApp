@@ -10,7 +10,13 @@ button.btn {
 }
 img.menu-image { height: 50px; }
 
-.flex-grow { flex-grow: 1; }
+div.modal-content {
+    color: $stylish-color-dark
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
 .map {
     height: 100%;
     min-height: 300px;
@@ -59,13 +65,10 @@ div.inner-container {
 
     div.inner-container-row {
         padding: 1em;
-        display: flex;
-
 
         div.right-frame {
             font-weight: bold;
-            padding: .5em 1em;
-            flex-grow: 1;
+            padding: .5em 0;
         }
     }
 
@@ -73,9 +76,9 @@ div.inner-container {
         text-align: center;
         font-size: 1.5em;
         font-weight: bold;
-        background-color: $white;
         padding: 1em;
-        width: 165px;
+        background-color: $white;
+        width: 100%;
         color: $stylish-color-dark
     }
 }

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import * as React from 'react';
 import { Special } from './Special';
 import { SpecialModel } from '../models/SpecialModel';
+import { MDBRow, MDBCol } from 'mdbreact';
 
 interface IProps {
     containerClassName: string
@@ -32,14 +33,20 @@ export class Specials extends Component<IProps, IState> {
                     <h2 className='border-dotted bottom'>Daily Specials</h2>
                     {Array.from(this.state.specials.keys()).map(day =>
                         <div key={'special-' + day} className='inner-container-row border-dotted bottom'>
-                            <div className='left-frame'>{day}</div>
-                            <div className='right-frame'>
-                            {this.state.specials.get(day)?.map(special =>
-                                <div className='flex-grow' key={`spec-${day}-${(count++)}`} >
-                                    <Special special={special} />
-                                </div>
-                                )}
-                            </div>
+                            <MDBRow>
+                                <MDBCol md='3'>
+                                    <div className='left-frame'>{day}</div>
+                                </MDBCol>
+                                <MDBCol md='9' className='pl0'>
+                                    <div className='right-frame'>
+                                    {this.state.specials.get(day)?.map(special =>
+                                        <div className='flex-grow' key={`spec-${day}-${(count++)}`} >
+                                            <Special special={special} />
+                                        </div>
+                                        )}
+                                        </div>
+                                </MDBCol>
+                            </MDBRow>
                         </div>
                     )}
                 </div>
