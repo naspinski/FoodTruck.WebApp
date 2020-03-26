@@ -99,7 +99,7 @@ export class CalendarEvent extends Component<IProps, IState> {
 
 
         return (
-            <MDBContainer tag='div' className='border-dotted bottom pa2'>
+            <MDBContainer tag='div' className='border-dotted bottom pa3'>
                 <MDBRow>
                     <MDBCol md='3'>
                         <div className='left-frame'>
@@ -110,7 +110,7 @@ export class CalendarEvent extends Component<IProps, IState> {
                     <MDBCol md='4'>
                         <div className='b'>{event.location.name}</div>
                         <Address location={event.location} />
-                        <div className='pl1'>
+                        <div className='pl0'>
                             <MDBBtn size='sm' onClick={this.toggleModal}>
                                 <FontAwesomeIcon icon='star' /> Subscribe
                             </MDBBtn>

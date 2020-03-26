@@ -30,7 +30,7 @@ export class Specials extends Component<IProps, IState> {
         return this.state.specials.size === 0 ? '' : (
             <div className={`${this.props.containerClassName} pb3`}>
                 <div className='inner-container'>
-                    <h2 className='border-dotted bottom'>Daily Specials</h2>
+                    <h2 className='border-dotted bottom header'>Daily Specials</h2>
                     {Array.from(this.state.specials.keys()).map(day =>
                         <div key={'special-' + day} className='inner-container-row border-dotted bottom'>
                             <MDBRow>

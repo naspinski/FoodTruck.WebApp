@@ -33,7 +33,7 @@ export class Calendar extends Component<IProps, IState> {
         return this.state.events.length === 0 ? '' :
             <div className={`${this.props.containerClassName} pb3`}>
                 <div className='inner-container'>
-                    <h2 className='border-dotted bottom'>Calendar</h2>
+                    <h2 className='border-dotted bottom header'>Calendar</h2>
                     {this.state.events.map(event =>
                         <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={`event-${eventCount + 1}`} id={eventCount++} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />
                     )}
