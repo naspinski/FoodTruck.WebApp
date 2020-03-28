@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { Route } from 'react-router';
+import { Helmet } from 'react-helmet';
+import { LoaderOptions, Loader } from 'google-maps';
 
 import './custom.scss'
 import { Layout } from './components/Layout';
@@ -10,7 +12,6 @@ import { Contact } from './pages/Contact';
 import { Menu } from './pages/Menu';
 import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
-import { LoaderOptions, Loader } from 'google-maps';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -19,7 +20,6 @@ import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
 library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
-import { Helmet } from 'react-helmet';
 
 
 export default class App extends Component<{}, SystemState> {
