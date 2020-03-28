@@ -23,7 +23,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [Route("")]
         public Dictionary<string, List<SpecialModel>> Get()
         {
-            var specials = _handler.GetAll(false).OrderBy(x => x.BeginsString).ThenBy(x => x.Name);
+            var specials = _handler.GetAll(false).OrderBy(x => x.Begins).ThenBy(x => x.Name);
             var model = new Dictionary<string, List<SpecialModel>>()
             {
                 {"Sunday", specials.Where(x => x.IsSunday).ToList() },

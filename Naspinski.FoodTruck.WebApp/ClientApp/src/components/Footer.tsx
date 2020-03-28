@@ -27,7 +27,7 @@ export class Footer extends Component<IProps> {
             }
 
             return (
-                <a key={`social-link-${network}`} href={settings.socialMap.get(network)} title={network}>
+                <a key={`social-link-${network}`} href={settings.socialMap.get(network)} title={network} className='db'>
                     <FontAwesomeIcon className='f3' icon={['fab', icon]} /> <span className='pb1 pl1'>{network}</span>
                 </a>
             )
@@ -39,9 +39,11 @@ export class Footer extends Component<IProps> {
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
                             <div className='underline'>Social</div>
-                            <div className='pl2 tl'>
-                                {socialLinks}
-                            </div>
+                            {settings.socialMap.size < 1 ? '' :
+                                <div className='pl2 tl'>
+                                    {socialLinks}
+                                </div>
+                            }
                         </MDBCol>
                         <MDBCol md='4' className='tl pb2'>
                             <div className='underline'>Navigation</div>
