@@ -37,7 +37,15 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             foreach(var key in model.Keys)
             {
                 if (!model[key].Any())
+                {
                     model.Remove(key);
+                }
+                else
+                {
+                    var sorted = model[key].Where(x => !x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList();
+                    sorted.AddRange(model[key].Where(x => x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList());
+                    model[key] = sorted;
+                }
             }
             return model;
         }
