@@ -19,6 +19,8 @@ import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
 library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
+import { Helmet } from 'react-helmet';
+
 
 export default class App extends Component<{}, SystemState> {
 
@@ -35,13 +37,22 @@ export default class App extends Component<{}, SystemState> {
 
     render() {
         return (
-            <Layout settings={this.state.settings}>
-                <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                <Route path='/menu' component={Menu} />
-                <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
-                <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
-                <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
-            </Layout>
+            <React.Fragment>
+                <Helmet>
+                    <title>{this.state.settings.title}</title>
+                    <link rel='shortcut icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
+                    <link rel='icon' type='image/x-icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
+                    <meta name='Keywords'content={this.state.settings.keywords} />
+                    <meta name='Author'content={this.state.settings.author}  />
+                </Helmet>
+                <Layout settings={this.state.settings}>
+                    <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
+                    <Route path='/menu' component={Menu} />
+                    <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
+                    <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
+                    <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
+                </Layout>
+            </React.Fragment>
         );
     }
 

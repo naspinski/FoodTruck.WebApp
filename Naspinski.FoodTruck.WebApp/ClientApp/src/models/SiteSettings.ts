@@ -7,8 +7,12 @@ export class SiteSettings {
     title: string = 'loading';
     tagLine: string = '';
     description: string = '';
+    author: string = '';
+    keywords: string = ''
     logoImageUrl: string = '';
     bannerImageUrl: string = '';
+    faviconImageUrl: string = '';
+
     homeUrl: string = '';
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};

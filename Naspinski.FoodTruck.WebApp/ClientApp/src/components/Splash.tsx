@@ -44,7 +44,7 @@ export class Splash extends React.Component<IProps, IState> {
             </NavLink>;
 
         const calendarLink = !settings.links.has('calendar') ? '' :
-            <NavLink to='/#calendar'>
+            <NavLink to='/calendar'>
                 <MDBBtn color='pink'>
                     <FontAwesomeIcon icon='calendar' /> Calendar
                 </MDBBtn>
