@@ -43,12 +43,24 @@ export class Splash extends React.Component<IProps, IState> {
                 </MDBBtn>
             </NavLink>;
 
-        const calendarLink = !settings.links.has('calendar') ? '' :
-            <NavLink to='/calendar'>
-                <MDBBtn color='pink'>
-                    <FontAwesomeIcon icon='calendar' /> Calendar
-                </MDBBtn>
-            </NavLink>;
+        const conditionalLink = settings.isBrickAndMortar ?
+            (
+                !settings.links.has('calendar') ? '' :
+                    <NavLink to='/calendar'>
+                        <MDBBtn color='pink'>
+                            <FontAwesomeIcon icon='calendar' /> Calendar
+                        </MDBBtn>
+                    </NavLink>
+            ) : (
+                !settings.links.has('specials') ? '' :
+                    <NavLink to='/specials'>
+                        <MDBBtn color='pink'>
+                            <FontAwesomeIcon icon='star' /> Calendar
+                        </MDBBtn>
+                    </NavLink>
+            );
+
+            
 
         return <div className='primary-color'>
             <MDBRow className='inner-container'>
@@ -61,7 +73,7 @@ export class Splash extends React.Component<IProps, IState> {
                     <p>{settings.description}</p>
                     <p>
                         {menuDownload}
-                        {calendarLink}
+                        {conditionalLink}
                         {menuLink}
                         <NavLink to='/contact'>
                             <MDBBtn color='amber'>

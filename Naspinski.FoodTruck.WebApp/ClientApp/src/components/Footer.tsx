@@ -39,7 +39,7 @@ export class Footer extends Component<IProps> {
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
                             <div className='underline'>Social</div>
-                            {settings.socialMap.size < 1 ? '' :
+                            {settings.socialMap.size > 1 ? '' :
                                 <div className='pl2 tl'>
                                     {socialLinks}
                                 </div>

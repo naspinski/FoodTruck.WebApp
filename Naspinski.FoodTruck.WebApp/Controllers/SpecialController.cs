@@ -24,7 +24,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public Dictionary<string, List<SpecialModel>> Get()
         {
             var specials = _handler.GetAll(false).OrderBy(x => x.Begins).ThenBy(x => x.Name);
-            var model = new Dictionary<string, List<SpecialModel>>()
+            var models = new Dictionary<string, List<SpecialModel>>()
             {
                 {"Sunday", specials.Where(x => x.IsSunday).ToList() },
                 {"Monday", specials.Where(x => x.IsMonday).ToList() },
@@ -34,20 +34,21 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 {"Friday", specials.Where(x => x.IsFriday).ToList() },
                 {"Saturday", specials.Where(x => x.IsSunday).ToList() }
             };
-            foreach(var key in model.Keys)
+            var sortedSpecials = new Dictionary<string, List<SpecialModel>>();
+            foreach (var key in models.Keys)
             {
-                if (!model[key].Any())
+                if (!models[key].Any())
                 {
-                    model.Remove(key);
-                }
-                else
-                {
-                    var sorted = model[key].Where(x => !x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList();
-                    sorted.AddRange(model[key].Where(x => x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList());
-                    model[key] = sorted;
+                    models.Remove(key);
                 }
             }
-            return model;
+            foreach (var key in models.Keys)
+            {
+                var sorted = models[key].Where(x => !x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList();
+                sorted.AddRange(models[key].Where(x => x.Name.Contains("happy hour", System.StringComparison.InvariantCultureIgnoreCase)).ToList());
+                sortedSpecials.Add(key, sorted);
+            }
+            return sortedSpecials;
         }
     }
 }
