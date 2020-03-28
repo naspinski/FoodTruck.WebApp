@@ -133,7 +133,7 @@ export class Contact extends Component<IProps, IState> {
                             <h3 className='b'>Get in touch</h3>
                             <MDBBtnGroup>
                                 <MDBBtn active={this.state.type === 'Contact'} onClick={this.contact}>Info</MDBBtn>
-                                <MDBBtn active={this.state.type === 'Book'} onClick={this.book}>Book</MDBBtn>
+                                {this.props.settings.isBrickAndMortar ? '' : <MDBBtn active={this.state.type === 'Book'} onClick={this.book}>Book</MDBBtn>}
                                 {this.props.settings.isApplyOn ? <MDBBtn active={this.state.type === 'Apply'} onClick={this.apply}>Apply</MDBBtn> : ''}
                             </MDBBtnGroup>                            
                             <form id={this.formId} onSubmit={this.handleSubmit} className='ph1 needs-validation' noValidate>
