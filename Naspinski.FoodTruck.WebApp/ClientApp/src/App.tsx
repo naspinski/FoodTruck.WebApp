@@ -15,11 +15,11 @@ import { SiteSettings } from './models/SiteSettings';
 import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faExternalLinkAlt, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
-library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
+library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faExternalLinkAlt, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
 
 
@@ -59,6 +59,7 @@ export default class App extends Component<{}, SystemState> {
     async populate() {
         this.populateSettings();
         this.populateLinks();
+        this.populateSiblings();
     }
 
     async populateSettings() {
@@ -85,6 +86,15 @@ export default class App extends Component<{}, SystemState> {
                 links.set('contact', '/contact');
                 let settings = this.state.settings;
                 settings.links = links;
+                this.setState({ settings: settings })
+            });
+    }
+    async populateSiblings() {
+        await fetch('api/siblings')
+            .then((resp) => resp.json())
+            .then((data) => {
+                let settings = this.state.settings;
+                settings.siblings = data;
                 this.setState({ settings: settings })
             });
     }

@@ -1,4 +1,5 @@
-﻿import { Schedule } from "./Schedule";
+﻿import { Schedule } from './Schedule';
+import { SiblingSite } from './SiblingSite'
 
 export class SiteSettings {
     isBrickAndMortar: boolean = false;
@@ -18,6 +19,7 @@ export class SiteSettings {
     schedule: Object = {};
     googleMapsApiKey: string = '';
     links: Map<string, string> = new Map<string, string>();
+    siblings: SiblingSite[] = [];
     social: Object = {};
     
     public get deliveryServiceImageToUrlMap(): Map<string, string> {

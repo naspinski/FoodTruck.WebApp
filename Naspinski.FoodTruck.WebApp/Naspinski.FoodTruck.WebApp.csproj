@@ -22,9 +22,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Naspinski.Data" Version="1.0.20200221.215248" />
-    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200326.113725" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200326.113725" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200326.113725" />
+    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200329.110244" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200329.110244" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200329.110244" />
     <PackageReference Include="Naspinski.Maps" Version="1.0.20200222.104700" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20200222.104518" />
     <PackageReference Include="SendGrid" Version="9.13.1" />
@@ -71,6 +71,7 @@
     <None Remove="ClientApp\src\models\MenuComboPart.ts" />
     <None Remove="ClientApp\src\models\MenuItem.ts" />
     <None Remove="ClientApp\src\models\MenuPrice.ts" />
+    <None Remove="ClientApp\src\models\SiblingSite.ts" />
     <None Remove="ClientApp\src\models\SpecialModel.ts" />
     <None Remove="ClientApp\src\models\SpecialsDaily.ts" />
     <None Remove="ClientApp\src\pages\Menu.tsx" />

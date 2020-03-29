@@ -137,6 +137,13 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return _settingHandler.GetAvailableSections();
         }
 
+        [HttpGet]
+        [Route("siblings")]
+        public IEnumerable<SiblingSiteModel> Siblings()
+        {
+            return new SiblingSiteHandler(_context, "system").GetAll();
+        }
+
         [HttpPost]
         [Route("contact")]
         public IActionResult Contact([FromForm]ContactModel model)
@@ -168,9 +175,4 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         }
     }
 
-    public class SubscribeModel
-    {
-        public string Subscriber { get; set; }
-        public string Location { get; set; }
-    }
 }

@@ -2,7 +2,8 @@ import { Component } from 'react';
 import * as React from 'react';
 import './NavMenu.scss';
 import { SiteSettings } from '../models/SiteSettings';
-import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse } from 'mdbreact';
+import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem, MDBHamburgerToggler } from 'mdbreact';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps {
     settings: SiteSettings
@@ -40,10 +41,12 @@ export class NavMenu extends Component<IProps, IState> {
 
 
         return (
-            <MDBNavbar color='primary-color-dark' expand='md'>
-                <MDBNavbarBrand>{returnLink}</MDBNavbarBrand>
-                <MDBNavbarToggler onClick={this.toggleCollapse} />
-                <MDBCollapse id="navbarCollapse3" isOpen={this.state.isMenuOpen} navbar className='nav-menu b ttu'>
+            <MDBNavbar color='primary-color-dark' expand='md' scrolling fixed="top">
+                <MDBNavbarBrand>
+                    {returnLink}
+                </MDBNavbarBrand>
+                <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none' />
+                <MDBCollapse id="navbarCollapse3" isOpen={!this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
                         {Array.from(links.keys()).map(link =>
                             <MDBNavItem key={`header-link-${link}`}>
@@ -52,6 +55,20 @@ export class NavMenu extends Component<IProps, IState> {
                                     activeClassName='primary-color'>{link}</MDBNavLink>
                             </MDBNavItem>
                         )}
+                        {settings.siblings.length === 0 ? '' :
+                            <MDBNavItem>
+                                <MDBDropdown>
+                                    <MDBDropdownToggle nav caret>
+                                        <FontAwesomeIcon icon='external-link-alt' /> <span className="mr-2">Go To</span>
+                                    </MDBDropdownToggle>
+                                    <MDBDropdownMenu right>
+                                        {settings.siblings.map(x =>
+                                            <MDBDropdownItem href={x.url}>{x.name}</MDBDropdownItem>
+                                        )}
+                                    </MDBDropdownMenu>
+                                </MDBDropdown>
+                            </MDBNavItem>
+                        }
                     </MDBNavbarNav>
                 </MDBCollapse>
             </MDBNavbar>
