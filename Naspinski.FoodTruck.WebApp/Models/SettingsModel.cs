@@ -1,6 +1,4 @@
 ﻿using Naspinski.FoodTruck.Data;
-using Naspinski.FoodTruck.Data.Distribution.Handlers.Events;
-using Naspinski.FoodTruck.Data.Distribution.Models.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +21,6 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
         public bool IsApplyOn { get; set; }
-        public string HomeUrl { get; set; }
         public string GoogleMapsApiKey { get; set; }
         public Dictionary<string, string> DeliveryServiceImageToUrl { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
@@ -35,7 +32,6 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public SettingsModel(Uri homeUrl, SystemModel system, FoodTruckContext context)
         {
             _system = system;
-            HomeUrl = homeUrl?.ToString() ?? string.Empty;
 
             Title = system.Settings[SettingName.Title];
             SubTitle = system.Settings[SettingName.SubTitle];

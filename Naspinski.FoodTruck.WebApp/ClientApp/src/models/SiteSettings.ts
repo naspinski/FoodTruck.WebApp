@@ -15,7 +15,6 @@ export class SiteSettings {
     bannerImageUrl: string = '';
     faviconImageUrl: string = '';
 
-    homeUrl: string = '';
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};
     googleMapsApiKey: string = '';
