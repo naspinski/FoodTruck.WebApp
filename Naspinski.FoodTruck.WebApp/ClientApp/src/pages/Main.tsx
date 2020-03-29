@@ -16,7 +16,7 @@ export class Main extends Component<IProps> {
     render() {
 
         const secondPane = this.props.settings.isBrickAndMortar
-            ? <Specials containerClassName='amber darken-2' />
+            ? <Specials containerClassName='panel-2' />
             : <Calendar isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} googleMapsApiKey={this.props.googleMapsApiKey} containerClassName='amber darken-2' />
         return (
             <div>
