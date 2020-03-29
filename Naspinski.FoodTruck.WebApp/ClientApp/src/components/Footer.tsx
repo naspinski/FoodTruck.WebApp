@@ -34,7 +34,7 @@ export class Footer extends Component<IProps> {
         });
 
         return (
-            <MDBFooter color="primary-color-dark" className="font-small pt-4 mt-4">
+            <MDBFooter color="primary-color-dark" className="font-small pt4">
                 <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
