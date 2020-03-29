@@ -21,9 +21,9 @@ export class Category extends Component<IProps> {
             category.menuItems.map(item => <Item item={item} key={'item-' + item.id} />);
 
         return (category.excludeFromMenu ? '' :
-            <div>
+            <div className='ph1'>
                 {header}
-                <div className='pa1'>{items}</div>
+                <div className='pa2'>{items}</div>
             </div>
         )
     }

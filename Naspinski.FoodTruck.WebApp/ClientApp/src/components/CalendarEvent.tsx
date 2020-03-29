@@ -108,7 +108,7 @@ export class CalendarEvent extends Component<IProps, IState> {
                         </div>
                     </MDBCol>
                     <MDBCol md='4'>
-                        <h4 className='b serif mv0'>{event.location.name}</h4>
+                        <h4 className='b serif mv0 pt2'>{event.location.name}</h4>
                         <Address location={event.location} />
                         <div className='pl0'>
                             <MDBBtn size='sm' onClick={this.toggleModal}>

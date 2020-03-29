@@ -34,20 +34,20 @@ export class Footer extends Component<IProps> {
         });
 
         return (
-            <MDBFooter color="primary-color-dark" className="font-small pt4">
-                <MDBContainer fluid className="text-center text-md-left b">
+            <MDBFooter color="primary-color-dark" className="font-small">
+                <MDBContainer fluid className="text-center text-md-left b pt1">
                     <MDBRow>
-                        <MDBCol md='4' className='pb2'>
+                        <MDBCol md='4' className='pv2'>
                             {settings.socialMap.size === 0 ? '' :
                                 <React.Fragment>
-                                    <div className='underline'>Social</div>
+                                    <div className='underline pb1'>Social</div>
                                     <div className='pl2'>
                                         {socialLinks}
                                     </div>
                                 </React.Fragment>
                             }
                         </MDBCol>
-                        <MDBCol md='4' className='pb2'>
+                        <MDBCol md='4' className='pv2'>
                             <div className='underline'>Navigation</div>
                             <div className='pt1'>
                                 {Array.from(settings.links.keys()).map(link =>
@@ -61,7 +61,7 @@ export class Footer extends Component<IProps> {
                                 )}
                             </div>
                         </MDBCol>
-                        <MDBCol md='4' className='pb2'>
+                        <MDBCol md='4' className='pv2'>
                             <div className='underline'>Operating Hours</div>
                             <div className='pb3 pl3'>
                                 <StoreHours schedule={this.props.settings.scheduleMap} />
