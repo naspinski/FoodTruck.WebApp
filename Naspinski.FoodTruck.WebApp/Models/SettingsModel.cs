@@ -11,6 +11,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
     public class SettingsModel
     {
         public string Title { get; set; }
+        public string SubTitle { get; set; }
         public string TagLine { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
@@ -37,6 +38,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             HomeUrl = homeUrl?.ToString() ?? string.Empty;
 
             Title = system.Settings[SettingName.Title];
+            SubTitle = system.Settings[SettingName.SubTitle];
             TagLine = system.Settings[SettingName.Tagline];
             Description = system.Settings[SettingName.Description];
             Author = system.Settings[SettingName.Author];

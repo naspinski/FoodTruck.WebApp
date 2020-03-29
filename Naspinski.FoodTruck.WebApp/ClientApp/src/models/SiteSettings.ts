@@ -6,6 +6,7 @@ export class SiteSettings {
     isOrderingOn: boolean = false;
     isApplyOn: boolean = false;
     title: string = 'loading';
+    subTitle: string = '';
     tagLine: string = '';
     description: string = '';
     author: string = '';

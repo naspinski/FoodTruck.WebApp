@@ -13,7 +13,7 @@ export class Category extends Component<IProps> {
         const category = new MenuCategory(this.props.category);
         const header = category.sanitizedNamed.length === 0 ? <div className='border-dotted bottom'></div> :
             <React.Fragment>
-                <h3 className='b amber-text darken-2 pl1 pt3 mt2 border-dotted top'>{category.name}</h3>
+                <h3 className='b amber-text darken-2 pl1 pt3 mt2 border-dotted top serif'>{category.name}</h3>
                 <div className='border-dotted bottom pa1'>{category.description}</div>
             </React.Fragment>;
 

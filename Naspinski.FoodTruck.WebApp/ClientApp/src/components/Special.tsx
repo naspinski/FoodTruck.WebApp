@@ -13,7 +13,7 @@ export class Special extends Component<IProps> {
             <div className='right-frame'>
                 <div className='border-dotted left pl2'>
                     <div className='flex justify-between'>
-                        <div className='f3'>{special.name}</div>
+                        <div className='f3 serif'>{special.name}</div>
                         <div>{special.timeDisplay}</div>
                     </div>
                     <div className='pl4'>

@@ -43,7 +43,7 @@ export class Item extends Component<IProps> {
             <div className='pa1'>
                 <MDBRow>
                     <MDBCol md='6'>
-                        <h5 className='b'>{item.name}</h5>
+                        <h5 className='b serif'>{item.name}</h5>
                     </MDBCol>
                     <MDBCol md='6' className='tr'>
                         {prices}

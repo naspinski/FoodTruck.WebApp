@@ -68,8 +68,8 @@ export class Splash extends React.Component<IProps, IState> {
                     <img src={settings.logoImageUrl} alt={settings.title} />
                 </MDBCol>
                 <MDBCol md='6' className='pa4 pt5'>
-                    <h5 className='b i'>{settings.title}</h5>
-                    <h3 className='b'>{settings.tagLine}</h3>
+                    <h5 className='b i serif'>{settings.tagLine}</h5>
+                    <h3 className='b'>{settings.subTitle}</h3>
                     <p>{settings.description}</p>
                     <p>
                         {menuDownload}
