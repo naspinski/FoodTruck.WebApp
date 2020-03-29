@@ -141,7 +141,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [Route("siblings")]
         public IEnumerable<SiblingSiteModel> Siblings()
         {
-            return new SiblingSiteHandler(_context, "system").GetAll();
+            return new SiblingSiteHandler(_context, "system").GetAll().OrderBy(x => x.Name);
         }
 
         [HttpPost]
