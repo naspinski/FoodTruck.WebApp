@@ -38,16 +38,16 @@ export class Footer extends Component<IProps> {
                 <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
-                            {settings.socialMap.size > 1 ? '' :
+                            {settings.socialMap.size === 0 ? '' :
                                 <React.Fragment>
                                     <div className='underline'>Social</div>
-                                    <div className='pl2 tl'>
+                                    <div className='pl2'>
                                         {socialLinks}
                                     </div>
                                 </React.Fragment>
                             }
                         </MDBCol>
-                        <MDBCol md='4' className='tl pb2'>
+                        <MDBCol md='4' className='pb2'>
                             <div className='underline'>Navigation</div>
                             <div className='pt1'>
                                 {Array.from(settings.links.keys()).map(link =>
