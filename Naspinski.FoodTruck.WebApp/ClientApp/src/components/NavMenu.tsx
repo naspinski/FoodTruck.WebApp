@@ -31,15 +31,20 @@ export class NavMenu extends Component<IProps, IState> {
         const settings = this.props.settings;
         let links = settings.links;
 
+        const isHomeUrlInternal = settings.homeUrl == null || settings.homeUrl.length === 0;
         const homeChild = settings.bannerImageUrl.length === 0
             ? <strong className='white-text'>{settings.title}</strong>
             : <img className='title-logo' src={settings.bannerImageUrl} alt={settings.title} />;
+
+        const returnLink = isHomeUrlInternal
+            ? <NavLink to='/'>{homeChild}</NavLink>
+            : <a className='white-text' href={settings.homeUrl}>{homeChild}</a>;
 
 
         return (
             <MDBNavbar color='primary-color-dark' expand='md' scrolling fixed="top">
                 <MDBNavbarBrand>
-                    <NavLink to='/'>{homeChild}</NavLink>
+                    {returnLink}
                 </MDBNavbarBrand>
                 <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none' />
                 <MDBCollapse id="navbarCollapse3" isOpen={!this.state.isMenuOpen} navbar className='nav-menu b ttu'>

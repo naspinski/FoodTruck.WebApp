@@ -26,7 +26,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public SettingsModel Get()
         {
             var system = new SystemModel(_handler.GetAll());
-            return new SettingsModel(new Uri(_azureSettings.HomeUrl), system, _context);
+            return new SettingsModel(_azureSettings.HomeUrl, system, _context);
         }
     }
 }

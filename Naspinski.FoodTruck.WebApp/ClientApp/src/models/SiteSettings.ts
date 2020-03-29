@@ -14,6 +14,7 @@ export class SiteSettings {
     logoImageUrl: string = '';
     bannerImageUrl: string = '';
     faviconImageUrl: string = '';
+    homeUrl: string = '';
 
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};

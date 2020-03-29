@@ -17,6 +17,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string LogoImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
+        public string HomeUrl { get; set; }
 
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
@@ -29,9 +30,10 @@ namespace Naspinski.FoodTruck.WebApp.Models
         
         private SystemModel _system;
         
-        public SettingsModel(Uri homeUrl, SystemModel system, FoodTruckContext context)
+        public SettingsModel(string homeUrl, SystemModel system, FoodTruckContext context)
         {
             _system = system;
+            HomeUrl = homeUrl ?? string.Empty;
 
             Title = system.Settings[SettingName.Title];
             SubTitle = system.Settings[SettingName.SubTitle];
