@@ -86,6 +86,7 @@ export default class App extends Component<{}, SystemState> {
                 links.set('contact', '/contact');
                 let settings = this.state.settings;
                 settings.links = links;
+                settings.siblings = this.state.settings.siblings;
                 this.setState({ settings: settings })
             });
     }
