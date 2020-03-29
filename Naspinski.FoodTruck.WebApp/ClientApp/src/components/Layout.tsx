@@ -16,7 +16,7 @@ export class Layout extends Component<IProps> {
             <React.Fragment>
                 <MDBContainer fluid>
                     <NavMenu settings={this.props.settings} />
-                    <MDBContainer fluid>
+                    <MDBContainer fluid className='pt5'>
                         {this.props.children}
                     </MDBContainer>
                     <Footer settings={this.props.settings} />

@@ -64,10 +64,10 @@ export class Splash extends React.Component<IProps, IState> {
 
         return <div className='primary-color'>
             <MDBRow className='inner-container'>
-                <MDBCol md='6' className="tc pa5">
+                <MDBCol md='6' className="tc pa2">
                     <img src={settings.logoImageUrl} alt={settings.title} />
                 </MDBCol>
-                <MDBCol md='6' className='white-text pa4'>
+                <MDBCol md='6' className='pa4 pt5'>
                     <h5 className='b i'>{settings.title}</h5>
                     <h3 className='b'>{settings.tagLine}</h3>
                     <p>{settings.description}</p>
