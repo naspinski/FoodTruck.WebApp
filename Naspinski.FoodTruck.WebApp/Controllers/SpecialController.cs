@@ -32,7 +32,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 {"Wednesday", specials.Where(x => x.IsWednesday).ToList() },
                 {"Thursday", specials.Where(x => x.IsThursday).ToList() },
                 {"Friday", specials.Where(x => x.IsFriday).ToList() },
-                {"Saturday", specials.Where(x => x.IsSunday).ToList() }
+                {"Saturday", specials.Where(x => x.IsSaturday).ToList() }
             };
             var sortedSpecials = new Dictionary<string, List<SpecialModel>>();
             foreach (var key in models.Keys)
