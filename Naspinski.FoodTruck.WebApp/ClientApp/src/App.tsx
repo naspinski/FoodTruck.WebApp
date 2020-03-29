@@ -68,6 +68,7 @@ export default class App extends Component<{}, SystemState> {
             .then((data) => {
                 const settings = new SiteSettings(data);
                 settings.links = this.state.settings.links;
+                settings.siblings = this.state.settings.siblings;
                 this.setState({ settings: settings });
 
                 const options: LoaderOptions = { /* todo */ };
@@ -96,6 +97,7 @@ export default class App extends Component<{}, SystemState> {
             .then((data) => {
                 let settings = this.state.settings;
                 settings.siblings = data;
+                settings.links = this.state.settings.links;
                 this.setState({ settings: settings })
             });
     }
