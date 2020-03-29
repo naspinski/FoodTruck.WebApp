@@ -12,13 +12,14 @@ import { Contact } from './pages/Contact';
 import { Menu } from './pages/Menu';
 import { SystemState } from './models/SystemState'
 import { SiteSettings } from './models/SiteSettings';
+import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
-library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
+library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
 
 
@@ -29,8 +30,6 @@ export default class App extends Component<{}, SystemState> {
         this.state = new SystemState();
     }
 
-    static displayName = App.name;
-
     componentDidMount() {
         this.populate();
     }
@@ -38,6 +37,7 @@ export default class App extends Component<{}, SystemState> {
     render() {
         return (
             <React.Fragment>
+                <Spinner isLoading={!this.state.isLoaded} />
                 <Helmet>
                     <title>{this.state.settings.title}</title>
                     <link rel='shortcut icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
@@ -71,7 +71,7 @@ export default class App extends Component<{}, SystemState> {
 
                 const options: LoaderOptions = { /* todo */ };
                 const loader = new Loader(settings.googleMapsApiKey, options);
-                loader.load().then(() => this.setState({ isGoogleMapsLoaded: true }));
+                loader.load().then(() => this.setState({ isGoogleMapsLoaded: true, isLoaded: true }));
             });
     }
 

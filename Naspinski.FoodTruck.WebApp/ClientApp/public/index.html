@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
@@ -18,12 +18,36 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  </head>
+</head>
   <body>
+      <style>
+          div.loader-container {
+              z-index: 9999;
+              position: absolute;
+              top: 0;
+              color: #fff;
+              left: 0;
+              width: 100vw;
+              height: 100vh;
+              background-color: #212121;
+              opacity: 0.7;
+              display: flex;
+          }
+        
+          div.loader-container div.loader {
+                margin: auto;
+                font-size: 8em;
+          }
+}
+      </style>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root"></div>
+    <div id="root">
+        <div class="loader-container" id="html-loader">
+            <div class="loader">...</div>
+        </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

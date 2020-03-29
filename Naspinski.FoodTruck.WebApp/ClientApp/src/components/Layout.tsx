@@ -13,13 +13,15 @@ interface IProps {
 export class Layout extends Component<IProps> {
     render () {
         return (
-            <MDBContainer fluid>
-                <NavMenu settings={this.props.settings} />
+            <React.Fragment>
                 <MDBContainer fluid>
-                    {this.props.children}
+                    <NavMenu settings={this.props.settings} />
+                    <MDBContainer fluid>
+                        {this.props.children}
+                    </MDBContainer>
+                    <Footer settings={this.props.settings} />
                 </MDBContainer>
-                <Footer settings={this.props.settings} />
-            </MDBContainer>
+            </React.Fragment>
         );
     }
 }

@@ -15,7 +15,7 @@ export class Footer extends Component<IProps> {
     render() {
         const settings = this.props.settings;
         
-        var socialLinks = Array.from(settings.socialMap.keys()).map(network => {
+        const socialLinks = Array.from(settings.socialMap.keys()).map(network => {
             let icon: IconProp;
             switch (network) {
                 case 'Instagram': icon = 'instagram-square'; break;
@@ -38,11 +38,13 @@ export class Footer extends Component<IProps> {
                 <MDBContainer fluid className="text-center text-md-left b">
                     <MDBRow>
                         <MDBCol md='4' className='pb2'>
-                            <div className='underline'>Social</div>
                             {settings.socialMap.size > 1 ? '' :
-                                <div className='pl2 tl'>
-                                    {socialLinks}
-                                </div>
+                                <React.Fragment>
+                                    <div className='underline'>Social</div>
+                                    <div className='pl2 tl'>
+                                        {socialLinks}
+                                    </div>
+                                </React.Fragment>
                             }
                         </MDBCol>
                         <MDBCol md='4' className='tl pb2'>

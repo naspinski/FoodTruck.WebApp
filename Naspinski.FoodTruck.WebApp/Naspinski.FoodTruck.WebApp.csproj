@@ -61,6 +61,7 @@
     <None Remove="ClientApp\src\components\Map.tsx" />
     <None Remove="ClientApp\src\components\Special.tsx" />
     <None Remove="ClientApp\src\components\Specials.tsx" />
+    <None Remove="ClientApp\src\components\Spinner.tsx" />
     <None Remove="ClientApp\src\missing-declarations.t.ts" />
     <None Remove="ClientApp\src\models\BaseModel.ts" />
     <None Remove="ClientApp\src\models\Event.ts" />
