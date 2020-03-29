@@ -46,7 +46,7 @@ export class NavMenu extends Component<IProps, IState> {
                 <MDBNavbarBrand>
                     {returnLink}
                 </MDBNavbarBrand>
-                <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none' />
+                <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none m-r-1' />
                 <MDBCollapse id="navbarCollapse3" isOpen={!this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
                         {Array.from(links.keys()).map(link =>

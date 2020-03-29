@@ -40,7 +40,7 @@ export class Specials extends Component<IProps, IState> {
                                 <MDBCol md='9' className='pl0'>
                                     <div className='right-frame'>
                                     {this.state.specials.get(day)?.map(special =>
-                                        <div className='flex-grow' key={`spec-${day}-${(count++)}`} >
+                                        <div className='flex-grow pr1' key={`spec-${day}-${(count++)}`} >
                                             <Special special={special} />
                                         </div>
                                         )}

@@ -127,52 +127,58 @@ export class Contact extends Component<IProps, IState> {
         return (
             <div id='contact' className='primary-color pb2'>
                 <div className='inner-container'>
-                <h2 className='border-dotted bottom'>Contact</h2>
+                    <h2 className='border-dotted bottom'>Contact</h2>
                     <MDBRow>
                         <MDBCol md='6'>
-                            <h3 className='b'>Get in touch</h3>
-                            <MDBBtnGroup>
-                                <MDBBtn active={this.state.type === 'Contact'} onClick={this.contact}>Info</MDBBtn>
-                                {this.props.settings.isBrickAndMortar ? '' : <MDBBtn active={this.state.type === 'Book'} onClick={this.book}>Book</MDBBtn>}
-                                {this.props.settings.isApplyOn ? <MDBBtn active={this.state.type === 'Apply'} onClick={this.apply}>Apply</MDBBtn> : ''}
-                            </MDBBtnGroup>                            
-                            <form id={this.formId} onSubmit={this.handleSubmit} className='ph1 needs-validation' noValidate>
-                                <div className='pt2 b'>
-                                    <label htmlFor='email'>Email Address</label>
-                                    <input type='email' id='email' className='form-control validate' onChange={this.handleChange} required />
-                                </div>
-                                {dateTimePicker}
-                                <div className='pt2 b'>
-                                    <label htmlFor='message'>Message</label>
-                                    <textarea id='message' className='form-control' onChange={this.handleChange} required />
-                                </div>
-                                <div className='input-group pt3 b'>
-                                    <div className='input-group-prepend'>
-                                        <span className='input-group-text' id='AttachmentPre'>Upload</span>
+                            <div className='ph2'>
+                                <h3 className='b'>Get in touch</h3>
+                                {this.props.settings.isBrickAndMortar && !this.props.settings.isApplyOn ? '' :
+                                    <MDBBtnGroup>
+                                        <MDBBtn active={this.state.type === 'Contact'} onClick={this.contact}>Info</MDBBtn>
+                                        {this.props.settings.isBrickAndMortar ? '' : <MDBBtn active={this.state.type === 'Book'} onClick={this.book}>Book</MDBBtn>}
+                                        {this.props.settings.isApplyOn ? <MDBBtn active={this.state.type === 'Apply'} onClick={this.apply}>Apply</MDBBtn> : ''}
+                                    </MDBBtnGroup>
+                                }
+                                <form id={this.formId} onSubmit={this.handleSubmit} className='ph1 needs-validation' noValidate>
+                                    <div className='pt2 b'>
+                                        <label htmlFor='email'>Email Address</label>
+                                        <input type='email' id='email' className='form-control validate' onChange={this.handleChange} required />
                                     </div>
-                                    <div className='custom-file'>
-                                        <input type='file'
-                                            className='custom-file-input'
-                                            id='Attachment' name='Attachment'
-                                            aria-describedby='AttachmentPre'
-                                            onChange={this.handleAttachmentChange} />
-                                        <label className='custom-file-label' htmlFor='Attachment'>Attachment</label>
+                                    {dateTimePicker}
+                                    <div className='pt2 b'>
+                                        <label htmlFor='message'>Message</label>
+                                        <textarea id='message' className='form-control' onChange={this.handleChange} required />
                                     </div>
-                                </div>
-                                <div className='pt2 flex justify-between'>
-                                    <div className='pt1'>
-                                        <FormAlerts sendingState={this.state.sendingState} sentMessage='Message sent, we will be in touch shortly!' />
+                                    <div className='input-group pt3 b'>
+                                        <div className='input-group-prepend'>
+                                            <span className='input-group-text' id='AttachmentPre'>Upload</span>
+                                        </div>
+                                        <div className='custom-file'>
+                                            <input type='file'
+                                                className='custom-file-input'
+                                                id='Attachment' name='Attachment'
+                                                aria-describedby='AttachmentPre'
+                                                onChange={this.handleAttachmentChange} />
+                                            <label className='custom-file-label' htmlFor='Attachment'>Attachment</label>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <MDBBtn color='pink' type='submit' disabled={disableSend} >
-                                            <FontAwesomeIcon icon='chevron-circle-right' /> Send
-                                        </MDBBtn>
+                                    <div className='pt2 flex justify-between'>
+                                        <div className='pt1'>
+                                            <FormAlerts sendingState={this.state.sendingState} sentMessage='Message sent, we will be in touch shortly!' />
+                                        </div>
+                                        <div>
+                                            <MDBBtn color='pink' type='submit' disabled={disableSend} >
+                                                <FontAwesomeIcon icon='chevron-circle-right' /> Send
+                                            </MDBBtn>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </MDBCol>
                         <MDBCol md='6'>
-                            {address}
+                            <div className='ph2'>
+                                {address}
+                            </div>
                         </MDBCol>
                     </MDBRow>
                 </div>

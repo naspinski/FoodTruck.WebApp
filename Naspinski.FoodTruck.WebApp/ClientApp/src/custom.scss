@@ -60,6 +60,8 @@ h2.header {
 
 div.inner-container {
     max-width: 64rem;
+    padding-left: .2em;
+    padding-right: .2em;
 
     a {
         text-transform: uppercase;
@@ -76,7 +78,6 @@ div.inner-container {
         padding: 1em;
 
         div.right-frame {
-            font-weight: bold;
             padding: .5em 0;
         }
     }
