@@ -1,7 +1,7 @@
 @import './assets/scss/core/_colors';
 
 body, .card {
-    background-color: #efebe9 !important;
+    background-color: $primary-color !important;
     color: $white !important;
 }
 
