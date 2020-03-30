@@ -18,6 +18,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
         public string HomeUrl { get; set; }
+        public string ContactPhone { get; set; } 
 
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
@@ -44,6 +45,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             LogoImageUrl = system.Settings[SettingName.LogoImageUrl];
             BannerImageUrl = system.Settings[SettingName.BannerImageUrl];
             FaviconImageUrl = system.Settings[SettingName.FaviconImageUrl];
+            ContactPhone = system.Settings[SettingName.ContactPhone];
 
             if (system != null)
             {

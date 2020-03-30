@@ -64,7 +64,7 @@ export class NavMenu extends Component<IProps, IState> {
                                     </MDBDropdownToggle>
                                     <MDBDropdownMenu right>
                                         {settings.siblings.map(x =>
-                                            <MDBDropdownItem href={x.url}>{x.name}</MDBDropdownItem>
+                                            <MDBDropdownItem key={`goto-link-${x.url}`} href={x.url}>{x.name}</MDBDropdownItem>
                                         )}
                                     </MDBDropdownMenu>
                                 </MDBDropdown>

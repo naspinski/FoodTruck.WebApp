@@ -62,10 +62,14 @@ export class Footer extends Component<IProps> {
                             </div>
                         </MDBCol>
                         <MDBCol md='4' className='pv2'>
-                            <div className='underline'>Operating Hours</div>
-                            <div className='pb3 pl3'>
-                                <StoreHours schedule={this.props.settings.scheduleMap} />
-                            </div>
+                            {!settings.isBrickAndMortar ? '' :
+                                <React.Fragment>
+                                    <div className='underline'>Operating Hours</div>
+                                    <div className='pb3 pl3'>
+                                        <StoreHours schedule={settings.scheduleMap} />
+                                    </div>
+                                </React.Fragment>
+                            }
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>

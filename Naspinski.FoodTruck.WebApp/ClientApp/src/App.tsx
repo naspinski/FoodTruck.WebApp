@@ -15,11 +15,11 @@ import { SiteSettings } from './models/SiteSettings';
 import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faCog, faExternalLinkAlt, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faPhone, faCog, faExternalLinkAlt, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
-library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faExternalLinkAlt, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
+library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faPhone, faExternalLinkAlt, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
 
 
 

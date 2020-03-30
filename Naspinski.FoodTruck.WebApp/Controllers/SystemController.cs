@@ -52,7 +52,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             var locationIdString = _settings.Get(SettingName.Location);
             int locationId;
-            return int.TryParse(locationIdString, out locationId) ? new LocationHandler(_context, "system").Get(locationId) : null;
+            return int.TryParse(locationIdString, out locationId) ? new LocationHandler(_context, "system").Get(locationId) : new LocationModel();
         }
 
         [HttpGet]
