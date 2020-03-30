@@ -23,6 +23,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
     [ApiController]
     public class SystemController : BaseController
     {
+        private const string subscriptionDelimeter = "---";
         private SubscriptionHandler _handler;
         private SettingHandler _settingHandler;
         private SystemModel _settings;
@@ -55,10 +56,14 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("u/{subscriber}/{location?}")]
-        public string Unsubscribe(string subscriber, string location = "")
+        [Route("u/{subscriberLocation}")]//{subscriber}/{location?}")]
+        public string Unsubscribe(string subscriberLocation = "subscriber---location")
         {
-            _handler.Delete(subscriber, location);
+            if (subscriberLocation != "subscriber---location")
+            {
+                var split = subscriberLocation.Split(subscriptionDelimeter);
+                _handler.Delete(split[0], split.Length > 1 ? split[1] : string.Empty);
+            }
             return "unsubscribed";
         }
 
@@ -72,8 +77,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             var subject = $"{title} subscription to {model.Location} confirmed";
             var protocol = HttpContext.Request.Host.Value.Contains("localhost") ? "http" : "https";
             var message = $"{title} thanks you! You will receive one notification in the morning when we will be at {model.Location}.{n}";
-            message += $"{n}unsubscribe from this location: {Url.Action("Unsubscribe", "System", new { subscriber = subscription.Subscriber, location = subscription.Location }, protocol)}";
-            message += $"{n}unsubscribe from all locations: {Url.Action("Unsubscribe", "System", new { subscriber = subscription.Subscriber }, protocol)}";
+            message += $"{n}unsubscribe from this location: {Url.Action("Unsubscribe", "System", new { subscriberLocation = $"{subscription.Subscriber}{subscriptionDelimeter}{subscription.Location}" }, protocol)}";
+            message += $"{n}unsubscribe from all locations: {Url.Action("Unsubscribe", "System", new { subscriberLocation = subscription.Subscriber }, protocol)}";
 
             if (subscription.Type == Subscription.Types.Email)
             {
