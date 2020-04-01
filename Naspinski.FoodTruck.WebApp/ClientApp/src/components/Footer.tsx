@@ -1,10 +1,12 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { SiteSettings } from '../models/SiteSettings';
-import { MDBNavLink, MDBFooter, MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from 'mdbreact';
+import { MDBNavLink, MDBFooter, MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import StoreHours from './StoreHours';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface IProps {
     settings: SiteSettings
@@ -16,19 +18,19 @@ export class Footer extends Component<IProps> {
         const settings = this.props.settings;
         
         const socialLinks = Array.from(settings.socialMap.keys()).map(network => {
-            let icon: IconProp;
+            let icon: IconDefinition;
             switch (network) {
-                case 'Instagram': icon = 'instagram-square'; break;
-                case 'Facebook': icon = 'facebook-square'; break;
-                case 'LinkedIn': icon = 'linkedin'; break;
-                case 'Pinterest': icon = 'pinterest-square'; break;
-                case 'Twitter': icon = 'twitter-square'; break;
-                default: icon = 'comment-alt';
+                case 'Instagram': icon = faInstagramSquare; break;
+                case 'Facebook': icon = faFacebookSquare; break;
+                case 'LinkedIn': icon = faLinkedin; break;
+                case 'Pinterest': icon = faPinterestSquare; break;
+                case 'Twitter': icon = faTwitterSquare; break;
+                default: icon = faCommentAlt;
             }
 
             return (
                 <a key={`social-link-${network}`} href={settings.socialMap.get(network)} title={network} className='db'>
-                    <FontAwesomeIcon className='f3' icon={['fab', icon]} /> <span className='pb1 pl1'>{network}</span>
+                    <FontAwesomeIcon className='f3' icon={icon} /> <span className='pb1 pl1'>{network}</span>
                 </a>
             )
         });

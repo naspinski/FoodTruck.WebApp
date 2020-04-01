@@ -1,6 +1,6 @@
 export class BaseModel {
 
-    id: string = '';
+    id: number = 0;
     name: string = '';
     public get sanitizedNamed(): string {
         return this.name === null ? '' : this.name.replace(/\W/g, '');

@@ -3,11 +3,14 @@ import * as React from 'react';
 import './NavMenu.scss';
 import { NavLink } from 'react-router-dom';
 import { SiteSettings } from '../models/SiteSettings';
-import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem, MDBHamburgerToggler } from 'mdbreact';
+import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem, MDBHamburgerToggler, MDBBtn } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Cart, CartAction } from '../models/CartModels';
 
 interface IProps {
-    settings: SiteSettings
+    settings: SiteSettings,
+    cart: Cart,
+    cartAction: (action: CartAction) => void,
 }
 
 interface IState {
@@ -29,6 +32,7 @@ export class NavMenu extends Component<IProps, IState> {
 
     render() {
         const settings = this.props.settings;
+        const cart = this.props.cart;
         let links = settings.links;
 
         const isHomeUrlInternal = settings.homeUrl == null || settings.homeUrl.length === 0;
@@ -40,13 +44,20 @@ export class NavMenu extends Component<IProps, IState> {
             ? <NavLink to='/'>{homeChild}</NavLink>
             : <a className='white-text' href={settings.homeUrl}>{homeChild}</a>;
 
+        const cartIndicator = !settings.isOrderingOn || cart.items.length === 0 ? '' :
+            <MDBBtn className='cart-indicator' onClick={() => this.props.cartAction(new CartAction({ task: 'toggle' }))}>
+                <FontAwesomeIcon icon='shopping-cart' /> [{this.props.cart.itemCount}]
+            </MDBBtn>;
+
 
         return (
             <MDBNavbar color='primary-color-dark' expand='md' scrolling fixed="top">
+                <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none m-r-1' />
                 <MDBNavbarBrand>
                     {returnLink}
                 </MDBNavbarBrand>
-                <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none m-r-1' />
+                <div id='center-panel'>
+                </div>
                 <MDBCollapse id="navbarCollapse3" isOpen={!this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
                         {Array.from(links.keys()).map(link =>
@@ -60,7 +71,7 @@ export class NavMenu extends Component<IProps, IState> {
                             <MDBNavItem>
                                 <MDBDropdown>
                                     <MDBDropdownToggle nav caret>
-                                        <FontAwesomeIcon icon='external-link-alt' /> <span className="mr-2">Go To</span>
+                                        <FontAwesomeIcon icon='external-link-alt' />
                                     </MDBDropdownToggle>
                                     <MDBDropdownMenu right>
                                         {settings.siblings.map(x =>
@@ -72,6 +83,7 @@ export class NavMenu extends Component<IProps, IState> {
                         }
                     </MDBNavbarNav>
                 </MDBCollapse>
+                {cartIndicator}
             </MDBNavbar>
     );
   }

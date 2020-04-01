@@ -1,14 +1,35 @@
 import { Component } from 'react';
 import * as React from 'react';
-import { MenuItem } from '../models/MenuItem';
-import { MDBRow, MDBCol } from 'mdbreact';
+import { MenuItem, MenuPrice, MenuOption, MenuComboPart } from '../models/MenuModels';
+import { MDBRow, MDBCol, MDBBtn } from 'mdbreact';
+import { CartAction } from '../models/CartModels';
 
 interface IProps {
     item: MenuItem,
-    key: string
+    cartAction: (action: CartAction) => void,
+    isOrderingOn: boolean
 }
 
 export class Item extends Component<IProps> {
+
+    constructor(props: IProps) {
+        super(props);
+        this.props.item.comboParts.filter(x => x.options.length > 0).forEach(cp => cp.options[0].selected = true);
+    }
+
+    onPriceClick = (item: MenuItem, price: MenuPrice) => {
+        let action = new CartAction();
+        action.task = 'add';
+        action.item = item;
+        action.price = price;
+        this.props.cartAction(action);
+    }
+
+    onOptionChange = (e: any, part: MenuComboPart) => {
+        part.options.find(x => x.id.toString() === e.target.value).selected = true;
+        part.options.filter(x => x.id.toString() !== e.target.value).forEach(x => x.selected = false);
+    }
+
     render() {
         let count = 0;
         const item = this.props.item;
@@ -22,7 +43,7 @@ export class Item extends Component<IProps> {
             <div>
                 {item.comboParts.map(part => 
                     <div className='dib pr2 pt1' key={`comboparts-options-${count++}`}>
-                        <select className='browser-default custom-select'>
+                        <select className='browser-default custom-select' onChange={(e) => this.onOptionChange(e, part)}>
                             {part.options.map(opt =>
                                 <option key={`comboparts-option-${count++}`} value={opt.id}>{opt.name}</option>
                             )}
@@ -32,11 +53,16 @@ export class Item extends Component<IProps> {
             </div>;
 
         const prices = item.prices.length === 0 ? '' :
-            <div className='dib'>{item.prices.map(price =>
-                <div className='price-container dib ml2' key={`item-${item.id}-price-${price.id}`}>
-                    {price.priceTypeName !== null && price.priceTypeName.length > 0  ? <strong>{price.priceTypeName}: </strong> : ''}
-                    {price.amountAsCurrency}
-                </div>)}
+            <div className='dib'>{item.prices.map(price => {
+                const prefix = price.priceTypeName === null || price.priceTypeName.length === 0 ? '' : <strong>{price.priceTypeName}: </strong>;
+                const text = <React.Fragment>{prefix}{price.amountAsCurrency}</React.Fragment>;
+                const fill = !this.props.isOrderingOn ? '' : <MDBBtn size='sm' onClick={() => this.onPriceClick(item, price)}>{text}</MDBBtn>;
+                return (
+                    <div className='price-container dib ml2' key={`item-${item.id}-price-${price.id}`}>
+                        {fill}
+                    </div>
+                );
+            })}
             </div>;
 
         return (

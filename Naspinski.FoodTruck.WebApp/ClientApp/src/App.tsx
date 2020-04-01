@@ -15,19 +15,29 @@ import { SiteSettings } from './models/SiteSettings';
 import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faPhone, faCog, faExternalLinkAlt, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import { Specials } from './components/Specials';
 import { Calendar } from './components/Calendar';
-library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faPhone, faExternalLinkAlt, faCog, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin);
+import { CartAction } from './models/CartModels';
 
+import {
+    faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrash, faPhone, faShoppingCart, faCog,
+    faExternalLinkAlt, faChevronCircleRight, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown
+} from '@fortawesome/free-solid-svg-icons';
 
+library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrash, faPhone, faShoppingCart, faCog,
+    faExternalLinkAlt, faStar, faChevronCircleRight, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown);
 
 export default class App extends Component<{}, SystemState> {
 
     constructor(props: any) {
         super(props);
         this.state = new SystemState();
+    }
+
+    cartActionHandler = (action: CartAction) => {
+        console.log('App.cartActionHandler', action);
+        this.state.cart.action(action);
+        this.setState({ cart: this.state.cart });
     }
 
     componentDidMount() {
@@ -45,9 +55,9 @@ export default class App extends Component<{}, SystemState> {
                     <meta name='Keywords'content={this.state.settings.keywords} />
                     <meta name='Author'content={this.state.settings.author}  />
                 </Helmet>
-                <Layout settings={this.state.settings}>
+                <Layout settings={this.state.settings} cart={this.state.cart} cartAction={this.cartActionHandler}>
                     <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                    <Route path='/menu' component={Menu} />
+                    <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} isOrderingOn={this.state.settings.isOrderingOn} />} />
                     <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
                     <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
                     <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
@@ -74,6 +84,12 @@ export default class App extends Component<{}, SystemState> {
                 const options: LoaderOptions = { /* todo */ };
                 const loader = new Loader(settings.googleMapsApiKey, options);
                 loader.load().then(() => this.setState({ isGoogleMapsLoaded: true, isLoaded: true }));
+
+                if (settings.isOrderingOn) {
+                    let cart = this.state.cart;
+                    cart.load();
+                    this.setState({ cart: cart });
+                }
             });
     }
 

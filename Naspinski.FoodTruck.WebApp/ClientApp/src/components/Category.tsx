@@ -1,14 +1,21 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { Item } from './Item';
-import { MenuCategory } from '../models/MenuCategory';
+import { MenuCategory } from '../models/MenuModels';
+import { CartAction } from '../models/CartModels';
 
 interface IProps {
-    category: MenuCategory
+    category: MenuCategory,
+    cartAction: (action: CartAction) => void,
+    isOrderingOn: boolean
 }
 
 export class Category extends Component<IProps> {
-        
+
+    cartAction = (action: CartAction) => {
+        this.props.cartAction(action);
+    }
+
     render() {
         const category = new MenuCategory(this.props.category);
         const header = category.sanitizedNamed.length === 0 ? <div className='border-dotted bottom'></div> :
@@ -18,7 +25,7 @@ export class Category extends Component<IProps> {
             </React.Fragment>;
 
         const items = category.menuItems === undefined ? '' :
-            category.menuItems.map(item => <Item item={item} key={'item-' + item.id} />);
+            category.menuItems.map(item => <Item item={item} key={'item-' + item.id} cartAction={this.cartAction} isOrderingOn={this.props.isOrderingOn} />);
 
         return (category.excludeFromMenu ? '' :
             <div className='ph1'>
