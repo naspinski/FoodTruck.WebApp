@@ -135,6 +135,20 @@ export class CartItemKey {
     }
 }
 
+export class CartCardData {
+    digital_wallet_type: string = 'NONE';
+    card_brand: string = '';
+    last_4: string = ''
+    exp_month: number = 0;
+    exp_year: number = 0;
+    billing_postal_code: string = '';
+
+
+    constructor(init?: Partial<CartCardData>) {
+        Object.assign(this, init);
+    }
+}
+
 export class CartUtil {
     public static formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',

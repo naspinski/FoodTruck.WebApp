@@ -20,7 +20,7 @@ export class Layout extends Component<IProps> {
             <React.Fragment>
                 <MDBContainer fluid className='ph0'>
                     <NavMenu settings={this.props.settings} cart={this.props.cart} cartAction={this.props.cartAction} />
-                    <ShoppingCart cart={this.props.cart} cartAction={this.props.cartAction} />
+                    <ShoppingCart cart={this.props.cart} cartAction={this.props.cartAction} settings={this.props.settings} />
                     <MDBContainer fluid className='pt5 ph0'>
                         {this.props.children}
                     </MDBContainer>

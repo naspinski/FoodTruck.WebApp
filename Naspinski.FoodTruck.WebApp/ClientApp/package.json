@@ -24,6 +24,7 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
+    "react-square-payment-form": "^0.6.1",
     "rimraf": "^3.0.2",
     "tachyons": "^4.11.1"
   },

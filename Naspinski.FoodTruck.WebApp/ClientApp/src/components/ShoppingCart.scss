@@ -30,9 +30,14 @@
     position: fixed;
     bottom: 0;
 
+    .invisible {
+        height: 0
+    }
+
     svg[role="img"]:hover {
         cursor: pointer;
     }
+
     .cart-section {
         padding: 0 1rem
     }
@@ -45,7 +50,7 @@
     }
 
     #cart-closer {
-        display:block;
+        display: block;
         font-size: 1.5rem;
         text-align: center;
         background-color: $secondary-color-dark;
@@ -61,6 +66,66 @@
         padding: .5rem 1rem;
     }
 
+    #cart-checkout-button {
+        text-align: center;
+
+        button {
+            background-color: $secondary-color-dark !important;
+        }
+    }
+
+    #cart-info-form, .sq-payment-form {
+        margin: auto;
+    }
+
+    #cart-info-form {
+        width: 380px;
+
+        .sq-fieldset {
+            padding-bottom: 1rem
+        }
+    }
+
+    .cart-square-buttons {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+
+        button.sq-creditcard {
+            margin: 0;
+            width: auto;
+        }
+
+        button.sq-creditcard:disabled {
+            opacity: 0.5;
+        }
+
+        button.sq-creditcard:not(.back) { /*square styled button*/
+            flex-grow: 1;
+            padding: 0;
+            background-color: $secondary-color-dark;
+        }
+
+        button.sq-creditcard.back {
+            margin-right: .5rem;
+            flex-grow: 0;
+            background-color: $default-color;
+            padding-left: .84rem;
+            padding-right: .84rem;
+        }
+    }
+
     .cart-section {
+    }
+
+    .sq-form-style {
+        font-size: 16px;
+        font-family: Helvetica Neue;
+        padding: 16px;
+        color: #373F4A;
+        background-color: transparent;
+        line-height: 24px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }

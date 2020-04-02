@@ -28,13 +28,21 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
-        
+
+        public bool SquareSandbox { get; set; }
+        public string SquareApplicationId { get; set; }
+        public string SquareLocationId { get; set; }
+
+
         private SystemModel _system;
         
-        public SettingsModel(string homeUrl, SystemModel system, FoodTruckContext context)
+        public SettingsModel(AzureSettings azureSettings, SquareSettings squareSettings, SystemModel system, FoodTruckContext context)
         {
             _system = system;
-            HomeUrl = homeUrl ?? string.Empty;
+            HomeUrl = azureSettings.HomeUrl ?? string.Empty;
+            SquareSandbox = squareSettings.UseProductionApi;
+            SquareApplicationId = SquareSandbox ? squareSettings.SandboxApplicationId : squareSettings.ProductionApplicationId;
+            SquareLocationId = SquareSandbox ? squareSettings.SandboxLocationId : squareSettings.ProductionLocationId;
 
             Title = system.Settings[SettingName.Title];
             SubTitle = system.Settings[SettingName.SubTitle];

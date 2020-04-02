@@ -7,6 +7,7 @@ import { Map } from './Map';
 import { MDBBtn, MDBRow, MDBCol, MDBContainer, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FormAlerts from './../components/FormAlerts';
+import { RegularExpressions } from '../Utility';
 
 interface IProps {
     event: Event,
@@ -45,17 +46,13 @@ export class CalendarEvent extends Component<IProps, IState> {
         this.setState({ isMapHidden: !this.state.isMapHidden });
     }
 
-    testInput = () => {
-
-    }
-
     submitHandler = event => {
         event.preventDefault();
         event.target.className += ' was-validated';
         let isValid = (document.getElementById(this.formId) as HTMLFormElement).checkValidity();
-        const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.sendTo);
-        const validPhone = /^\d{10}$/.test(this.state.sendTo.replace('(', '').replace(')', '').replace(' ', '').replace('-', ''));
-        isValid = validEmail || validPhone;
+        const validEmail = RegularExpressions.email.test(this.state.sendTo);
+        const validPhone = RegularExpressions.phone.test(this.state.sendTo.replace('(', '').replace(')', '').replace(' ', '').replace('-', ''));
+        isValid = isValid && (validEmail || validPhone);
         (document.getElementById(this.sendToId) as HTMLFormElement).setCustomValidity(isValid ? '' : 'invalid email/phone');
 
         if (isValid) {

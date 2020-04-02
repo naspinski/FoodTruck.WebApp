@@ -23,6 +23,10 @@ export class SiteSettings {
     links: Map<string, string> = new Map<string, string>();
     siblings: SiblingSite[] = [];
     social: Object = {};
+
+    squareSandbox: boolean = true;
+    squareApplicationId: string = '';
+    squareLocationId: string = '';
     
     public get deliveryServiceImageToUrlMap(): Map<string, string> {
         return new Map<string, string>(Object.entries(this.deliveryServiceImageToUrl));

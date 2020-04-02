@@ -21,7 +21,7 @@ interface IState {
     location: Location,
     googleMapsApiKey: string,
     type:string,
-    email: string,
+    contactEmail: string,
     message: string,
     attachment: File | null,
     date: Date | null,
@@ -36,7 +36,7 @@ export class Contact extends Component<IProps, IState> {
             location: new Location(),
             googleMapsApiKey: props.googleMapsApiKey,
             type: 'Contact',
-            email: '',
+            contactEmail: '',
             message: '',
             attachment: null,
             date: null,
@@ -62,7 +62,7 @@ export class Contact extends Component<IProps, IState> {
             this.setState({ sendingState: 'sending' });
 
             const payload = {
-                email: this.state.email,
+                email: this.state.contactEmail,
                 message: this.state.message,
                 type: this.state.type
             }
@@ -157,8 +157,8 @@ export class Contact extends Component<IProps, IState> {
                                 }
                                 <form id={this.formId} onSubmit={this.handleSubmit} className='ph1 needs-validation' noValidate>
                                     <div className='pt2 b'>
-                                        <label htmlFor='email'>Email Address</label>
-                                        <input type='email' id='email' className='form-control validate' onChange={this.handleChange} required />
+                                        <label htmlFor='contactEmail'>Email Address</label>
+                                        <input type='email' id='contactEmail' className='form-control validate' onChange={this.handleChange} required />
                                     </div>
                                     {dateTimePicker}
                                     <div className='pt2 b'>

@@ -72,6 +72,7 @@
     <None Remove="ClientApp\src\models\SiblingSite.ts" />
     <None Remove="ClientApp\src\models\SpecialModel.ts" />
     <None Remove="ClientApp\src\models\SpecialsDaily.ts" />
+    <None Remove="ClientApp\src\models\Utility.ts" />
     <None Remove="ClientApp\src\pages\Menu.tsx" />
   </ItemGroup>
 
@@ -80,6 +81,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ClientApp\src\Utility.js">
+      <DependentUpon>Utility.ts</DependentUpon>
+    </None>
     <None Update="ClientApp\src\models\MenuPrice.js.map">
       <DependentUpon>MenuPrice.js</DependentUpon>
     </None>
