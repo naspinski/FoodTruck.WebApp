@@ -45,9 +45,9 @@ export class NavMenu extends Component<IProps, IState> {
             : <a className='white-text' href={settings.homeUrl}>{homeChild}</a>;
 
         const cartIndicator = !settings.isOrderingOn || cart.items.length === 0 ? '' :
-            <MDBBtn className='cart-indicator' color='secondary' onClick={() => this.props.cartAction(new CartAction({ task: 'toggle' }))}>
-                <FontAwesomeIcon icon='shopping-cart' /> [{this.props.cart.itemCount}]
-            </MDBBtn>;
+                <MDBBtn  color='secondary' onClick={() => this.props.cartAction(new CartAction({ task: 'toggle' }))}>
+                    <FontAwesomeIcon icon='shopping-cart' /> [{this.props.cart.itemCount}]
+                </MDBBtn>;
 
 
         return (
@@ -83,7 +83,9 @@ export class NavMenu extends Component<IProps, IState> {
                         }
                     </MDBNavbarNav>
                 </MDBCollapse>
-                {cartIndicator}
+                <div className='cart-indicator'>
+                    {cartIndicator}
+                </div>
             </MDBNavbar>
     );
   }

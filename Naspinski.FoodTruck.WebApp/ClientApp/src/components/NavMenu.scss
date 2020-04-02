@@ -1,14 +1,41 @@
 ﻿@import '../assets/scss/core/_colors';
 
-img.title-logo { height: 50px; }
+@media (min-width: 768px) {
+    #cart {
+        right: 0;
+        width: 40%;
+
+        ul {
+            max-height: 400px;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .cart-indicator {
+        flex-grow: 1;
+        text-align: right;
+    }
+}
+
+img.title-logo {
+    height: 50px;
+}
+
+.navbar-brand {
+    margin-left: 1rem;
+}
 
 .nav-menu a {
     color: $white
 }
 
-button.cart-indicator {
-    margin: 0 6px;
-    font-weight: normal;
-    padding: .84rem;
-    background-color: $secondary-color-dark !important
+.cart-indicator {
+
+    button {
+        margin: 0 6px;
+        font-weight: normal;
+        padding: .84rem;
+        background-color: $secondary-color-dark !important
+    }
 }
