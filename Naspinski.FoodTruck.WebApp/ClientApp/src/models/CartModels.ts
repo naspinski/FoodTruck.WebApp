@@ -1,4 +1,4 @@
-import { MenuPrice, MenuItem, MenuCategory, MenuComboPart, MenuOption } from './MenuModels';
+import { MenuPrice, MenuItem, MenuCategory, MenuOption } from './MenuModels';
 
 export class Cart {
     storageKey: string = 'ft_cart';
@@ -8,6 +8,7 @@ export class Cart {
     isStorageEnabled: boolean = typeof (Storage) !== undefined;
     termsAcknowledged: boolean = false;
     menuItems: MenuItem[];
+    tax: number = 0;
 
     public get itemCount(): number {
         return this.items.map(x => x.quantity).reduce((quantity, total) => quantity + total, 0);
@@ -29,12 +30,20 @@ export class Cart {
             case 'toggle': this.isHidden = !this.isHidden; break;
             case 'add': this.add(action); break;
             case 'remove': this.remove(action); break;
-            case 'populate-items': this.menuItems = action.categories.reduce((collection: MenuItem[], category:MenuCategory) => collection.concat(category.menuItems), [])
+            case 'populate-items': this.populate(action); break;
             default: console.warn(`${action.task} is not implemented yet`);
         }
     }
 
-    public add(action: CartAction, quantity?: number) {
+    populate(action: CartAction) {
+        this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
+        fetch('api/payment/tax')
+            .then((response) => response.text())
+            .then((tax) => this.tax = parseFloat(tax))
+            .catch(error => console.error('error', error));
+    }
+
+    add(action: CartAction, quantity?: number) {
         quantity = quantity ?? 1;
         var item = new CartItem();
         item.loadFromAction(action);
@@ -47,7 +56,7 @@ export class Cart {
         }
     }
 
-    public remove(action: CartAction) {
+    remove(action: CartAction) {
         this.items = this.items.filter(x => x.key !== action.key);
         this.isHidden = this.itemCount === 0 ? true : this.isHidden;
     }
@@ -142,8 +151,7 @@ export class CartCardData {
     exp_month: number = 0;
     exp_year: number = 0;
     billing_postal_code: string = '';
-
-
+    
     constructor(init?: Partial<CartCardData>) {
         Object.assign(this, init);
     }

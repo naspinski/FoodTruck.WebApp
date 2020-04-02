@@ -28,10 +28,8 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
         public async Task<IEnumerable<CatalogObject>> GetTaxes()
         {
             var bodyObjectTypes = new List<string>() { "TAX" };
-            //var bodyQuery = new CatalogQuery.Builder().Build();
             var body = new SearchCatalogObjectsRequest.Builder()
                 .ObjectTypes(bodyObjectTypes)
-                //.Query(bodyQuery)
                 .Limit(100)
                 .Build();
 
@@ -51,10 +49,16 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
 
         public async Task<decimal> GetTaxPercentage(string inclusion_type, IEnumerable<CatalogObject> taxes = null)
         {
-            var _taxes = (taxes ?? await GetTaxes()).Select(x => x.TaxData);
-            return _taxes
-                .Where(x => x.InclusionType == inclusion_type && !string.IsNullOrWhiteSpace(x.Percentage))
-                .Sum(x => Decimal.Parse(x.Percentage));
+            var _taxes = taxes ?? await GetTaxes();
+#if DEBUG
+            if (_taxes == null)
+                return Convert.ToDecimal(6.9);
+#endif
+            return _taxes == null 
+                ? Convert.ToDecimal(0)
+                : _taxes.Select(x => x.TaxData)
+                    .Where(x => x.InclusionType == inclusion_type && !string.IsNullOrWhiteSpace(x.Percentage))
+                    .Sum(x => Decimal.Parse(x.Percentage));
         }
 
         //public CreateOrderRequest GetCreateOrderRequest(Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)

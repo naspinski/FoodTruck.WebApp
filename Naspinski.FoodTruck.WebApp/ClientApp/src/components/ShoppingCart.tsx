@@ -243,7 +243,6 @@ export class ShoppingCart extends Component<IProps, IState> {
                 })
             })
                 .then(response => {
-                    console.log(response);
                     this.setState({ paymentSendingState: response.status === 200 ? 'sent' : 'error' });
                 })
                 .catch(error => {
