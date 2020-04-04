@@ -40,7 +40,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         {
             _system = system;
             HomeUrl = azureSettings.HomeUrl ?? string.Empty;
-            SquareSandbox = squareSettings.UseProductionApi;
+            SquareSandbox = !squareSettings.UseProductionApi;
             SquareApplicationId = SquareSandbox ? squareSettings.SandboxApplicationId : squareSettings.ProductionApplicationId;
             SquareLocationId = SquareSandbox ? squareSettings.SandboxLocationId : squareSettings.ProductionLocationId;
 

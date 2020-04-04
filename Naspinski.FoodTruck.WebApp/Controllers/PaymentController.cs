@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Payment;
 using Naspinski.FoodTruck.WebApp.Helpers;
 using Naspinski.FoodTruck.WebApp.Models;
+using Naspinski.Messaging.Email;
+using Naspinski.Messaging.Sms;
+using Naspinski.Messaging.Sms.Twilio;
+using Square.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static Naspinski.FoodTruck.Data.Constants;
 
@@ -17,15 +24,17 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private const string OrderPrefix = "I-";
         private readonly OrderHandler _handler;
         private readonly SettingHandler _settingHandler;
-        private readonly SquareSettings _squareSettings;
         private readonly AzureSettings _azureSettings;
+        private SquareHelper _square;
+
+        private Data.Models.Payment.Order _order;
 
         public PaymentController(FoodTruckContext context, SquareSettings squareSettings, AzureSettings azureSettings) : base(context)
         {
             _handler = new OrderHandler(context, "system");
-            _squareSettings = squareSettings;
             _azureSettings = azureSettings;
             _settingHandler = new SettingHandler(_context);
+            _square = new SquareHelper(squareSettings);
         }
 
         [HttpGet]
@@ -33,38 +42,158 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public async Task<decimal> GetTaxPercentage()
         {
             var settings = new SystemModel(new SettingHandler(this._context).Get(new[] { SettingName.SquareOnlineTaxId }));
-            return await new SquareHelper(_squareSettings).GetAdditiveTaxPercentage();
+            return await _square.GetAdditiveTaxPercentage();
+        }
+
+        private async Task<CreateOrderRequest> GetOrderRequest(PaymentModel model, bool saveOrder)
+        {
+            var taxes = await _square.GetTaxes();
+            taxes = taxes ?? new List<CatalogObject>();
+            var tax = await _square.GetAdditiveTaxPercentage(taxes);
+            _order = _handler.Submit(model.OrderType, model.Name, model.Email, model.Phone, model.Note, model.Items, tax, _square.UseProduction, deferSave: !saveOrder);
+            return await _square.GetCreateOrderRequest(_order, Guid.NewGuid(), taxes, model.Email);
+        }
+
+        [HttpPost]
+        [Route("amount")]
+        public async Task<long> GetAmount(PaymentModel model)
+        {
+            var orderRequest = await GetOrderRequest(model, true);
+            return _square.GetTotalInCents(orderRequest);
         }
 
         [HttpPost]
         [Route("")]
-        public IActionResult Pay(PaymentModel model)
+        public async Task<IActionResult> Pay(PaymentModel model)
         {
+            var settings = new SystemModel(_settingHandler.Get(new[] {
+                SettingName.IsOrderingOn,
+                SettingName.OrderConfirmationEmailSubject,
+                SettingName.Title,
+                SettingName.ContactEmail,
+                SettingName.TwilioAuthToken,
+                SettingName.TwilioPhoneNumber,
+                SettingName.TwilioSid,
+                SettingName.OrderNotificationEmails,
+                SettingName.OrderNotificationPhoneNumbers,
+                SettingName.BrickAndMortarMode
+            }));
+            try
+            {
+                if (!string.Equals(settings.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("Online ordering is currently unavailable");
 
-            return Ok();
+                var isBrickAndMortar = string.Equals(settings.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
+                var orderRequest = await GetOrderRequest(model, true);
+                var squareOrder = await _square.Client.OrdersApi.CreateOrderAsync(_square.LocationId, orderRequest);
+                
+                var note = $"{OrderPrefix}{_order.Id} - ONLINE ORDER";
+                var amount = new Money(_square.GetTotalInCents(orderRequest), "USD");
+
+                var paymentRequest = new CreatePaymentRequest(
+                    amountMoney: amount,
+                    idempotencyKey: Guid.NewGuid().ToString(),
+                    sourceId: model.Nonce,
+                    verificationToken: model.BuyerVerificationToken,
+                    buyerEmailAddress: model.Email,
+                    orderId: squareOrder.Order.Id,
+                    note: note);
+
+                var paymentResponse = await _square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+
+                DoNotification(_order, settings, model.Name);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Log(ex); 
+                return BadRequest(ex.Message);
+            }
         }
 
-    }
+        private void DoNotification(Data.Models.Payment.Order order, SystemModel settings, string name = "")
+        {
+            Parallel.Invoke(
+                () => ConfirmationEmail(order, settings, name),
+                () => ConfirmationText(order, settings, name),
+                () => ConfirmationEmail(order, settings, name, false),
+                () => ConfirmationText(order, settings, name, false)
+            );
+        }
 
-    public class PaymentModel
-    {
-        public string OrderType { get; set; }
+        private void ConfirmationEmail(Data.Models.Payment.Order order, SystemModel settings, string name, bool isCustomer = true)
+        {
+            try
+            {
+                var subject = $"{settings.Get(SettingName.Title)} - {(isCustomer ? settings.Get(SettingName.OrderConfirmationEmailSubject) : $"New Order {OrderPrefix}{order.Id}")}";
+                if (isCustomer)
+                    EmailSender.Send(_azureSettings.SendgridApiKey, subject, GetBody(order, name, settings, true), order.Email, settings.Get(SettingName.ContactEmail));
+                else
+                {
+                    var emailsString = settings.Get(SettingName.OrderNotificationEmails);
+                    if (!string.IsNullOrWhiteSpace(emailsString))
+                    {
+                        var emails = emailsString.Split(new[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries).Where(x => x.Length > 5 && x.Contains("@"));
+                        foreach (var email in emails)
+                        {
+                            try { EmailSender.Send(_azureSettings.SendgridApiKey, subject, GetBody(order, name, settings, false), email, settings.Get(SettingName.ContactEmail)); }
+                            catch (Exception ex) { Log(ex); }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+                if (isCustomer)
+                    throw new Exception("Order placed successfully but there was an error sending confirmation email - don't worry, your food will be ready!");
+            }
+        }
 
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        private void ConfirmationText(Data.Models.Payment.Order order, SystemModel settings, string name, bool isCustomer = true)
+        {
+            try
+            {
+                var twilio = new TwilioHelper(settings.Get(SettingName.TwilioAuthToken), settings.Get(SettingName.TwilioSid), settings.Get(SettingName.TwilioPhoneNumber));
 
-        public string Nonce { get; set; }
-        public string BuyerVerificationToken { get; set; }
+                if (twilio.IsValid)
+                {
+                    ISmsSender smsSender = new TwilioSmsSender(twilio.Sid, twilio.AuthToken);
+                    if (isCustomer && !string.IsNullOrWhiteSpace(order.Phone))
+                        smsSender.Send(twilio.Phone, order.Phone, GetBody(order, name, settings, true));
 
-        public IEnumerable<PaymentModelItem> Items { get; set; }
-    }
+                    if (!isCustomer)
+                    {
+                        var phoneNumbersString = settings.Get(SettingName.OrderNotificationPhoneNumbers);
+                        if (!string.IsNullOrWhiteSpace(phoneNumbersString))
+                        {
+                            var phoneNumbers = phoneNumbersString.Split(new[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries).Where(x => x.Length == 10 && x.All(c => char.IsDigit(c)));
+                            foreach (var phoneNumber in phoneNumbers)
+                            {
+                                try { smsSender.Send(twilio.Phone, $"+1{phoneNumber}", GetBody(order, name, settings, false)); }
+                                catch (Exception ex) { Log(ex); }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+                if (isCustomer)
+                    throw new Exception("Order placed successfully but there was an error sending confirmation text - don't worry, your food will be ready!");
+            }
+        }
 
-    public class PaymentModelItem
-    {
-        public int Quantity { get; set; }
-        public string Name { get; set; }
-        public string PriceTypeName { get; set; }
-        public string Note { get; set; }
+        private string GetBody(Data.Models.Payment.Order order, string name, SystemModel settings, bool isCustomer)
+        {
+            var n = Environment.NewLine;
+            name = string.IsNullOrWhiteSpace(name) ? order.Email : name;
+            var title = settings.Get(SettingName.Title);
+            return isCustomer
+                ? $"{name}, here is your Order Confirmation:{n}{n}{order.FullText}{n}{n}Thank you!{n}-{title}"
+                : $"order {OrderPrefix}{order.Id} for {name}{n}{n}{order.FullText}";
+        }
     }
 }

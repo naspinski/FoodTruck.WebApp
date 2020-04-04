@@ -25,7 +25,9 @@ interface IState {
     infoSendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error',
     paymentSendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error',
     cartState: 'order' | 'info' | 'payment'
-    nonce: string
+    nonce: string,
+    cartNote: string,
+    amountInCents: string
 }
 
 export class ShoppingCart extends Component<IProps, IState> {
@@ -41,7 +43,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             infoSendingState: 'waiting',
             paymentSendingState: 'waiting',
             nonce: '',
-            cartState: 'order'
+            cartState: 'order',
+            cartNote: '',
+            amountInCents: '0'
         };
     }
 
@@ -50,18 +54,22 @@ export class ShoppingCart extends Component<IProps, IState> {
     cartPhoneId = 'cartPhone';
     
     toggleCart = () => this.props.cartAction(new CartAction({ task: 'toggle' }));
-    setCartState = (state: 'order' | 'info' | 'payment') => this.setState({ cartState: state });
-
-    canSubmitPayment() {
-        return this.state.paymentSendingState !== 'sending' && this.state.paymentSendingState !== 'sent';
+    setCartState = (state: 'order' | 'info' | 'payment') => {
+        this.setState({ cartState: state })
+        if (state === 'payment') {
+            this.populateAmount();
+        }
     }
 
-    handleChange = (event: any) => {
-        this.setState({ [event.target.name]: event.target.value } as React.ComponentState);
-    }
-    handlePhoneChange = (event: any) => { this.setState({ cartPhone: event.target.value.replace('(', '').replace(')', '').replace(' ', '').replace('-', '') }); }
+    canSubmitPayment() { return this.state.paymentSendingState !== 'sending' && this.state.paymentSendingState !== 'sent'; }
 
-    submitHandler = event => {
+    handleChange = (event: any) => { this.setState({ [event.target.name]: event.target.value } as React.ComponentState); }
+    handlePhoneChange = (event: any) => {
+        this.setState({ cartPhone: event.target.value.replace('(', '').replace(')', '').replace(' ', '').replace('-', '') });
+    }
+
+
+    infoSubmitHandler = event => {
         event.preventDefault();
         event.target.className += ' was-validated';
         const htmlValid = (document.getElementById(this.cartInfoFormId) as HTMLFormElement).checkValidity();
@@ -70,7 +78,8 @@ export class ShoppingCart extends Component<IProps, IState> {
         (document.getElementById(this.cartPhoneId) as HTMLFormElement).setCustomValidity(validPhone ? '' : 'invalid phone');
 
         if (htmlValid && validPhone) {
-            this.setState({ infoSendingState: 'waiting', cartState: 'payment' });
+            this.setState({ infoSendingState: 'waiting' });
+            this.setCartState('payment');
         } else {
             this.setState({ infoSendingState: 'input-error' });
         }
@@ -83,122 +92,136 @@ export class ShoppingCart extends Component<IProps, IState> {
             var textB = b.name.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
+        const orderClassName = 'cart-section ' + (this.state.cartState === 'order' ? 'visible' : 'invisible');
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
         const submitDisabled = !this.canSubmitPayment();
+
+        const total = `$${(parseInt(this.state.amountInCents) / 100).toFixed(2)}`;
 
         return (cart.isHidden ? '' :
             <div id='cart'>
                 <a id='cart-closer' onClick={this.toggleCart}>
                     <FontAwesomeIcon icon='caret-down' />
                 </a>
-                {this.state.cartState === 'order'
-                    ? <React.Fragment>
-                        <ul className='cart-section'>
-                            {items.map(item => {
-                                const remove = new CartAction({
-                                    task: 'remove',
-                                    key: item.key
-                                });
-                                const itemKey = `cart-item-${item.key}`;
-                                const size = item.priceTypeName.length === 0 ? '' : <span className='normal f7'> ({item.priceTypeName})</span>
+                <div className={orderClassName}>
+                    <ul>
+                        {items.map(item => {
+                            const remove = new CartAction({
+                                task: 'remove',
+                                key: item.key
+                            });
+                            const itemKey = `cart-item-${item.key}`;
+                            const size = item.priceTypeName.length === 0 ? '' : <span className='normal f7'> ({item.priceTypeName})</span>
 
-                                return (
-                                    <li key={itemKey}>
-                                        <div className='flex justify-between'>
-                                            <strong>
-                                                [{item.quantity}] {item.name}{size}
-                                            </strong>
-                                            <span>
-                                                {item.totalCost} <FontAwesomeIcon icon='trash' onClick={() => this.props.cartAction(remove)} />
-                                            </span>
-                                        </div>
-                                        <div className='f7 pl2'>{item.parts}</div>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                        <div id='cart-total' className='cart-section'>
+                            return (
+                                <li key={itemKey}>
+                                    <div className='flex justify-between'>
+                                        <strong>
+                                            [{item.quantity}] {item.name}{size}
+                                        </strong>
+                                        <span>
+                                            {item.totalCost}
+                                            <FontAwesomeIcon className='ml2' icon='trash-alt' onClick={() => this.props.cartAction(remove)} />
+                                        </span>
+                                    </div>
+                                    <div className='f7 pl2'>{item.parts}</div>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                    <div id='cart-total' className='cart-section'>
+                        <div>
+                            <span>SubTotal:</span>
+                            <span>{cart.subTotalCost}</span>
+                        </div>
+                        <div>
+                            <span>Tax:</span>
+                            <span>{cart.taxCost}</span>
+                        </div>
+                        <div>
                             <strong>Total:</strong>
-                            <span>{cart.totalCost}</span>
+                            <strong>{cart.totalCost}</strong>
                         </div>
-                        <div id='cart-checkout-button' className='cart-section'>
-                            <MDBBtn onClick={() => this.setCartState('info')}>
-                                <FontAwesomeIcon icon='shopping-cart' /> Checkout
-                            </MDBBtn>
+                    </div>
+                    <div id='cart-checkout-button' className='cart-section'>
+                        <MDBBtn onClick={() => this.setCartState('info')}>
+                            <FontAwesomeIcon icon='shopping-cart' /> Checkout
+                        </MDBBtn>
+                    </div>
+                </div>
+                <form id={this.cartInfoFormId} className={infoFormClassName} onSubmit={this.infoSubmitHandler} noValidate>
+                    <fieldset className="sq-fieldset">
+                        <div>
+                            <span className='sq-label'>First Name</span>
+                            <input required min='2' id='cartFirstName' name='cartFirstName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
-                    </React.Fragment>
-                    : 
-                    <React.Fragment>
-                        <form id={this.cartInfoFormId} className={infoFormClassName} onSubmit={this.submitHandler} noValidate>
-                            <fieldset className="sq-fieldset">
-                                <div>
-                                    <span className='sq-label'>First Name</span>
-                                    <input required min='2' id='cartFirstName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
-                                </div>
-                                <div>
-                                    <span className='sq-label'>Last Name</span>
-                                    <input required min='2' id='cartLastName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
-                                </div>
-                                <div>
-                                    <span className='sq-label'>Phone Number</span>
-                                    <input required id={this.cartPhoneId} type='text' className='form-control sq-form-style' onChange={this.handlePhoneChange} />
-                                </div>
-                                <div>
-                                    <span className='sq-label'>Email</span>
-                                    <input required id={this.cartEmailId} type='email' className='form-control sq-form-style' onChange={this.handleChange} />
-                                </div>
-                            </fieldset>
-                            <FormAlerts sendingState={this.state.infoSendingState} />
-                            <div className='cart-square-buttons'>
-                                <button className='sq-creditcard back' onClick={() => this.setCartState('order')}>
-                                    <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                                </button>
-                                <button type='submit' className='sq-creditcard'>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Payment
-                                </button>
+                        <div>
+                            <span className='sq-label'>Last Name</span>
+                            <input required min='2' id='cartLastName' name='cartLastName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
+                        </div>
+                        <div>
+                            <span className='sq-label'>Phone Number</span>
+                            <input required id={this.cartPhoneId} name={this.cartPhoneId} type='text' className='form-control sq-form-style' onChange={this.handlePhoneChange} />
+                        </div>
+                        <div>
+                            <span className='sq-label'>Email</span>
+                            <input required id={this.cartEmailId} name={this.cartEmailId} type='email' className='form-control sq-form-style' onChange={this.handleChange} />
+                        </div>
+                        <div>
+                            <span className='sq-label'>Note</span>
+                            <textarea id='cartNote' name='cartNote' className='form-control sq-form-style' onChange={this.handleChange} />
+                        </div>
+                    </fieldset>
+                    <FormAlerts sendingState={this.state.infoSendingState} />
+                    <div className='cart-square-buttons'>
+                        <button className='sq-creditcard back' onClick={(event) => { event.preventDefault(); this.setCartState('order') }}>
+                            <FontAwesomeIcon icon='chevron-circle-left' /> Back
+                        </button>
+                        <button type='submit' className='sq-creditcard'>
+                            <FontAwesomeIcon icon='chevron-circle-right' /> Payment
+                        </button>
+                    </div>
+                </form>
+                <div id='cart-payment-form' className={paymentFormClassName}>
+                    <SquarePaymentForm
+                        formId='square-form'
+                        apiWrapper=''
+                        sandbox={this.props.settings.squareSandbox}
+                        applicationId={this.props.settings.squareApplicationId}
+                        locationId={this.props.settings.squareLocationId}
+                        cardNonceResponseReceived={this.cardNonceResponseReceived}
+                        createVerificationDetails={() => this.createVerificationDetails()}>
+                        <fieldset className="sq-fieldset">
+                            <CreditCardNumberInput />
+                            <div className="sq-form-third">
+                                <CreditCardExpirationDateInput />
                             </div>
-                        </form>
-                        <div id='cart-payment-form' className={paymentFormClassName}>
-                            <SquarePaymentForm
-                                formId='square-form'
-                                apiWrapper=''
-                                sandbox={this.props.settings.squareSandbox}
-                                applicationId={this.props.settings.squareApplicationId}
-                                locationId={this.props.settings.squareLocationId}
-                                cardNonceResponseReceived={this.cardNonceResponseReceived}
-                                createVerificationDetails={() => this.createVerificationDetails()}>
-                                <fieldset className="sq-fieldset">
-                                    <CreditCardNumberInput />
-                                    <div className="sq-form-third">
-                                        <CreditCardExpirationDateInput />
-                                    </div>
 
-                                    <div className="sq-form-third">
-                                        <CreditCardPostalCodeInput />
-                                    </div>
+                            <div className="sq-form-third">
+                                <CreditCardPostalCodeInput />
+                            </div>
 
-                                    <div className="sq-form-third">
-                                        <CreditCardCVVInput />
-                                    </div>
-                                </fieldset>
-                                <FormAlerts sendingState={this.state.paymentSendingState} errorMessage='Error - nothing charged' sentMessage='Your food will be ready shortly!' />
-                                <div className='cart-square-buttons'>
-                                    <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
-                                        <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                                    </button>
-                                    {submitDisabled ?
-                                        <button className='sq-creditcard' disabled={true}>
-                                            <FontAwesomeIcon icon='chevron-circle-right' /> Pay {cart.totalCost}
-                                        </button> :
-                                        <CreditCardSubmitButton>
-                                            <FontAwesomeIcon icon='chevron-circle-right' /> Pay {cart.totalCost}
-                                        </CreditCardSubmitButton>
-                                    }
-                                </div>
-                            </SquarePaymentForm>
+                            <div className="sq-form-third">
+                                <CreditCardCVVInput />
+                            </div>
+                        </fieldset>
+                        <FormAlerts sendingState={this.state.paymentSendingState} errorMessage='Error - nothing charged' sentMessage='Your food will be ready shortly!' />
+                        <div className='cart-square-buttons'>
+                            <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
+                                <FontAwesomeIcon icon='chevron-circle-left' /> Back
+                            </button>
+                            {submitDisabled ?
+                                <button className='sq-creditcard' disabled={true}>
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
+                                </button> :
+                                <CreditCardSubmitButton>
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
+                                </CreditCardSubmitButton>
+                            }
                         </div>
-                    </React.Fragment>
+                    </SquarePaymentForm>
+                </div>
                 }
             </div>
         )
@@ -220,27 +243,31 @@ export class ShoppingCart extends Component<IProps, IState> {
         }
     }
 
+    getPaymentModel(nonce: string, buyerVerificationToken: string): string {
+        return JSON.stringify({
+            Name: `${this.state.cartFirstName} ${this.state.cartLastName}`,
+            Email: this.state.cartEmail,
+            Phone: this.state.cartPhone,
+            Nonce: nonce,
+            BuyerVerificationToken: buyerVerificationToken,
+            Note: this.state.cartNote,
+            Items: this.props.cart.items.map(item => new Object({
+                Quantity: item.quantity,
+                Name: item.name,
+                PriceTypeName: item.priceTypeName,
+                PriceId: item.priceId,
+                Note: item.parts
+            }))
+        });
+    }
+
     async sendPayment(nonce: string, buyerVerificationToken: string) {
         if (this.canSubmitPayment()) {
             this.setState({ paymentSendingState: 'sending' });
             fetch('api/payment', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Name: `${this.state.cartFirstName} ${this.state.cartLastName}`,
-                    Email: this.state.cartEmail,
-                    Phone: this.state.cartPhone,
-                    Nonce: nonce,
-                    BuyerVerificationToken: buyerVerificationToken,
-                    Items: this.props.cart.items.map(item => new Object({
-                        Quantity: item.quantity,
-                        Name: item.name,
-                        PriceTypeName: item.priceTypeName,
-                        Note: item.parts
-                    }))
-                })
+                headers: { 'Content-Type': 'application/json', },
+                body: this.getPaymentModel(nonce, buyerVerificationToken)
             })
                 .then(response => {
                     this.setState({ paymentSendingState: response.status === 200 ? 'sent' : 'error' });
@@ -254,7 +281,7 @@ export class ShoppingCart extends Component<IProps, IState> {
 
     createVerificationDetails() {
         return {
-            amount: this.props.cart.totalCost.replace('$',''),
+            amount: this.state.amountInCents,
             currencyCode: 'USD',
             intent: 'CHARGE',
             billingContact: {
@@ -268,5 +295,19 @@ export class ShoppingCart extends Component<IProps, IState> {
                 phone: this.state.cartPhone
             }
         }
+    }
+
+    async populateAmount() {
+        fetch('/api/payment/amount', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+            body: this.getPaymentModel(null, null)
+        })
+            .then(response => response.text())
+            .then((amount) => this.setState({ amountInCents: amount }))
+            .catch(error => {
+                console.error('error', error);
+                this.setState({ paymentSendingState: 'error' })
+            });
     }
 }

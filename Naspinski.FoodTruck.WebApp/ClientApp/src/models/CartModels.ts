@@ -8,18 +8,28 @@ export class Cart {
     isStorageEnabled: boolean = typeof (Storage) !== undefined;
     termsAcknowledged: boolean = false;
     menuItems: MenuItem[];
+    name: string = '';
+    email: string = '';
+    phone: string = '';
     tax: number = 0;
-
+    
+    
     public get itemCount(): number {
         return this.items.map(x => x.quantity).reduce((quantity, total) => quantity + total, 0);
     }
 
-    public get total(): number {
+    public get subTotal(): number {
         return this.items.map(x => x.totalPrice).reduce((itemTotal, total) => itemTotal + total, 0);
     }
-    public get totalCost(): string {
-        return CartUtil.formatter.format(this.total);
+    public get subTotalCost(): string {
+        return CartUtil.formatter.format(this.subTotal);
     }
+
+    public get taxAmount(): number { return this.tax * this.subTotal }
+    public get taxCost(): string { return CartUtil.formatter.format(this.taxAmount) }
+    public get total(): number { return this.subTotal + this.taxAmount }
+    public get totalCost(): string { return CartUtil.formatter.format(this.total) }
+
     
     constructor(init?: Partial<Cart>) {
         Object.assign(this, init);
@@ -39,7 +49,7 @@ export class Cart {
         this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
         fetch('api/payment/tax')
             .then((response) => response.text())
-            .then((tax) => this.tax = parseFloat(tax))
+            .then((tax) => this.tax = parseFloat(tax) / 100)
             .catch(error => console.error('error', error));
     }
 

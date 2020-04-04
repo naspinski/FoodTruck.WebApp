@@ -20,11 +20,11 @@ import { Calendar } from './components/Calendar';
 import { CartAction } from './models/CartModels';
 
 import {
-    faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrash, faPhone, faShoppingCart, faCog,
+    faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faChevronCircleRight, faChevronCircleLeft, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrash, faPhone, faShoppingCart, faCog,
+library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faStar, faChevronCircleRight, faChevronCircleLeft, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown);
 
 export default class App extends Component<{}, SystemState> {

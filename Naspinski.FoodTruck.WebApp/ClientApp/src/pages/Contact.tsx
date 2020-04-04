@@ -109,7 +109,9 @@ export class Contact extends Component<IProps, IState> {
                     <FontAwesomeIcon icon='map-marker-alt' /> Location
                 </h3>
                 <Map location={this.state.location} id='contact-map' zoom={11} googleMapsApiKey={this.state.googleMapsApiKey} isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} />
-                <Address location={this.state.location} />
+                <div className='b'>
+                    <Address location={this.state.location} />
+                </div>
             </div>
             : '';
 
@@ -132,7 +134,7 @@ export class Contact extends Component<IProps, IState> {
                     <FontAwesomeIcon icon='phone' /> Phone
                 </h3>
                 <address className='f4 pt2 left pl2'>
-                    <div>{settings.contactPhone}</div>
+                    <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
                 </address>
             </React.Fragment>;
 
