@@ -56,7 +56,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("u/{subscriberLocation}")]//{subscriber}/{location?}")]
+        [Route("u/{subscriberLocation}")]
         public string Unsubscribe(string subscriberLocation = "subscriber---location")
         {
             if (subscriberLocation != "subscriber---location")

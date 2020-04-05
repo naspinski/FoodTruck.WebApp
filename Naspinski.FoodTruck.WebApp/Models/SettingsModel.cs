@@ -1,6 +1,7 @@
 ﻿using Naspinski.FoodTruck.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using static Naspinski.FoodTruck.Data.Constants;
 
@@ -22,7 +23,9 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
+        public bool IsTextOn { get; set; }
         public bool IsApplyOn { get; set; }
+        public bool IsValidTimeForOnlineOrder { get; set; } = false;
         public string GoogleMapsApiKey { get; set; }
         public Dictionary<string, string> DeliveryServiceImageToUrl { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
@@ -33,12 +36,19 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string SquareApplicationId { get; set; }
         public string SquareLocationId { get; set; }
 
-
+        private int TimeZoneOffsetFromUtcInHours;
+        private int StopOrderingMinutesToClose;
         private SystemModel _system;
         
         public SettingsModel(AzureSettings azureSettings, SquareSettings squareSettings, SystemModel system, FoodTruckContext context)
         {
             _system = system;
+            
+            TimeZoneOffsetFromUtcInHours = -6;
+            Int32.TryParse(system.Settings[SettingName.TimeZoneOffsetFromUtcInHours], out TimeZoneOffsetFromUtcInHours);
+            StopOrderingMinutesToClose = 30;
+            Int32.TryParse(system.Settings[SettingName.StopOrderingMinutesToClose], out StopOrderingMinutesToClose);
+
             HomeUrl = azureSettings.HomeUrl ?? string.Empty;
             SquareSandbox = !squareSettings.UseProductionApi;
             SquareApplicationId = SquareSandbox ? squareSettings.SandboxApplicationId : squareSettings.ProductionApplicationId;
@@ -54,12 +64,13 @@ namespace Naspinski.FoodTruck.WebApp.Models
             BannerImageUrl = system.Settings[SettingName.BannerImageUrl];
             FaviconImageUrl = system.Settings[SettingName.FaviconImageUrl];
             ContactPhone = system.Settings[SettingName.ContactPhone];
-
+            
             if (system != null)
             {
                 IsBrickAndMortar = SetBool(SettingName.BrickAndMortarMode, true);
                 IsApplyOn = SetBool(SettingName.IsApplyOn);
                 IsOrderingOn = SetBool(SettingName.IsOrderingOn);
+                IsTextOn = SetBool(SettingName.IsTextOn);
 
                 GoogleMapsApiKey = _system.Get(SettingName.GoogleMapsApiKey);
 
@@ -75,6 +86,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
                     var day = ((DayOfWeek)d).ToString();
                     Schedule.Add(day, new Schedule(day, system.Settings));
                 }
+
+                IsValidTimeForOnlineOrder = GetIsValidTimeForOnlineOrder();
             }
         }
 
@@ -95,7 +108,30 @@ namespace Naspinski.FoodTruck.WebApp.Models
             if (!string.IsNullOrWhiteSpace(_system.Settings[setting]))
                 dictionary.Add(setting, _system.Settings[setting] as T);
         }
+        public bool GetIsValidTimeForOnlineOrder()
+        {
+            if (!IsBrickAndMortar && IsOrderingOn)
+                return true;
+
+            var now = DateTime.Now.AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
+            var today = Schedule[now.DayOfWeek.ToString()];
+            if (string.IsNullOrEmpty(today.Open) || string.IsNullOrEmpty(today.Close))
+                return false;
+
+            return now >= GetTodaysDateTimeFrom(today.Open) && now < GetTodaysDateTimeFrom(today.Close).AddMinutes(0 - StopOrderingMinutesToClose);
+        }
+
+        /// <summary>
+        /// get today's datetime given an am/pm string
+        /// </summary>
+        /// <param name="time">time in HH:mm AM/PM format</param>
+        private DateTime GetTodaysDateTimeFrom(string time)
+        {
+            time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
+            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).ToUniversalTime().AddHours(TimeZoneOffsetFromUtcInHours);
+        }
     }
+
 
     public class Schedule
     {
@@ -110,12 +146,12 @@ namespace Naspinski.FoodTruck.WebApp.Models
             }
         }
 
-        public Schedule(string day, Dictionary<string, string> viewData)
+        public Schedule(string day, Dictionary<string, string> openToClose)
         {
-            if (viewData != null)
+            if (openToClose != null)
             {
-                Open = viewData[$"{day}Open"] == null ? string.Empty : viewData[$"{day}Open"].ToString();
-                Close = viewData[$"{day}Close"] == null ? string.Empty : viewData[$"{day}Close"].ToString();
+                Open = openToClose[$"{day}Open"] == null ? string.Empty : openToClose[$"{day}Open"].ToString();
+                Close = openToClose[$"{day}Close"] == null ? string.Empty : openToClose[$"{day}Close"].ToString();
             }
         }
     }

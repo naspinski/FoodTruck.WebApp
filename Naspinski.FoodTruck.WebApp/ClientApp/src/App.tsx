@@ -57,7 +57,7 @@ export default class App extends Component<{}, SystemState> {
                 </Helmet>
                 <Layout settings={this.state.settings} cart={this.state.cart} cartAction={this.cartActionHandler}>
                     <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                    <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} isOrderingOn={this.state.settings.isOrderingOn} />} />
+                    <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} disabled={this.state.cart.disabled} showCart={this.state.settings.showCart} />} />
                     <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
                     <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
                     <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
@@ -84,12 +84,6 @@ export default class App extends Component<{}, SystemState> {
                 const options: LoaderOptions = { /* todo */ };
                 const loader = new Loader(settings.googleMapsApiKey, options);
                 loader.load().then(() => this.setState({ isGoogleMapsLoaded: true, isLoaded: true }));
-
-                if (settings.isOrderingOn) {
-                    let cart = this.state.cart;
-                    cart.load();
-                    this.setState({ cart: cart });
-                }
             });
     }
 

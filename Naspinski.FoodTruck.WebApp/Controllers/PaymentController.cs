@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Elmah.Io.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
@@ -26,6 +27,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private readonly SettingHandler _settingHandler;
         private readonly AzureSettings _azureSettings;
         private SquareHelper _square;
+        private SquareSettings _squareSettings;
 
         private Data.Models.Payment.Order _order;
 
@@ -34,6 +36,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             _handler = new OrderHandler(context, "system");
             _azureSettings = azureSettings;
             _settingHandler = new SettingHandler(_context);
+            _squareSettings = squareSettings;
             _square = new SquareHelper(squareSettings);
         }
 
@@ -50,8 +53,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             var taxes = await _square.GetTaxes();
             taxes = taxes ?? new List<CatalogObject>();
             var tax = await _square.GetAdditiveTaxPercentage(taxes);
-            _order = _handler.Submit(model.OrderType, model.Name, model.Email, model.Phone, model.Note, model.Items, tax, _square.UseProduction, deferSave: !saveOrder);
-            return await _square.GetCreateOrderRequest(_order, Guid.NewGuid(), taxes, model.Email);
+            _order = _handler.Submit(model.OrderType, model, tax, _square.UseProduction, deferSave: !saveOrder);
+            return await _square.GetCreateOrderRequest(model, _order, Guid.NewGuid(), taxes);
         }
 
         [HttpPost]
@@ -66,43 +69,50 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [Route("")]
         public async Task<IActionResult> Pay(PaymentModel model)
         {
-            var settings = new SystemModel(_settingHandler.Get(new[] {
-                SettingName.IsOrderingOn,
-                SettingName.OrderConfirmationEmailSubject,
-                SettingName.Title,
-                SettingName.ContactEmail,
-                SettingName.TwilioAuthToken,
-                SettingName.TwilioPhoneNumber,
-                SettingName.TwilioSid,
-                SettingName.OrderNotificationEmails,
-                SettingName.OrderNotificationPhoneNumbers,
-                SettingName.BrickAndMortarMode
-            }));
+            var system = new SystemModel(_settingHandler.GetAll());
+            var settings = new SettingsModel(_azureSettings, _squareSettings, system, _context);
             try
             {
-                if (!string.Equals(settings.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
+                if (!settings.IsValidTimeForOnlineOrder)
+                    throw new Exception("Too late for online order");
+
+                if (!string.Equals(system.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
                     throw new InvalidOperationException("Online ordering is currently unavailable");
 
-                var isBrickAndMortar = string.Equals(settings.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
+                var isBrickAndMortar = string.Equals(system.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
                 var orderRequest = await GetOrderRequest(model, true);
                 var squareOrder = await _square.Client.OrdersApi.CreateOrderAsync(_square.LocationId, orderRequest);
                 
                 var note = $"{OrderPrefix}{_order.Id} - ONLINE ORDER";
                 var amount = new Money(_square.GetTotalInCents(orderRequest), "USD");
 
-                var paymentRequest = new CreatePaymentRequest(
-                    amountMoney: amount,
-                    idempotencyKey: Guid.NewGuid().ToString(),
-                    sourceId: model.Nonce,
-                    verificationToken: model.BuyerVerificationToken,
-                    buyerEmailAddress: model.Email,
-                    orderId: squareOrder.Order.Id,
-                    note: note);
+                if (amount.Amount == 0)
+                {
+                    _handler.TransactionApproved(_order.Id, "NO_PAYMENT");
+                }
+                else
+                {
+                    var paymentRequest = new CreatePaymentRequest(
+                        amountMoney: amount,
+                        idempotencyKey: Guid.NewGuid().ToString(),
+                        sourceId: model.Nonce,
+                        verificationToken: model.BuyerVerificationToken,
+                        buyerEmailAddress: model.Email,
+                        orderId: squareOrder.Order.Id,
+                        note: note);
 
-                var paymentResponse = await _square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
-                _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+                    var paymentResponse = await _square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                    try
+                    {
+                        _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+                    }
+                    catch(Exception ex) // order and payment went through, there was a DB error
+                    {
+                        ex.Ship(this.HttpContext);
+                    }
+                }
 
-                DoNotification(_order, settings, model.Name);
+                DoNotification(_order, system, model.Name);
                 return Ok();
             }
             catch (Exception ex)

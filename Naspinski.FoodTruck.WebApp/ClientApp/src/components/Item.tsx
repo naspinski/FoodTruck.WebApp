@@ -1,13 +1,15 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { MenuItem, MenuPrice, MenuOption, MenuComboPart } from '../models/MenuModels';
+import ItemPriceButton from './ItemPriceButton';
 import { MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 import { CartAction } from '../models/CartModels';
 
 interface IProps {
     item: MenuItem,
     cartAction: (action: CartAction) => void,
-    isOrderingOn: boolean
+    showCart: boolean,
+    disabled: boolean
 }
 
 export class Item extends Component<IProps> {
@@ -17,7 +19,7 @@ export class Item extends Component<IProps> {
         this.props.item.comboParts.filter(x => x.options.length > 0).forEach(cp => cp.options[0].selected = true);
     }
 
-    onPriceClick = (item: MenuItem, price: MenuPrice) => {
+    handlePriceClick = (item: MenuItem, price: MenuPrice) => {
         let action = new CartAction();
         action.task = 'add';
         action.item = item;
@@ -56,7 +58,8 @@ export class Item extends Component<IProps> {
             <div className='dib'>{item.prices.map(price => {
                 const prefix = price.priceTypeName === null || price.priceTypeName.length === 0 ? '' : <strong>{price.priceTypeName}: </strong>;
                 const text = <React.Fragment>{prefix}{price.amountAsCurrency}</React.Fragment>;
-                const fill = !this.props.isOrderingOn ? '' : <MDBBtn size='sm' onClick={() => this.onPriceClick(item, price)}>{text}</MDBBtn>;
+                const fill = !this.props.showCart ? text
+                    : <ItemPriceButton item={item} price={price} text={text} disabled={this.props.disabled} handlePriceClick={this.handlePriceClick} />;
                 return (
                     <div className='price-container dib ml2' key={`item-${item.id}-price-${price.id}`}>
                         {fill}

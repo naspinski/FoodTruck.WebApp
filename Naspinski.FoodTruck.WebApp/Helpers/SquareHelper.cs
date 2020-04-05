@@ -1,8 +1,10 @@
 ﻿using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Square;
 using Square.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,7 +67,7 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
                     .Sum(x => Decimal.Parse(x.Percentage));
         }
 
-        public async Task<CreateOrderRequest> GetCreateOrderRequest(Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes, string customer = "")
+        public async Task<CreateOrderRequest> GetCreateOrderRequest(PaymentModel model, Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)
         {
             var add = await GetAdditiveTaxPercentage(taxes);
             var inc = await GetInclusiveTaxPercentage(taxes);
@@ -78,11 +80,35 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
                     percentage: x.TaxData.Percentage)
                 ).ToList();
 
+            model.PickUpInMinutes = string.IsNullOrWhiteSpace(model.PickUpInMinutes) ? "0" : model.PickUpInMinutes;
+            var pickUpInMinutes = 0;
+                int.TryParse(model.PickUpInMinutes, out pickUpInMinutes);
+
+            var isScheduled = false;
+            if (pickUpInMinutes > 0)
+                isScheduled = true;
+            else
+                pickUpInMinutes = 10;
+
+            var pickupDetails = new OrderFulfillmentPickupDetails(
+                recipient: new OrderFulfillmentRecipient(displayName: model.Name, emailAddress: model.Email, phoneNumber: model.Phone),
+                scheduleType: (isScheduled ? "SCHEDULED" : "ASAP"),
+                prepTimeDuration: "P10M", // 10 minutes
+                pickupAt: ToRfc3339String(DateTime.UtcNow.AddMinutes(pickUpInMinutes))
+            );
+
+            var fulfill = new List<OrderFulfillment>() {
+                new OrderFulfillment(
+                    type: "PICKUP",
+                    pickupDetails:  pickupDetails
+                   )};
+
             var squareOrder = new Square.Models.Order(LocationId,
                 taxes: _taxes,
                 referenceId: order.Id.ToString(),
-                customerId: customer,  
-                lineItems: orderLineItems
+                customerId: model.Email,  
+                lineItems: orderLineItems, 
+                fulfillments: fulfill
             );
 
             var orderRequest = new CreateOrderRequest(squareOrder, guid.ToString());
@@ -99,6 +125,11 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
                 .Sum(x => Decimal.Parse(x.Percentage));
 
             return Convert.ToInt32(subtotalInCents * (1 + tax / 100));
+        }
+
+        public string ToRfc3339String(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fffzzz", DateTimeFormatInfo.InvariantInfo);
         }
     }
 }

@@ -5,6 +5,7 @@ export class SiteSettings {
     isBrickAndMortar: boolean = false;
     isOrderingOn: boolean = false;
     isApplyOn: boolean = false;
+    isValidTimeForOnlineOrder: boolean = false;
     title: string = 'loading';
     subTitle: string = '';
     tagLine: string = '';
@@ -36,6 +37,9 @@ export class SiteSettings {
     }
     public get socialMap(): Map<string, string> {
         return new Map<string, string>(Object.entries(this.social));
+    }
+    public get showCart(): boolean {
+        return this.isValidTimeForOnlineOrder && this.isOrderingOn;
     }
 
     constructor(init?: Partial<SiteSettings>) {

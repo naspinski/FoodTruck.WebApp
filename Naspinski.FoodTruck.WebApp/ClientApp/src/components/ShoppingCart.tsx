@@ -27,7 +27,8 @@ interface IState {
     cartState: 'order' | 'info' | 'payment'
     nonce: string,
     cartNote: string,
-    amountInCents: string
+    amountInCents: string,
+    cartPickup: string
 }
 
 export class ShoppingCart extends Component<IProps, IState> {
@@ -45,7 +46,8 @@ export class ShoppingCart extends Component<IProps, IState> {
             nonce: '',
             cartState: 'order',
             cartNote: '',
-            amountInCents: '0'
+            amountInCents: '0',
+            cartPickup: ''
         };
     }
 
@@ -57,13 +59,19 @@ export class ShoppingCart extends Component<IProps, IState> {
     setCartState = (state: 'order' | 'info' | 'payment') => {
         this.setState({ cartState: state })
         if (state === 'payment') {
+            this.props.cartAction(new CartAction({ task: 'disable' }));
             this.populateAmount();
+        } else {
+            this.props.cartAction(new CartAction({ task: 'enable' }));
         }
     }
 
     canSubmitPayment() { return this.state.paymentSendingState !== 'sending' && this.state.paymentSendingState !== 'sent'; }
 
-    handleChange = (event: any) => { this.setState({ [event.target.name]: event.target.value } as React.ComponentState); }
+    handleChange = (event: any) => {
+        console.log(`[${event.target.name}]: ${event.target.value}`);
+        this.setState({ [event.target.name]: event.target.value } as React.ComponentState);
+    }
     handlePhoneChange = (event: any) => {
         this.setState({ cartPhone: event.target.value.replace('(', '').replace(')', '').replace(' ', '').replace('-', '') });
     }
@@ -86,6 +94,7 @@ export class ShoppingCart extends Component<IProps, IState> {
     }
     
     render() {
+        const settings = this.props.settings;
         const cart = this.props.cart;
         const items = cart.items.sort(function (a, b) {
             var textA = a.name.toUpperCase();
@@ -96,8 +105,6 @@ export class ShoppingCart extends Component<IProps, IState> {
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
         const submitDisabled = !this.canSubmitPayment();
-
-        const total = `$${(parseInt(this.state.amountInCents) / 100).toFixed(2)}`;
 
         return (cart.isHidden ? '' :
             <div id='cart'>
@@ -169,6 +176,15 @@ export class ShoppingCart extends Component<IProps, IState> {
                             <input required id={this.cartEmailId} name={this.cartEmailId} type='email' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
                         <div>
+                            <span className='sq-label'>Pick Up</span>
+                            <select defaultValue='0' id='cartPickup' name='cartPickup' className='form-control' onChange={this.handleChange}>
+                                <option value='0'>ASAP</option>
+                                <option value='30'>in 30 minutes</option>
+                                <option value='45'>in 45 minutes</option>
+                                <option value='60'>in 1 hour</option>
+                            </select>
+                        </div>
+                        <div>
                             <span className='sq-label'>Note</span>
                             <textarea id='cartNote' name='cartNote' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
@@ -206,17 +222,19 @@ export class ShoppingCart extends Component<IProps, IState> {
                                 <CreditCardCVVInput />
                             </div>
                         </fieldset>
-                        <FormAlerts sendingState={this.state.paymentSendingState} errorMessage='Error - nothing charged' sentMessage='Your food will be ready shortly!' />
+                        <FormAlerts sendingState={this.state.paymentSendingState}
+                            errorMessage={`Error - nothing charged ${(settings.contactPhone === null || settings.contactPhone.length < 10 ? '' : `- order by phone at ${settings.contactPhone}`)}`}
+                            sentMessage='Your food will be ready shortly!' />
                         <div className='cart-square-buttons'>
                             <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
                                 <FontAwesomeIcon icon='chevron-circle-left' /> Back
                             </button>
                             {submitDisabled ?
                                 <button className='sq-creditcard' disabled={true}>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay
                                 </button> :
                                 <CreditCardSubmitButton>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay
                                 </CreditCardSubmitButton>
                             }
                         </div>
@@ -251,6 +269,7 @@ export class ShoppingCart extends Component<IProps, IState> {
             Nonce: nonce,
             BuyerVerificationToken: buyerVerificationToken,
             Note: this.state.cartNote,
+            PickUpInMinutes: this.state.cartPickup,
             Items: this.props.cart.items.map(item => new Object({
                 Quantity: item.quantity,
                 Name: item.name,
@@ -304,7 +323,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             body: this.getPaymentModel(null, null)
         })
             .then(response => response.text())
-            .then((amount) => this.setState({ amountInCents: amount }))
+            .then((amount) => {
+                this.setState({ amountInCents: amount });
+            })
             .catch(error => {
                 console.error('error', error);
                 this.setState({ paymentSendingState: 'error' })

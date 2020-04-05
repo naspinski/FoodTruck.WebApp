@@ -7,7 +7,8 @@ import { CartAction } from '../models/CartModels';
 interface IProps {
     category: MenuCategory,
     cartAction: (action: CartAction) => void,
-    isOrderingOn: boolean
+    showCart: boolean,
+    disabled: boolean
 }
 
 export class Category extends Component<IProps> {
@@ -25,7 +26,7 @@ export class Category extends Component<IProps> {
             </React.Fragment>;
 
         const items = category.menuItems === undefined ? '' :
-            category.menuItems.map(item => <Item item={item} key={'item-' + item.id} cartAction={this.cartAction} isOrderingOn={this.props.isOrderingOn} />);
+            category.menuItems.map(item => <Item item={item} disabled={this.props.disabled} key={'item-' + item.id} cartAction={this.cartAction} showCart={this.props.showCart} />);
 
         return (category.excludeFromMenu ? '' :
             <div className='ph1'>

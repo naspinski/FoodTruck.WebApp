@@ -12,7 +12,7 @@ export class Cart {
     email: string = '';
     phone: string = '';
     tax: number = 0;
-    
+    disabled: boolean = false;
     
     public get itemCount(): number {
         return this.items.map(x => x.quantity).reduce((quantity, total) => quantity + total, 0);
@@ -37,6 +37,8 @@ export class Cart {
 
     public action(action: CartAction) {
         switch (action.task) {
+            case 'disable': this.disabled = true; break;
+            case 'enable': this.disabled = false; break;
             case 'toggle': this.isHidden = !this.isHidden; break;
             case 'add': this.add(action); break;
             case 'remove': this.remove(action); break;
@@ -54,43 +56,24 @@ export class Cart {
     }
 
     add(action: CartAction, quantity?: number) {
-        quantity = quantity ?? 1;
-        var item = new CartItem();
-        item.loadFromAction(action);
-        let existing = this.items.find(x => x.key === item.key);
-        console.log('existing', item.key);
-        if (existing === undefined) {
-            this.items.push(item);
-        } else {
-            existing.quantity += quantity;
+        if (!this.disabled) {
+            quantity = quantity ?? 1;
+            var item = new CartItem();
+            item.loadFromAction(action);
+            let existing = this.items.find(x => x.key === item.key);
+            console.log('existing', item.key);
+            if (existing === undefined) {
+                this.items.push(item);
+            } else {
+                existing.quantity += quantity;
+            }
         }
     }
 
     remove(action: CartAction) {
-        this.items = this.items.filter(x => x.key !== action.key);
-        this.isHidden = this.itemCount === 0 ? true : this.isHidden;
-    }
-
-    public load(): void {
-        if (this.isStorageEnabled && sessionStorage.getItem(this.storageKey) !== undefined && sessionStorage.getItem(this.storageKey) !== null) {
-            const items = JSON.parse(sessionStorage.getItem(this.storageKey));
-            this.items = items === null ? [] : items.map(x => new CartItem(x));
-        }
-    }
-
-    writeToStorage() {
-        if (this.isStorageEnabled) {
-            sessionStorage.setItem(this.storageKey, JSON.stringify(this.items));
-        }
-        if (this.items.length === 0) {
-            this.termsAcknowledged = false;
-        }
-    }
-
-    clearStorage() {
-        this.items = []
-        if (this.isStorageEnabled) {
-            sessionStorage.removeItem(this.storageKey);
+        if (!this.disabled) {
+            this.items = this.items.filter(x => x.key !== action.key);
+            this.isHidden = this.itemCount === 0 ? true : this.isHidden;
         }
     }
 }
@@ -176,7 +159,7 @@ export class CartUtil {
 }
 
 export class CartAction {
-    task: 'add' | 'remove' | 'pay' | 'toggle' | 'populate-items';
+    task: 'add' | 'remove' | 'pay' | 'toggle' | 'populate-items' | 'disable' | 'enable';
     price: MenuPrice = new MenuPrice();
     item: MenuItem = new MenuItem();
     key: string = '';
