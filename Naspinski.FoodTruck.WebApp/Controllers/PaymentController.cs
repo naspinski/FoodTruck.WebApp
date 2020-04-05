@@ -112,7 +112,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     }
                 }
 
-                DoNotification(_order, system, model.Name);
+                DoNotification(_order, system, settings.IsTextOn, model.Name);
                 return Ok();
             }
             catch (Exception ex)
@@ -122,13 +122,13 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             }
         }
 
-        private void DoNotification(Data.Models.Payment.Order order, SystemModel settings, string name = "")
+        private void DoNotification(Data.Models.Payment.Order order, SystemModel settings, bool sendText, string name = "")
         {
             Parallel.Invoke(
                 () => ConfirmationEmail(order, settings, name),
-                () => ConfirmationText(order, settings, name),
+                () => { if (sendText) ConfirmationText(order, settings, name); },
                 () => ConfirmationEmail(order, settings, name, false),
-                () => ConfirmationText(order, settings, name, false)
+                () => { if (sendText) ConfirmationText(order, settings, name, false); }
             );
         }
 
