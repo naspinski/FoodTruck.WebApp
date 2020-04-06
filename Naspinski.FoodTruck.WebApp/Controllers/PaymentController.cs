@@ -13,6 +13,8 @@ using Square.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using static Naspinski.FoodTruck.Data.Constants;
 
@@ -119,8 +121,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                Log(ex); 
-                return BadRequest(ex.Message);
+                Log(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 

@@ -17,7 +17,6 @@ interface IProps {
 }
 
 interface IState {
-    errorMessages: string[],
     cartFirstName: string,
     cartLastName: string,
     cartEmail: string,
@@ -28,7 +27,8 @@ interface IState {
     nonce: string,
     cartNote: string,
     amountInCents: string,
-    cartPickup: string
+    cartPickup: string,
+    paymentError: string
 }
 
 export class ShoppingCart extends Component<IProps, IState> {
@@ -36,7 +36,6 @@ export class ShoppingCart extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            errorMessages: [],
             cartFirstName: '',
             cartLastName: '',
             cartEmail: '',
@@ -47,7 +46,8 @@ export class ShoppingCart extends Component<IProps, IState> {
             cartState: 'order',
             cartNote: '',
             amountInCents: '0',
-            cartPickup: ''
+            cartPickup: '',
+            paymentError: ''
         };
     }
 
@@ -76,7 +76,6 @@ export class ShoppingCart extends Component<IProps, IState> {
     canSubmitPayment() { return this.state.paymentSendingState !== 'sending' && this.state.paymentSendingState !== 'sent'; }
 
     handleChange = (event: any) => {
-        console.log(`[${event.target.name}]: ${event.target.value}`);
         this.setState({ [event.target.name]: event.target.value } as React.ComponentState);
     }
     handlePhoneChange = (event: any) => {
@@ -115,6 +114,8 @@ export class ShoppingCart extends Component<IProps, IState> {
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
         const submitDisabled = !this.canSubmitPayment();
+        const paymentErrorMessagePrefex = 'Error - nothing charged';
+        const total = `$${(Number.parseFloat(this.state.amountInCents)/100).toFixed(2)}`;
 
         return (cart.isHidden ? '' :
             <div id='cart'>
@@ -232,7 +233,7 @@ export class ShoppingCart extends Component<IProps, IState> {
                             </div>
                         </fieldset>
                         <FormAlerts sendingState={this.state.paymentSendingState}
-                            errorMessage='Error - nothing charged'
+                            errorMessage={`${paymentErrorMessagePrefex}${this.state.paymentError.length > 0 ? ` - ${this.state.paymentError}` : ''}`}
                             sentMessage='Your food will be ready shortly!' />
                         <div className='cart-square-buttons'>
                             <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
@@ -240,10 +241,10 @@ export class ShoppingCart extends Component<IProps, IState> {
                             </button>
                             {submitDisabled ?
                                 <button className='sq-creditcard' disabled={true}>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
                                 </button> :
                                 <CreditCardSubmitButton>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay
+                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
                                 </CreditCardSubmitButton>
                             }
                         </div>
@@ -260,11 +261,11 @@ export class ShoppingCart extends Component<IProps, IState> {
     cardNonceResponseReceived = (errors: any, nonce: string, cardData: any, buyerVerificationToken: string) => {
         if (this.canSubmitPayment()) {
             if (errors) {
-                this.setState({ paymentSendingState: 'input-error' });
-                this.setState({ errorMessages: errors.map(error => error.message) })
+                this.setState({ paymentSendingState: 'error' });
+                this.setState({ paymentError: errors.map(error => error.message).join(', ') })
                 return
             } else {
-                this.setState({ errorMessages: [] })
+                this.setState({ paymentError: '' })
                 this.sendPayment(nonce, buyerVerificationToken);
             }
         }
@@ -299,6 +300,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             })
                 .then(response => {
                     this.setState({ paymentSendingState: response.status === 200 ? 'sent' : 'error' });
+                    if (response.status === 400) {
+                        response.text().then(err => this.setState({ paymentError: err }));
+                    }
                 })
                 .catch(error => {
                     console.error('error', error);

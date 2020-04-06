@@ -22,9 +22,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="Naspinski.Data" Version="1.0.20200327.134940" />
-    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200405.154847" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200405.154847" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200405.154847" />
+    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20200406.103156" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20200406.103156" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20200406.103156" />
     <PackageReference Include="Naspinski.Maps" Version="1.0.20200327.135151" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20200327.135132" />
     <PackageReference Include="SendGrid" Version="9.13.2" />
