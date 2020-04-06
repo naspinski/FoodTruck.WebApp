@@ -54,7 +54,7 @@ export class ShoppingCart extends Component<IProps, IState> {
     pickupValues = new Map([
         [0, 'ASAP'],
         [30, '30 minutes'],
-        [45, '30 minutes'],
+        [45, '45 minutes'],
         [60, '1 hour']
     ])
 
@@ -109,7 +109,7 @@ export class ShoppingCart extends Component<IProps, IState> {
         });
 
         const pickups = Array.from(this.pickupValues.keys()).filter(x => x <= settings.minutesUntilClose);
-        const pickupsClassName = pickups.length > 1 ? 'visible' : 'invisible'; 
+        const pickupsClassName = pickups.length > 1 ? '' : 'invisible'; 
         const orderClassName = 'cart-section ' + (this.state.cartState === 'order' ? 'visible' : 'invisible');
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');

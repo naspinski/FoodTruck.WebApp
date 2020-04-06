@@ -13,8 +13,6 @@ using Square.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using static Naspinski.FoodTruck.Data.Constants;
 
@@ -24,7 +22,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
     [ApiController]
     public class PaymentController : BaseController
     {
-        private const string OrderPrefix = "I-";
         private readonly OrderHandler _handler;
         private readonly SettingHandler _settingHandler;
         private readonly AzureSettings _azureSettings;
@@ -87,7 +84,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 var orderRequest = await GetOrderRequest(model, true);
                 var squareOrder = await _square.Client.OrdersApi.CreateOrderAsync(_square.LocationId, orderRequest);
                 
-                var note = $"{OrderPrefix}{_order.Id} - ONLINE ORDER";
+                var note = $"ONLINE ORDER - ID: {_order.Id}";
                 var amount = new Money(_square.GetTotalInCents(orderRequest), "USD");
 
                 if (amount.Amount == 0)
@@ -140,7 +137,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             try
             {
-                var subject = $"{settings.Get(SettingName.Title)} - {(isCustomer ? settings.Get(SettingName.OrderConfirmationEmailSubject) : $"New Order {OrderPrefix}{order.Id}")}";
+                var subject = $"{settings.Get(SettingName.Title)} - {(isCustomer ? settings.Get(SettingName.OrderConfirmationEmailSubject) : $"New Order: {order.Id}")}";
                 if (isCustomer)
                     EmailSender.Send(_azureSettings.SendgridApiKey, subject, GetBody(order, name, settings, true), order.Email, settings.Get(SettingName.ContactEmail));
                 else
@@ -207,7 +204,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             var title = settings.Get(SettingName.Title);
             return isCustomer
                 ? $"{name}, here is your Order Confirmation:{n}{n}{order.FullText}{n}{n}Thank you!{n}-{title}"
-                : $"order {OrderPrefix}{order.Id} for {name}{n}{n}{order.FullText}";
+                : $"Order for {name}{n}{n}{order.FullText}";
         }
     }
 }
