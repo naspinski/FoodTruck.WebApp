@@ -40,7 +40,7 @@ export class SiteSettings {
         return new Map<string, string>(Object.entries(this.social));
     }
     public get showCart(): boolean {
-        return this.isValidTimeForOnlineOrder && this.isOrderingOn;
+        return (!this.isBrickAndMortar || this.isValidTimeForOnlineOrder) && this.isOrderingOn;
     }
 
     constructor(init?: Partial<SiteSettings>) {

@@ -74,9 +74,9 @@ export class Splash extends React.Component<IProps, IState> {
                     <h3 className='b'>{settings.subTitle}</h3>
                     <p>{settings.description}</p>
                     <p>
+                        {menuLink}
                         {menuDownload}
                         {conditionalLink}
-                        {menuLink}
                         <NavLink to='/contact'>
                             <MDBBtn color='amber'>
                                 <FontAwesomeIcon icon='envelope' /> Contact{settings.isBrickAndMortar ? '' : '/Book'}

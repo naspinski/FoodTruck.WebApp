@@ -232,7 +232,7 @@ export class ShoppingCart extends Component<IProps, IState> {
                             </div>
                         </fieldset>
                         <FormAlerts sendingState={this.state.paymentSendingState}
-                            errorMessage={`Error - nothing charged ${(settings.contactPhone === null || settings.contactPhone.length < 10 ? '' : `- order by phone at ${settings.contactPhone}`)}`}
+                            errorMessage='Error - nothing charged'
                             sentMessage='Your food will be ready shortly!' />
                         <div className='cart-square-buttons'>
                             <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>

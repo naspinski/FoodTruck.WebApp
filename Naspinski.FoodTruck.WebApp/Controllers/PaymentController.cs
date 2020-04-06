@@ -73,7 +73,9 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             var settings = new SettingsModel(_azureSettings, _squareSettings, system, _context);
             try
             {
-                if (!settings.IsValidTimeForOnlineOrder)
+                if(!settings.IsOrderingOn)
+                    throw new Exception("Online ordering is temporarily disabled");
+                if (settings.IsBrickAndMortar && !settings.IsValidTimeForOnlineOrder)
                     throw new Exception("Too late for online order");
 
                 if (!string.Equals(system.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
