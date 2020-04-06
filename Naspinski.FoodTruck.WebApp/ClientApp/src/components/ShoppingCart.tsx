@@ -51,6 +51,13 @@ export class ShoppingCart extends Component<IProps, IState> {
         };
     }
 
+    pickupValues = new Map([
+        [0, 'ASAP'],
+        [30, '30 minutes'],
+        [45, '30 minutes'],
+        [60, '1 hour']
+    ])
+
     cartInfoFormId = 'cart-info-form';
     cartEmailId = 'cartEmail';
     cartPhoneId = 'cartPhone';
@@ -101,6 +108,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             var textB = b.name.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
+
+        const pickups = Array.from(this.pickupValues.keys()).filter(x => x <= settings.minutesUntilClose);
+        const pickupsClassName = pickups.length > 1 ? 'visible' : 'invisible'; 
         const orderClassName = 'cart-section ' + (this.state.cartState === 'order' ? 'visible' : 'invisible');
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
@@ -175,13 +185,12 @@ export class ShoppingCart extends Component<IProps, IState> {
                             <span className='sq-label'>Email</span>
                             <input required id={this.cartEmailId} name={this.cartEmailId} type='email' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
-                        <div>
+                        <div className={pickupsClassName}>
                             <span className='sq-label'>Pick Up</span>
                             <select defaultValue='0' id='cartPickup' name='cartPickup' className='form-control' onChange={this.handleChange}>
-                                <option value='0'>ASAP</option>
-                                <option value='30'>in 30 minutes</option>
-                                <option value='45'>in 45 minutes</option>
-                                <option value='60'>in 1 hour</option>
+                                {pickups.map(minutes =>
+                                    <option key={`pickup-opt-${minutes}`} value={minutes}>{this.pickupValues.get(minutes)}</option>
+                                )}
                             </select>
                         </div>
                         <div>

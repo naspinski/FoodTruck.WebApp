@@ -26,6 +26,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public bool IsTextOn { get; set; }
         public bool IsApplyOn { get; set; }
         public bool IsValidTimeForOnlineOrder { get; set; } = false;
+        public int MinutesUntilClose { get; set; }
         public string GoogleMapsApiKey { get; set; }
         public Dictionary<string, string> DeliveryServiceImageToUrl { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
@@ -38,6 +39,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
         private int TimeZoneOffsetFromUtcInHours;
         private int StopOrderingMinutesToClose;
+        
         private SystemModel _system;
         
         public SettingsModel(AzureSettings azureSettings, SquareSettings squareSettings, SystemModel system, FoodTruckContext context)
@@ -110,15 +112,26 @@ namespace Naspinski.FoodTruck.WebApp.Models
         }
         public bool GetIsValidTimeForOnlineOrder()
         {
-            if (!IsBrickAndMortar && IsOrderingOn)
-                return true;
 
             var now = DateTime.Now.AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
             var today = Schedule[now.DayOfWeek.ToString()];
+
             if (string.IsNullOrEmpty(today.Open) || string.IsNullOrEmpty(today.Close))
                 return false;
 
-            return now >= GetTodaysDateTimeFrom(today.Open) && now < GetTodaysDateTimeFrom(today.Close).AddMinutes(0 - StopOrderingMinutesToClose);
+            var open = GetTodaysDateTimeFrom(today.Open);
+            var stopOrders = GetTodaysDateTimeFrom(today.Close).AddMinutes(0 - StopOrderingMinutesToClose);
+
+            var stillTakingOrders = now >= open && now < stopOrders;
+
+            MinutesUntilClose = 0;
+            if (stillTakingOrders && IsBrickAndMortar)
+                MinutesUntilClose = (int)(GetTodaysDateTimeFrom(today.Close) - now).TotalMinutes;
+
+            if (!IsBrickAndMortar && IsOrderingOn)
+                return true;
+
+            return stillTakingOrders;
         }
 
         /// <summary>

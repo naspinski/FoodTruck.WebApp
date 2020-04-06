@@ -31,15 +31,15 @@ export class Splash extends React.Component<IProps, IState> {
 
         const menuDownload = this.state.menuUrl === null || this.state.menuUrl.length === 0 ? '' : 
             <a href={this.state.menuUrl}>
-                <MDBBtn color='secondary'>
+                <MDBBtn color='default'>
                     <FontAwesomeIcon icon='download' /> Download Menu
                 </MDBBtn>
             </a>
 
         const menuLink = !settings.links.has('menu') ? '' :
             <NavLink to='/menu'>
-                <MDBBtn color='default'>
-                    <FontAwesomeIcon icon='hamburger' /> Menu
+                <MDBBtn color='secondary'>
+                    <FontAwesomeIcon icon='hamburger' /> {settings.showCart ? 'Order for Pickup!' : 'Menu'}
                 </MDBBtn>
             </NavLink>;
 
@@ -84,6 +84,7 @@ export class Splash extends React.Component<IProps, IState> {
                         </NavLink>
                     </p>
                     <p className='pl1'>
+                        {settings.deliveryServiceImageToUrlMap.size === 0 ? '' : <h5 className='b i serif'>Delivery</h5>}
                         {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map(svc =>
                             <a key={`service-${serviceCount++}`} href={settings.deliveryServiceImageToUrlMap.get(svc)}>
                                 <img src={svc} />
