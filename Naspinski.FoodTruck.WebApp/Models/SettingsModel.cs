@@ -151,7 +151,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         private DateTime GetTodaysDateTimeFrom(string time)
         {
             time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
-            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).ToUniversalTime().AddHours(TimeZoneOffsetFromUtcInHours);
+            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
         }
     }
 
