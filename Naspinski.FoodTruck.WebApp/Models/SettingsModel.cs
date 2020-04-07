@@ -134,7 +134,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 return true;
 
 
-            var _time = $"{DateTime.Now.Date.ToShortDateString()} {open}";
+            var _time = $"{DateTime.Now.Date.ToShortDateString()} {today.Open}";
             var _open = DateTime.ParseExact(_time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
 
             Extra = new
@@ -156,7 +156,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         private DateTime GetTodaysDateTimeFrom(string time)
         {
             time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
-            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
+            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(1 - TimeZoneOffsetFromUtcInHours);
         }
     }
 
