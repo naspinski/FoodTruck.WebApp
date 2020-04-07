@@ -115,7 +115,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public bool GetIsValidTimeForOnlineOrder()
         {
 
-            var now = DateTime.Now.AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
+            var now = DateTime.Now.ToUniversalTime().AddHours(TimeZoneOffsetFromUtcInHours);
             var today = Schedule[now.DayOfWeek.ToString()];
 
             if (string.IsNullOrEmpty(today.Open) || string.IsNullOrEmpty(today.Close))
@@ -132,18 +132,13 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
             if (!IsBrickAndMortar && IsOrderingOn)
                 return true;
-
-
-            var _time = $"{DateTime.Now.Date.ToShortDateString()} {today.Open}";
-            var _open = DateTime.ParseExact(_time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
-
+            
             Extra = new
             {
                 now = now.ToString(),
                 today,
                 open = open.ToString(),
-                stopOrders = stopOrders.ToString(),
-                _open
+                stopOrders = stopOrders.ToString()
             };
 
             return stillTakingOrders;
@@ -156,7 +151,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         private DateTime GetTodaysDateTimeFrom(string time)
         {
             time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
-            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(1 - TimeZoneOffsetFromUtcInHours);
+            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(0 - TimeZoneOffsetFromUtcInHours);
         }
     }
 
