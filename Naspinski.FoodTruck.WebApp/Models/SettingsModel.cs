@@ -39,8 +39,6 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
         private int TimeZoneOffsetFromUtcInHours;
         private int StopOrderingMinutesToClose;
-
-        public dynamic Extra { get; set; }
         
         private SystemModel _system;
         
@@ -132,14 +130,6 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
             if (!IsBrickAndMortar && IsOrderingOn)
                 return true;
-            
-            Extra = new
-            {
-                now = now.ToString(),
-                today,
-                open = open.ToString(),
-                stopOrders = stopOrders.ToString()
-            };
 
             return stillTakingOrders;
         }
