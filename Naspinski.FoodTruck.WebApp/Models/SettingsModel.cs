@@ -133,12 +133,17 @@ namespace Naspinski.FoodTruck.WebApp.Models
             if (!IsBrickAndMortar && IsOrderingOn)
                 return true;
 
+
+            var _time = $"{DateTime.Now.Date.ToShortDateString()} {open}";
+            var _open = DateTime.ParseExact(_time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture).AddHours(TimeZoneOffsetFromUtcInHours).ToUniversalTime();
+
             Extra = new
             {
                 now = now.ToString(),
-                today = today,
+                today,
                 open = open.ToString(),
-                stopOrders = stopOrders.ToString()
+                stopOrders = stopOrders.ToString(),
+                _open
             };
 
             return stillTakingOrders;
