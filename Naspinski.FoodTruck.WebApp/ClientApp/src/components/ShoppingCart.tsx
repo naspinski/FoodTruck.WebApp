@@ -154,7 +154,7 @@ export class ShoppingCart extends Component<IProps, IState> {
                             <span>{cart.subTotalCost}</span>
                         </div>
                         <div>
-                            <span>Tax:</span>
+                            <span>Tax & Fees:</span>
                             <span>{cart.taxCost}</span>
                         </div>
                         <div>
