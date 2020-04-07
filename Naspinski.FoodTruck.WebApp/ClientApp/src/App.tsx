@@ -4,9 +4,10 @@ import { Route } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { LoaderOptions, Loader } from 'google-maps';
 
+import SettingsContext from './models/SettingsContext';
+
 import './custom.scss'
 import { Layout } from './components/Layout';
-import { Faq } from './pages/Faq';
 import { Main } from './pages/Main';
 import { Contact } from './pages/Contact';
 import { Menu } from './pages/Menu';
@@ -27,6 +28,7 @@ import {
 library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faStar, faChevronCircleRight, faChevronCircleLeft, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown);
 
+
 export default class App extends Component<{}, SystemState> {
 
     constructor(props: any) {
@@ -46,23 +48,25 @@ export default class App extends Component<{}, SystemState> {
 
     render() {
         return (
-            <React.Fragment>
-                <Spinner isLoading={!this.state.isLoaded} />
-                <Helmet>
-                    <title>{this.state.settings.title}</title>
-                    <link rel='shortcut icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
-                    <link rel='icon' type='image/x-icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
-                    <meta name='Keywords'content={this.state.settings.keywords} />
-                    <meta name='Author'content={this.state.settings.author}  />
-                </Helmet>
-                <Layout settings={this.state.settings} cart={this.state.cart} cartAction={this.cartActionHandler}>
-                    <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} settings={this.state.settings} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                    <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} disabled={this.state.cart.disabled} showCart={this.state.settings.showCart} />} />
-                    <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
-                    <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
-                    <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} settings={this.state.settings} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
-                </Layout>
-            </React.Fragment>
+            <SettingsContext.Provider value={this.state.settings}>
+                <React.Fragment>
+                    <Spinner isLoading={!this.state.isLoaded} />
+                    <Helmet>
+                        <title>{this.state.settings.title}</title>
+                        <link rel='shortcut icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
+                        <link rel='icon' type='image/x-icon' data-react-helmet='true' href={this.state.settings.faviconImageUrl} />
+                        <meta name='Keywords'content={this.state.settings.keywords} />
+                        <meta name='Author'content={this.state.settings.author}  />
+                    </Helmet>
+                    <Layout cart={this.state.cart} cartAction={this.cartActionHandler}>
+                        <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
+                        <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} disabled={this.state.cart.disabled} showCart={this.state.settings.showCart} />} />
+                        <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
+                        <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
+                        <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
+                    </Layout>
+                </React.Fragment>
+            </SettingsContext.Provider>
         );
     }
 

@@ -1,32 +1,29 @@
 import * as React from 'react';
-import { SiteSettings } from '../models/SiteSettings';
 import { MDBBtn, MDBRow, MDBCol } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-interface IProps {
-  settings: SiteSettings
-}
+import SettingsContext from '../models/SettingsContext';
 
 interface IState {
     menuUrl: string
 }
 
-export class Splash extends React.Component<IProps, IState> {
+export class Splash extends React.Component<{}, IState> {
 
-    constructor(props: IProps) {
+    constructor(props: any) {
         super(props);
         this.state = {
             menuUrl: ''
         };
     }
+    static contextType = SettingsContext;
 
     componentDidMount() {
         this.populate();
     }
 
     render() {
-        const settings = this.props.settings;
+        const settings = this.context;
         let serviceCount = 0;
 
         const menuDownload = this.state.menuUrl === null || this.state.menuUrl.length === 0 ? '' : 
@@ -85,7 +82,7 @@ export class Splash extends React.Component<IProps, IState> {
                     </p>
                     <p className='pl1'>
                         {settings.deliveryServiceImageToUrlMap.size === 0 ? '' : <h5 className='b i serif'>Delivery</h5>}
-                        {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map(svc =>
+                        {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map((svc: string) =>
                             <a key={`service-${serviceCount++}`} href={settings.deliveryServiceImageToUrlMap.get(svc)}>
                                 <img src={svc} />
                             </a>

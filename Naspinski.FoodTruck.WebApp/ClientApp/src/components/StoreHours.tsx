@@ -8,7 +8,7 @@ interface IProps {
 
 const StoreHours = ({ schedule }: IProps) => {
     return (<React.Fragment>
-        {Array.from(schedule.keys()).map(day =>
+        {Array.from(schedule.keys()).map((day: string) =>
             (
                 <span className='flex justify-between' key={`hours-${day}`}>
                     <span className='day pr1'>{day}</span>

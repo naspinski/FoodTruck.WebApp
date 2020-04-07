@@ -10,11 +10,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { SiteSettings } from '../models/SiteSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SettingsContext from '../models/SettingsContext';
 
 interface IProps {
     googleMapsApiKey: string,
     isGoogleMapsLoaded: boolean
-    settings: SiteSettings
 }
 
 interface IState {
@@ -101,7 +101,7 @@ export class Contact extends Component<IProps, IState> {
     }
 
     render() {
-        const settings = this.props.settings;
+        const settings = this.context;
 
         const address = this.state.location && this.state.location.address && this.state.location.address.length > 0
             ? <div>
@@ -211,3 +211,4 @@ export class Contact extends Component<IProps, IState> {
             .then((data) => this.setState({ location: new Location(data) }));
     }
 }
+Contact.contextType = SettingsContext;

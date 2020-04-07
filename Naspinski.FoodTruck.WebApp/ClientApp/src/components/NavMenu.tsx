@@ -2,13 +2,12 @@ import { Component } from 'react';
 import * as React from 'react';
 import './NavMenu.scss';
 import { NavLink } from 'react-router-dom';
-import { SiteSettings } from '../models/SiteSettings';
 import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem, MDBHamburgerToggler, MDBBtn } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Cart, CartAction } from '../models/CartModels';
+import SettingsContext from '../models/SettingsContext';
 
 interface IProps {
-    settings: SiteSettings,
     cart: Cart,
     cartAction: (action: CartAction) => void,
 }
@@ -31,7 +30,7 @@ export class NavMenu extends Component<IProps, IState> {
     }
 
     render() {
-        const settings = this.props.settings;
+        const settings = this.context;
         const cart = this.props.cart;
         let links = settings.links;
 
@@ -60,7 +59,7 @@ export class NavMenu extends Component<IProps, IState> {
                 </div>
                 <MDBCollapse id="navbarCollapse3" isOpen={!this.state.isMenuOpen} navbar className='nav-menu b ttu'>
                     <MDBNavbarNav right>
-                        {Array.from(links.keys()).map(link =>
+                        {Array.from(links.keys()).map((link: string) =>
                             <MDBNavItem key={`header-link-${link}`}>
                                 <MDBNavLink to={settings.links.get(link)}
                                     exact={link === 'home'}
@@ -90,3 +89,4 @@ export class NavMenu extends Component<IProps, IState> {
     );
   }
 }
+NavMenu.contextType = SettingsContext;

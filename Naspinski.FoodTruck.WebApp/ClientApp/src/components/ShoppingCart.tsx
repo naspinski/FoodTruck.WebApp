@@ -9,11 +9,11 @@ import { SiteSettings } from '../models/SiteSettings';
 import { MDBBtn } from 'mdbreact';
 import FormAlerts from './FormAlerts';
 import { RegularExpressions } from '../Utility';
+import SettingsContext from '../models/SettingsContext';
 
 interface IProps {
     cart: Cart,
-    cartAction: (action: CartAction) => void,
-    settings: SiteSettings
+    cartAction: (action: CartAction) => void
 }
 
 interface IState {
@@ -100,7 +100,7 @@ export class ShoppingCart extends Component<IProps, IState> {
     }
     
     render() {
-        const settings = this.props.settings;
+        const settings = this.context;
         const cart = this.props.cart;
         const items = cart.items.sort(function (a, b) {
             var textA = a.name.toUpperCase();
@@ -213,9 +213,9 @@ export class ShoppingCart extends Component<IProps, IState> {
                     <SquarePaymentForm
                         formId='square-form'
                         apiWrapper=''
-                        sandbox={this.props.settings.squareSandbox}
-                        applicationId={this.props.settings.squareApplicationId}
-                        locationId={this.props.settings.squareLocationId}
+                        sandbox={settings.squareSandbox}
+                        applicationId={settings.squareApplicationId}
+                        locationId={settings.squareLocationId}
                         cardNonceResponseReceived={this.cardNonceResponseReceived}
                         createVerificationDetails={() => this.createVerificationDetails()}>
                         <fieldset className="sq-fieldset">
@@ -345,3 +345,4 @@ export class ShoppingCart extends Component<IProps, IState> {
             });
     }
 }
+ShoppingCart.contextType = SettingsContext;
