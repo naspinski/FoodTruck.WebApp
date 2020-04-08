@@ -1,7 +1,6 @@
-import { Component } from 'react';
 import * as React from 'react';
-import { Event } from '../models/Event';
-import { CalendarEvent } from './CalendarEvent';
+import CalendarEvent from './CalendarEvent';
+import { useState, useEffect } from 'react';
 
 interface IProps {
     googleMapsApiKey: string,
@@ -9,41 +8,25 @@ interface IProps {
     containerClassName: string
 }
 
-interface IState {
-    events: Event[]
-}
+const Calendar = ({ googleMapsApiKey, isGoogleMapsLoaded, containerClassName }: IProps) => {
 
-export class Calendar extends Component<IProps, IState> {
-
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            events: []
-        }
-    }
-
-    componentDidMount() {
-        this.populate();
-    }
-    
-    render() {
-        let eventCount = 0;
-
-        return this.state.events.length === 0 ? '' :
-            <div className={`${this.props.containerClassName} pb3`}>
-                <div className='inner-container'>
-                    <h2 className='border-dotted bottom header'>Calendar</h2>
-                    {this.state.events.map(event =>
-                        <CalendarEvent isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} key={`event-${eventCount + 1}`} id={eventCount++} event={event} googleMapsApiKey={this.props.googleMapsApiKey} />
-                    )}
-                </div>
-            </div>;
-    }
-
-    async populate() {
-        await fetch('api/events')
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        fetch('api/events')
             .then((resp) => resp.json())
-            .then((data) => this.setState({ events: data }));
-    }
+            .then((data) => setEvents(data));
+    }, []);
+
+    let eventCount = 0;
+
+    return events.length === 0 ? <React.Fragment></React.Fragment> :
+        <div className={`${containerClassName} pb3`}>
+            <div className='inner-container'>
+                <h2 className='border-dotted bottom header'>Calendar</h2>
+                {events.map(event =>
+                    <CalendarEvent isGoogleMapsLoaded={isGoogleMapsLoaded} key={`event-${eventCount + 1}`} id={eventCount++} event={event} googleMapsApiKey={googleMapsApiKey} />
+                )}
+            </div>
+        </div>;
 }
+export default Calendar;

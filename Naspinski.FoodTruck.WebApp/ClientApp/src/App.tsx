@@ -17,7 +17,7 @@ import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { Specials } from './components/Specials';
-import { Calendar } from './components/Calendar';
+import Calendar from './components/Calendar';
 import { CartAction } from './models/CartModels';
 
 import {

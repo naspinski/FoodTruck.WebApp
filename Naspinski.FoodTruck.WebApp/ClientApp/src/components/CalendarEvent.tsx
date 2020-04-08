@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import * as React from 'react';
 import { Event } from '../models/Event';
 import { Location } from '../models/Location';
@@ -24,127 +24,120 @@ interface IState {
     sendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error'
 }
 
-export class CalendarEvent extends Component<IProps, IState> {
+const CalendarEvent = ({ event, id, googleMapsApiKey, isGoogleMapsLoaded }: IProps) => {
 
-    constructor(props: IProps) {
-        super(props);
-        this.state = {
-            isMapHidden: true,
-            modal: false,
-            sendTo: '',
-            isValidEmailOrPhone: true,
-            sendingState: 'waiting'
-        };
+    const [isMapHidden, setIsMapHidden] = useState(true);
+    const [modal, setModal] = useState(false);
+    const [sendTo, setSendTo] = useState('');
+    const [isValidEmailOrPhone, setIsValidEmailOrPhone] = useState(true);
+    const [sendingState, setSendingState] = useState<'waiting' | 'sending' | 'sent' | 'error' | 'input-error'>('waiting');
+    
+    const formId: string = `subscribe-${id}`;
+    const sendToId: string = `${formId}-send-to`;
+    const handleSendToChange = (event: any) => { setSendTo(event.target.value); }
+    const toggleModal = () => { setModal(!modal); }
+
+    const mapVisibilityChange = () => {
+        setIsMapHidden(!isMapHidden);
     }
 
-    formId: string = `subscribe-${this.props.id}`;
-    sendToId: string = `${this.formId}-send-to`;
-    handleSendToChange = (event: any) => { this.setState({ sendTo: event.target.value }); }
-    toggleModal = () => { this.setState({ modal: !this.state.modal }); }
-
-    mapVisibilityChange = () => {
-        this.setState({ isMapHidden: !this.state.isMapHidden });
-    }
-
-    submitHandler = event => {
+    const submitHandler = event => {
         event.preventDefault();
         event.target.className += ' was-validated';
-        let isValid = (document.getElementById(this.formId) as HTMLFormElement).checkValidity();
-        const validEmail = RegularExpressions.email.test(this.state.sendTo);
-        const validPhone = RegularExpressions.phone.test(this.state.sendTo.replace('(', '').replace(')', '').replace(' ', '').replace('-', ''));
+        let isValid = (document.getElementById(formId) as HTMLFormElement).checkValidity();
+        const validEmail = RegularExpressions.email.test(sendTo);
+        const validPhone = RegularExpressions.phone.test(sendTo.replace('(', '').replace(')', '').replace(' ', '').replace('-', ''));
         isValid = isValid && (validEmail || validPhone);
-        (document.getElementById(this.sendToId) as HTMLFormElement).setCustomValidity(isValid ? '' : 'invalid email/phone');
+        (document.getElementById(sendToId) as HTMLFormElement).setCustomValidity(isValid ? '' : 'invalid email/phone');
 
         if (isValid) {
-            this.setState({ sendingState: 'sending' });
+            setSendingState('sending' );
             fetch('api/subscribe', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    Location: this.props.event.location.name,
-                    Subscriber: this.state.sendTo
+                    Location: event.location.name,
+                    Subscriber: sendTo
                 })
             })
                 .then(response => {
-                    this.setState({ sendingState: response.status === 200 ? 'sent' : 'error' });
+                    setSendingState(response.status === 200 ? 'sent' : 'error');
                 })
                 .catch(error => {
                     console.error('error', error);
-                    this.setState({ sendingState: 'error' })
+                    setSendingState('error');
                 });
         } else {
-            this.setState({ sendingState: 'input-error' });
+            setSendingState('input-error');
         }
     };
 
-    render() {
-        const event = new Event(this.props.event);
-        const errorMessage = 'You must supply a valid email or phone number'
+    event = new Event(event);
 
-        const time = event.beginsTime && event.beginsTime.length > 0 ?
-            <div className='f5'>
-                {event.beginsTime}{event.endsTime && event.endsTime.length > 0 ? ' - ' + event.endsTime : ''}
-            </div> : '';
+    const errorMessage = 'You must supply a valid email or phone number'
 
-        const location = new Location(event.location);
-        const mapButton = !location.isValidForMap  ? '' :
-            <MDBBtn size='sm' onClick={this.mapVisibilityChange}>
-                <FontAwesomeIcon icon='map-marker-alt' /> {this.state.isMapHidden ? 'map' : 'hide'}
-            </MDBBtn>
+    const time = event.beginsTime && event.beginsTime.length > 0 ?
+        <div className='f5'>
+            {event.beginsTime}{event.endsTime && event.endsTime.length > 0 ? ' - ' + event.endsTime : ''}
+        </div> : '';
 
+    const location = new Location(event.location);
+    const mapButton = !location.isValidForMap  ? '' :
+        <MDBBtn size='sm' onClick={mapVisibilityChange}>
+            <FontAwesomeIcon icon='map-marker-alt' /> {isMapHidden ? 'map' : 'hide'}
+        </MDBBtn>
 
-        return (
-            <MDBContainer tag='div' className='border-dotted bottom pa3'>
-                <MDBRow>
-                    <MDBCol md='3'>
-                        <div className='left-frame'>
-                            <h4 className='b'>{event.beginsMonth} {event.beginsDay}</h4>
-                            {time}
-                        </div>
-                    </MDBCol>
-                    <MDBCol md='4'>
-                        <h4 className='b serif mv0 pt2'>{event.location.name}</h4>
-                        <Address location={event.location} />
-                        <div className='pl0'>
-                            <MDBBtn size='sm' onClick={this.toggleModal}>
-                                <FontAwesomeIcon icon='star' /> Subscribe
+    return (
+        <MDBContainer tag='div' className='border-dotted bottom pa3'>
+            <MDBRow>
+                <MDBCol md='3'>
+                    <div className='left-frame'>
+                        <h4 className='b'>{event.beginsMonth} {event.beginsDay}</h4>
+                        {time}
+                    </div>
+                </MDBCol>
+                <MDBCol md='4'>
+                    <h4 className='b serif mv0 pt2'>{event.location.name}</h4>
+                    <Address location={event.location} />
+                    <div className='pl0'>
+                        <MDBBtn size='sm' onClick={toggleModal}>
+                            <FontAwesomeIcon icon='star' /> Subscribe
                             </MDBBtn>
-                            {mapButton}
+                        {mapButton}
+                    </div>
+                </MDBCol>
+                <MDBCol md='5' className='pb1'>
+                    <Map location={event.location}
+                        id={`calendar-map-${id}`}
+                        googleMapsApiKey={googleMapsApiKey}
+                        isGoogleMapsLoaded={isGoogleMapsLoaded}
+                        zoom={11}
+                        isHidden={isMapHidden}
+                    />
+                </MDBCol>
+            </MDBRow>
+            <MDBModal isOpen={modal} toggle={toggleModal}>
+                <form id={formId} className='needs-validation' onSubmit={submitHandler} noValidate>
+                    <MDBModalHeader className='b' toggle={toggleModal}>Subscribe to {event.location.name}</MDBModalHeader>
+                    <MDBModalBody>
+                        <div className='pt2 b'>
+                            <label htmlFor={sendToId}>Email Address or Phone Number</label>
+                            <input required min='5' id={sendToId} type='text' className='form-control' onChange={handleSendToChange} />
+                            <div className="invalid-feedback">{errorMessage}</div>
                         </div>
-                    </MDBCol>
-                    <MDBCol md='5' className='pb1'>
-                        <Map location={event.location}
-                            id={`calendar-map-${this.props.id}`}
-                            googleMapsApiKey={this.props.googleMapsApiKey}
-                            isGoogleMapsLoaded={this.props.isGoogleMapsLoaded}
-                            zoom={11}
-                            isHidden={this.state.isMapHidden}
-                        />
-                    </MDBCol>
-                </MDBRow>
-                <MDBModal isOpen={this.state.modal} toggle={this.toggleModal}>
-                    <form id={this.formId} className='needs-validation' onSubmit={this.submitHandler} noValidate>
-                        <MDBModalHeader className='b' toggle={this.toggleModal}>Subscribe to {event.location.name}</MDBModalHeader>
-                        <MDBModalBody>
-                            <div className='pt2 b'>
-                                <label htmlFor={this.sendToId}>Email Address or Phone Number</label>
-                                <input required min='5' id={this.sendToId} type='text' className='form-control' onChange={this.handleSendToChange} />
-                                <div className="invalid-feedback">{errorMessage}</div>
-                            </div>
-                        </MDBModalBody>
-                        <MDBModalFooter className='flex justify-between'>
-                            <div className='pt2'>
-                                <FormAlerts sendingState={this.state.sendingState} sentMessage='Subscribed!' />
-                            </div>
-                            <MDBBtn color='pink' type='submit'>
-                                <FontAwesomeIcon icon='chevron-circle-right' /> Subscribe
+                    </MDBModalBody>
+                    <MDBModalFooter className='flex justify-between'>
+                        <div className='pt2'>
+                            <FormAlerts sendingState={sendingState} sentMessage='Subscribed!' />
+                        </div>
+                        <MDBBtn color='pink' type='submit'>
+                            <FontAwesomeIcon icon='chevron-circle-right' /> Subscribe
                             </MDBBtn>
-                        </MDBModalFooter>
-                    </form>
-                </MDBModal>
-            </MDBContainer>
-        );
-    }
+                    </MDBModalFooter>
+                </form>
+            </MDBModal>
+    </MDBContainer>);
 }
+export default CalendarEvent;

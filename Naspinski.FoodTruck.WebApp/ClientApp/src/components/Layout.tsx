@@ -29,4 +29,3 @@ export class Layout extends Component<IProps> {
         );
     }
 }
-Layout.contextType = SettingsContext;
