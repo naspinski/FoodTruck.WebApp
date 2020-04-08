@@ -83,13 +83,14 @@ export class Splash extends React.Component<{}, IState> {
                     <p className='pl1'>
                         {settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder ? '' :
                             <React.Fragment>
-                                <h5 className='b i serif'>Delivery</h5>}
+                                <h5 className='b i serif'>Delivery</h5>
                                 {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map((svc: string) =>
                                     <a key={`service-${serviceCount++}`} href={settings.deliveryServiceImageToUrlMap.get(svc)}>
                                         <img src={svc} />
                                     </a>
                                 )}
                             </React.Fragment>
+                        }
                     </p>
                 </MDBCol>
             </MDBRow>
