@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { MDBBtn, MDBRow, MDBCol } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SettingsContext from '../models/SettingsContext';
+import SiteContext from '../models/SiteContext';
+import { Utilities } from '../Utility';
 
 const Splash = () => {
 
@@ -14,7 +15,8 @@ const Splash = () => {
             .then((data) => setMenuUrl(data));
     }, []);
 
-    const settings = React.useContext(SettingsContext);
+    const context = React.useContext(SiteContext);
+    const settings = context.settings;
     
     let serviceCount = 0;
 
@@ -25,7 +27,10 @@ const Splash = () => {
             </MDBBtn>
         </a>
 
-    const menuLink = !settings.links.has('menu') ? '' :
+    const links = Utilities.getLinks(context);
+    console.log(links);
+
+    const menuLink = links.has('/menu') ? '' :
         <NavLink to='/menu'>
             <MDBBtn color='secondary'>
                 <FontAwesomeIcon icon='hamburger' /> {settings.showCart ? 'Order for Pickup!' : 'Menu'}
@@ -34,14 +39,14 @@ const Splash = () => {
 
     const conditionalLink = settings.isBrickAndMortar ?
         (
-            !settings.links.has('calendar') ? '' :
+            links.has('/calendar') ? '' :
                 <NavLink to='/calendar'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='calendar' /> Calendar
                     </MDBBtn>
                 </NavLink>
         ) : (
-            !settings.links.has('specials') ? '' :
+            links.has('/specials') ? '' :
                 <NavLink to='/specials'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='star' /> Calendar
@@ -71,7 +76,7 @@ const Splash = () => {
                     </NavLink>
                 </p>
                 <p className='pl1'>
-                    {settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder ? '' :
+                    {!settings || !settings.deliveryServiceImageToUrlMap || settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder ? '' :
                         <React.Fragment>
                             <h5 className='b i serif'>Delivery</h5>
                             {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map((svc: string) =>

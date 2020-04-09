@@ -1,7 +1,7 @@
 import { Location } from './Location';
 import { BaseModel } from './BaseModel';
 
-export class Event extends BaseModel{
+export class EventModel extends BaseModel{
 
     location: Location = new Location();
     beginsDay: string = '';
@@ -9,7 +9,7 @@ export class Event extends BaseModel{
     beginsTime: string = '';
     endsTime: string = '';
 
-    constructor(init?: Partial<Event>) {
+    constructor(init?: Partial<EventModel>) {
         super(init);
         Object.assign(this, init);
     }

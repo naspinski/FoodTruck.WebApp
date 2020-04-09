@@ -1,31 +1,32 @@
 import { Component } from 'react';
 import * as React from 'react';
-import { NavMenu } from './NavMenu';
+import NavMenu from './NavMenu';
 import Footer from './Footer';
 import { MDBContainer } from 'mdbreact';
-import { Cart, CartAction } from '../models/CartModels';
+import { CartAction } from '../models/CartModels';
 import { ShoppingCart } from './ShoppingCart';
-import SettingsContext from '../models/SettingsContext';
+import SiteContext from '../models/SiteContext';
 
 interface IProps {
     cartAction: (action: CartAction) => void,
-    cart: Cart,
     children: Object[]
 }
 
-export class Layout extends Component<IProps> {
-    render () {
-        return (
-            <React.Fragment>
-                <MDBContainer fluid className='ph0'>
-                    <NavMenu cart={this.props.cart} cartAction={this.props.cartAction} />
-                    <ShoppingCart cart={this.props.cart} cartAction={this.props.cartAction} />
-                    <MDBContainer fluid className='pt5 ph0'>
-                        {this.props.children}
-                    </MDBContainer>
-                    <Footer />
+const Layout = ({ cartAction, children }: IProps) => {
+
+    const context = React.useContext(SiteContext);
+
+    return (
+        <React.Fragment>
+            <MDBContainer fluid className='ph0'>
+                <NavMenu cartAction={cartAction} />
+                <ShoppingCart cartAction={cartAction} />
+                <MDBContainer fluid className='pt5 ph0'>
+                    {children}
                 </MDBContainer>
-            </React.Fragment>
-        );
-    }
+                <Footer />
+            </MDBContainer>
+        </React.Fragment>
+    );
 }
+export default Layout;

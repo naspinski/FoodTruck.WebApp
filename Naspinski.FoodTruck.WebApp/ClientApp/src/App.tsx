@@ -4,19 +4,18 @@ import { Route } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { LoaderOptions, Loader } from 'google-maps';
 
-import SettingsContext from './models/SettingsContext';
+import SiteContext from './models/SiteContext';
 
 import './custom.scss'
-import { Layout } from './components/Layout';
-import { Main } from './pages/Main';
+import Layout from './components/Layout';
+import Main from './pages/Main';
 import { Contact } from './pages/Contact';
-import { Menu } from './pages/Menu';
-import { SystemState } from './models/SystemState'
-import { SiteSettings } from './models/SiteSettings';
+import Menu from './pages/Menu';
+import { SiteState } from './models/SiteState'
 import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { Specials } from './components/Specials';
+import Specials from './components/Specials';
 import Calendar from './components/Calendar';
 import { CartAction } from './models/CartModels';
 
@@ -24,20 +23,21 @@ import {
     faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faChevronCircleRight, faChevronCircleLeft, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
+import { SpecialModel } from './models/SpecialModel';
+import { SiteSettings } from './models/SiteSettings';
 
 library.add(faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faStar, faChevronCircleRight, faChevronCircleLeft, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown);
 
 
-export default class App extends Component<{}, SystemState> {
+export default class App extends Component<{}, SiteState> {
 
     constructor(props: any) {
         super(props);
-        this.state = new SystemState();
+        this.state = new SiteState();
     }
 
     cartActionHandler = (action: CartAction) => {
-        console.log('App.cartActionHandler', action);
         this.state.cart.action(action);
         this.setState({ cart: this.state.cart });
     }
@@ -48,7 +48,7 @@ export default class App extends Component<{}, SystemState> {
 
     render() {
         return (
-            <SettingsContext.Provider value={this.state.settings}>
+            <SiteContext.Provider value={this.state}>
                 <React.Fragment>
                     <Spinner isLoading={!this.state.isLoaded} />
                     <Helmet>
@@ -58,61 +58,63 @@ export default class App extends Component<{}, SystemState> {
                         <meta name='Keywords'content={this.state.settings.keywords} />
                         <meta name='Author'content={this.state.settings.author}  />
                     </Helmet>
-                    <Layout cart={this.state.cart} cartAction={this.cartActionHandler}>
-                        <Route path='/' exact={true} render={x => <Main isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} />} />
-                        <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} disabled={this.state.cart.disabled} showCart={this.state.settings.showCart} />} />
+                    <Layout cartAction={this.cartActionHandler}>
+                        <Route path='/' exact={true} component={Main} />
+                        <Route path='/menu' render={x => <Menu cartAction={this.cartActionHandler} />} />
                         <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
-                        <Route path='/calendar' render={x => <Calendar isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} googleMapsApiKey={this.state.settings.googleMapsApiKey} containerClassName='primary-color' />} />
-                        <Route path='/contact' render={x => <Contact googleMapsApiKey={this.state.settings.googleMapsApiKey} isGoogleMapsLoaded={this.state.isGoogleMapsLoaded} />} />
+                        <Route path='/calendar' render={x => <Calendar containerClassName='primary-color' />} />
+                        <Route path='/contact' component={Contact} />
                     </Layout>
                 </React.Fragment>
-            </SettingsContext.Provider>
+            </SiteContext.Provider>
         );
     }
 
     async populate() {
         this.populateSettings();
-        this.populateLinks();
         this.populateSiblings();
+        this.populateMenu();
+        this.populateEvents();
+        this.populateSpecials();
     }
 
     async populateSettings() {
-        await fetch('api/settings')
+        fetch('api/settings')
             .then((resp) => resp.json())
             .then((data) => {
-                const settings = new SiteSettings(data);
-                settings.links = this.state.settings.links;
-                settings.siblings = this.state.settings.siblings;
-                this.setState({ settings: settings });
+                this.setState({ settings: new SiteSettings(data) });
 
                 const options: LoaderOptions = { /* todo */ };
-                const loader = new Loader(settings.googleMapsApiKey, options);
+                const loader = new Loader(data.googleMapsApiKey, options);
                 loader.load().then(() => this.setState({ isGoogleMapsLoaded: true, isLoaded: true }));
             });
     }
 
-    async populateLinks() {
-        await fetch('api/sections')
-            .then((resp) => resp.json())
-            .then((data: string[]) => {
-                let links = new Map<string, string>();
-                links.set('home', '/');
-                data.forEach((link) => links.set(link, `/${link}`));
-                links.set('contact', '/contact');
-                let settings = this.state.settings;
-                settings.links = links;
-                settings.siblings = this.state.settings.siblings;
-                this.setState({ settings: settings })
-            });
-    }
-    async populateSiblings() {
-        await fetch('api/siblings')
+    async populateEvents() {
+        fetch('api/events')
             .then((resp) => resp.json())
             .then((data) => {
-                let settings = this.state.settings;
-                settings.siblings = data;
-                settings.links = this.state.settings.links;
-                this.setState({ settings: settings })
+                this.setState({ events: data })
+            });
+    }
+
+    async populateMenu() {
+        fetch('api/menu')
+            .then((resp) => resp.json())
+            .then((data) => { this.setState({ menu: data }) });
+    }
+
+    async populateSiblings() {
+        fetch('api/siblings')
+            .then((resp) => resp.json())
+            .then((data) => { this.setState({ siblings: data }) });
+    }
+
+    async populateSpecials() {
+        fetch('api/specials')
+            .then((resp) => resp.json())
+            .then((data) => {
+                this.setState({ specials: new Map<string, SpecialModel[]>(Object.entries(data)) });
             });
     }
 }

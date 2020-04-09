@@ -10,12 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { SiteSettings } from '../models/SiteSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SettingsContext from '../models/SettingsContext';
-
-interface IProps {
-    googleMapsApiKey: string,
-    isGoogleMapsLoaded: boolean
-}
+import SiteContext from '../models/SiteContext';
 
 interface IState {
     location: Location,
@@ -28,9 +23,9 @@ interface IState {
     sendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error'
 }
 
-export class Contact extends Component<IProps, IState> {
+export class Contact extends Component<{}, IState> {
 
-    constructor(props: IProps) {
+    constructor(props: any) {
         super(props);
         this.state = {
             location: new Location(),
@@ -43,6 +38,8 @@ export class Contact extends Component<IProps, IState> {
             sendingState: 'waiting'
         }
     }
+
+    static contextType = SiteContext;
 
     apply = () => { this.setState({ type: 'Apply' }); }
     contact = () => { this.setState({ type: 'Contact' }); }
@@ -101,14 +98,14 @@ export class Contact extends Component<IProps, IState> {
     }
 
     render() {
-        const settings = this.context;
+        const settings = this.context.settings;
 
         const address = this.state.location && this.state.location.address && this.state.location.address.length > 0
             ? <div>
                 <h3 className='b'>
                     <FontAwesomeIcon icon='map-marker-alt' /> Location
                 </h3>
-                <Map location={this.state.location} id='contact-map' zoom={11} googleMapsApiKey={this.state.googleMapsApiKey} isGoogleMapsLoaded={this.props.isGoogleMapsLoaded} />
+                <Map location={this.state.location} id='contact-map' zoom={11} />
                 <div className='b'>
                     <Address location={this.state.location} />
                 </div>
@@ -211,4 +208,3 @@ export class Contact extends Component<IProps, IState> {
             .then((data) => this.setState({ location: new Location(data) }));
     }
 }
-Contact.contextType = SettingsContext;

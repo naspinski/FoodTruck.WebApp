@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as React from 'react';
-import { Event } from '../models/Event';
+import { EventModel } from '../models/Event';
 import { Location } from '../models/Location';
 import Address from './Address';
 import { Map } from './Map';
@@ -10,13 +10,11 @@ import FormAlerts from './../components/FormAlerts';
 import { RegularExpressions } from '../Utility';
 
 interface IProps {
-    event: Event,
-    id: number,
-    googleMapsApiKey: string,
-    isGoogleMapsLoaded: boolean
+    event: EventModel,
+    id: number
 }
 
-const CalendarEvent = ({ event, id, googleMapsApiKey, isGoogleMapsLoaded }: IProps) => {
+const CalendarEvent = ({ event, id }: IProps) => {
 
     const [isMapHidden, setIsMapHidden] = useState(true);
     const [modal, setModal] = useState(false);
@@ -65,7 +63,7 @@ const CalendarEvent = ({ event, id, googleMapsApiKey, isGoogleMapsLoaded }: IPro
         }
     };
 
-    event = new Event(event);
+    event = new EventModel(event);
 
     const errorMessage = 'You must supply a valid email or phone number'
 
@@ -102,8 +100,6 @@ const CalendarEvent = ({ event, id, googleMapsApiKey, isGoogleMapsLoaded }: IPro
                 <MDBCol md='5' className='pb1'>
                     <Map location={event.location}
                         id={`calendar-map-${id}`}
-                        googleMapsApiKey={googleMapsApiKey}
-                        isGoogleMapsLoaded={isGoogleMapsLoaded}
                         zoom={11}
                         isHidden={isMapHidden}
                     />

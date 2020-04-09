@@ -78,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Remove="ClientApp\src\models\SettingsContext.ts" />
+    <TypeScriptCompile Remove="ClientApp\src\models\SiteContext.ts" />
   </ItemGroup>
 
   <ItemGroup>

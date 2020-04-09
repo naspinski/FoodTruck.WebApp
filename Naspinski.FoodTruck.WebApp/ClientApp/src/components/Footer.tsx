@@ -6,14 +6,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import SettingsContext from '../models/SettingsContext';
+import SiteContext from '../models/SiteContext';
+import { Utilities } from '../Utility';
 
 
 const Footer = () => {
 
-    const settings = React.useContext(SettingsContext);
+    const context = React.useContext(SiteContext);
+    const settings = context.settings;
+    const links = Utilities.getLinks(context);
         
-    const socialLinks = Array.from(settings.socialMap.keys()).map((network: string) => {
+    const socialLinks = !settings || !settings.socialMap ? [] : Array.from(settings.socialMap.keys()).map((network: string) => {
         let icon: IconDefinition;
         switch (network) {
             case 'Instagram': icon = faInstagramSquare; break;
@@ -36,7 +39,7 @@ const Footer = () => {
             <MDBContainer fluid className="text-center text-md-left b pt1">
                 <MDBRow>
                     <MDBCol md='4' className='pv2'>
-                        {settings.socialMap.size === 0 ? '' :
+                        {!settings || !settings.socialMap || settings.socialMap.size === 0 ? '' :
                             <React.Fragment>
                                 <div className='underline pb1'>Social</div>
                                 <div className='pl2'>
@@ -48,9 +51,9 @@ const Footer = () => {
                     <MDBCol md='4' className='pv2'>
                         <div className='underline'>Navigation</div>
                         <div className='pt1'>
-                            {Array.from(settings.links.keys()).map((link:string) =>
+                            {Array.from(links.keys()).map((link:string) =>
                                 <React.Fragment key={`footer-link-${link}`}>
-                                    <MDBNavLink to={settings.links.get(link)}
+                                    <MDBNavLink to={links.get(link)}
                                         className='dib pb0 pt0'
                                         exact={link === 'home'}
                                         activeClassName='primary-color'>{link}</MDBNavLink>

@@ -1,30 +1,23 @@
 import * as React from 'react';
 import CalendarEvent from './CalendarEvent';
-import { useState, useEffect } from 'react';
+import SiteContext from '../models/SiteContext';
 
 interface IProps {
-    googleMapsApiKey: string,
-    isGoogleMapsLoaded: boolean,
     containerClassName: string
 }
 
-const Calendar = ({ googleMapsApiKey, isGoogleMapsLoaded, containerClassName }: IProps) => {
+const Calendar = ({ containerClassName }: IProps) => {
 
-    const [events, setEvents] = useState([]);
-    useEffect(() => {
-        fetch('api/events')
-            .then((resp) => resp.json())
-            .then((data) => setEvents(data));
-    }, []);
-
-    let eventCount = 0;
+    const context = React.useContext(SiteContext);
+    const events = context.events;
+    let keyCounter = 0;
 
     return events.length === 0 ? <React.Fragment></React.Fragment> :
         <div className={`${containerClassName} pb3`}>
             <div className='inner-container'>
                 <h2 className='border-dotted bottom header'>Calendar</h2>
                 {events.map(event =>
-                    <CalendarEvent isGoogleMapsLoaded={isGoogleMapsLoaded} key={`event-${eventCount + 1}`} id={eventCount++} event={event} googleMapsApiKey={googleMapsApiKey} />
+                    <CalendarEvent key={`event-${keyCounter + 1}`} id={keyCounter++} event={event} />
                 )}
             </div>
         </div>;

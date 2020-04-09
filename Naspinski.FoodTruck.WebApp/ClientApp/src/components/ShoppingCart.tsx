@@ -7,11 +7,10 @@ import { SquarePaymentForm, CreditCardNumberInput, CreditCardExpirationDateInput
 import 'react-square-payment-form/lib/default.css'
 import { MDBBtn } from 'mdbreact';
 import FormAlerts from './FormAlerts';
-import { RegularExpressions } from '../Utility';
-import SettingsContext from '../models/SettingsContext';
+import SiteContext from '../models/SiteContext';
+import { SiteSettings } from '../models/SiteSettings';
 
 interface IProps {
-    cart: Cart,
     cartAction: (action: CartAction) => void
 }
 
@@ -53,6 +52,7 @@ export class ShoppingCart extends Component<IProps, IState> {
             applicationId: ''
         };
     }
+    static contextType = SiteContext;
 
     pickupValues = new Map([
         [0, 'ASAP'],
@@ -109,8 +109,8 @@ export class ShoppingCart extends Component<IProps, IState> {
     }
     
     render() {
-        const settings = this.context;
-        const cart = this.props.cart;
+        const settings = this.context.settings;
+        const cart = this.context.cart;
         const items = cart.items.sort(function (a, b) {
             var textA = a.name.toUpperCase();
             var textB = b.name.toUpperCase();
@@ -290,7 +290,7 @@ export class ShoppingCart extends Component<IProps, IState> {
             Note: this.state.cartNote,
             PickUpInMinutes: this.state.cartPickup,
             LocationId: this.state.cartLocation,
-            Items: this.props.cart.items.map(item => new Object({
+            Items: this.context.cart.items.map(item => new Object({
                 Quantity: item.quantity,
                 Name: item.name,
                 PriceTypeName: item.priceTypeName,
@@ -355,4 +355,3 @@ export class ShoppingCart extends Component<IProps, IState> {
             });
     }
 }
-ShoppingCart.contextType = SettingsContext;

@@ -1,14 +1,13 @@
 import { Component } from 'react';
 import * as React from 'react';
 import { Location } from '../models/Location';
+import SiteContext from '../models/SiteContext';
 
 interface IProps {
     location: Location,
     id: string,
-    zoom: number,
-    googleMapsApiKey: string,
-    isHidden?: boolean,
-    isGoogleMapsLoaded: boolean
+    zoom: number
+    isHidden?: boolean
 }
 
 export class Map extends Component<IProps> {
@@ -25,10 +24,12 @@ export class Map extends Component<IProps> {
         return <div id={this.elementId} className={this.props.isHidden ? '' : 'map'}></div>
     }
 
+    static contextType = SiteContext;
+
     populate() {
         const location = this.props.location;
 
-        if (this.props.isGoogleMapsLoaded && !this.props.isHidden && !this.isPopulated) {
+        if (this.context.isGoogleMapsLoaded && !this.props.isHidden && !this.isPopulated) {
             const uluru = { lat: location.latitude, lng: location.longitude };
             let element = document.getElementById(this.elementId);
             if (element !== null) {
