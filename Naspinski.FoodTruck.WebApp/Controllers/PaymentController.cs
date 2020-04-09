@@ -25,7 +25,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private readonly OrderHandler _handler;
         private readonly SettingHandler _settingHandler;
         private readonly AzureSettings _azureSettings;
-        private SquareHelper _square;
         private SquareSettings _squareSettings;
 
         private Data.Models.Payment.Order _order;
@@ -36,32 +35,34 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             _azureSettings = azureSettings;
             _settingHandler = new SettingHandler(_context);
             _squareSettings = squareSettings;
-            _square = new SquareHelper(squareSettings);
         }
 
         [HttpGet]
         [Route("tax")]
-        public async Task<decimal> GetTaxPercentage()
+        public async Task<decimal> GetTaxPercentage(string l)
         {
+            var square = new SquareHelper(_squareSettings, l);
             var settings = new SystemModel(new SettingHandler(this._context).Get(new[] { SettingName.SquareOnlineTaxId }));
-            return await _square.GetAdditiveTaxPercentage();
+            return await square.GetAdditiveTaxPercentage();
         }
 
         private async Task<CreateOrderRequest> GetOrderRequest(PaymentModel model, bool saveOrder)
         {
-            var taxes = await _square.GetTaxes();
+            var square = new SquareHelper(_squareSettings, model.LocationId);
+            var taxes = await square.GetTaxes();
             taxes = taxes ?? new List<CatalogObject>();
-            var tax = await _square.GetAdditiveTaxPercentage(taxes);
-            _order = _handler.Submit(model.OrderType, model, tax, _square.UseProduction, deferSave: !saveOrder);
-            return await _square.GetCreateOrderRequest(model, _order, Guid.NewGuid(), taxes);
+            var tax = await square.GetAdditiveTaxPercentage(taxes);
+            _order = _handler.Submit(model.OrderType, model, tax, square.UseProduction, deferSave: !saveOrder);
+            return await square.GetCreateOrderRequest(model, _order, Guid.NewGuid(), taxes);
         }
 
         [HttpPost]
         [Route("amount")]
         public async Task<long> GetAmount(PaymentModel model)
         {
+            var square = new SquareHelper(_squareSettings, model.LocationId);
             var orderRequest = await GetOrderRequest(model, true);
-            return _square.GetTotalInCents(orderRequest);
+            return square.GetTotalInCents(orderRequest);
         }
 
         [HttpPost]
@@ -80,12 +81,13 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 if (!string.Equals(system.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
                     throw new InvalidOperationException("Online ordering is currently unavailable");
 
+                var square = new SquareHelper(_squareSettings, model.LocationId);
                 var isBrickAndMortar = string.Equals(system.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
                 var orderRequest = await GetOrderRequest(model, true);
-                var squareOrder = await _square.Client.OrdersApi.CreateOrderAsync(_square.LocationId, orderRequest);
+                var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);
                 
                 var note = $"ONLINE ORDER - ID: {_order.Id}";
-                var amount = new Money(_square.GetTotalInCents(orderRequest), "USD");
+                var amount = new Money(square.GetTotalInCents(orderRequest), "USD");
 
                 if (amount.Amount == 0)
                 {
@@ -102,10 +104,11 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                         orderId: squareOrder.Order.Id,
                         note: note);
 
-                    var paymentResponse = await _square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                    var paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
                     try
                     {
-                        _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+                        _order = _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+                        _order.SetFullText();
                     }
                     catch(Exception ex) // order and payment went through, there was a DB error
                     {
@@ -137,7 +140,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             try
             {
-                var subject = $"{settings.Get(SettingName.Title)} - {(isCustomer ? settings.Get(SettingName.OrderConfirmationEmailSubject) : $"New Order: {order.Id}")}";
+                var subject = $"{settings.Get(SettingName.Title)} - Order Confirmation {order.Id}";
                 if (isCustomer)
                     EmailSender.Send(_azureSettings.SendgridApiKey, subject, GetBody(order, name, settings, true), order.Email, settings.Get(SettingName.ContactEmail));
                 else

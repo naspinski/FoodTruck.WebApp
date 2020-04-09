@@ -34,26 +34,20 @@ export class NavMenu extends Component<IProps, IState> {
         const cart = this.props.cart;
         let links = settings.links;
 
-        const isHomeUrlInternal = settings.homeUrl == null || settings.homeUrl.length === 0;
         const homeChild = settings.bannerImageUrl.length === 0
             ? <strong className='white-text'>{settings.title}</strong>
             : <img className='title-logo' src={settings.bannerImageUrl} alt={settings.title} />;
-
-        const returnLink = isHomeUrlInternal
-            ? <NavLink to='/'>{homeChild}</NavLink>
-            : <a className='white-text' href={settings.homeUrl}>{homeChild}</a>;
-
+        
         const cartIndicator = !settings.isOrderingOn || cart.items.length === 0 ? '' :
                 <MDBBtn  color='secondary' onClick={() => this.props.cartAction(new CartAction({ task: 'toggle' }))}>
                     <FontAwesomeIcon icon='shopping-cart' /> [{this.props.cart.itemCount}]
                 </MDBBtn>;
 
-
         return (
             <MDBNavbar color='primary-color-dark' expand='md' scrolling fixed="top">
                 <MDBHamburgerToggler id="hamburger" onClick={this.toggleCollapse} className='d-block d-md-none m-r-1' />
                 <MDBNavbarBrand>
-                    {returnLink}
+                    <NavLink to='/'>{homeChild}</NavLink>
                 </MDBNavbarBrand>
                 <div id='center-panel'>
                 </div>

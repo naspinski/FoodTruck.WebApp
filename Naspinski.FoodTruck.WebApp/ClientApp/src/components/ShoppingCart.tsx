@@ -1,11 +1,10 @@
 import { Component } from 'react';
 import * as React from 'react';
 import './ShoppingCart.scss';
-import { CartAction, Cart, CartItem } from '../models/CartModels';
+import { CartAction, Cart } from '../models/CartModels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SquarePaymentForm, CreditCardNumberInput, CreditCardExpirationDateInput, CreditCardPostalCodeInput, CreditCardCVVInput, CreditCardSubmitButton } from 'react-square-payment-form'
 import 'react-square-payment-form/lib/default.css'
-import { SiteSettings } from '../models/SiteSettings';
 import { MDBBtn } from 'mdbreact';
 import FormAlerts from './FormAlerts';
 import { RegularExpressions } from '../Utility';
@@ -28,7 +27,9 @@ interface IState {
     cartNote: string,
     amountInCents: string,
     cartPickup: string,
-    paymentError: string
+    paymentError: string,
+    cartLocation: string,
+    applicationId: string
 }
 
 export class ShoppingCart extends Component<IProps, IState> {
@@ -47,7 +48,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             cartNote: '',
             amountInCents: '0',
             cartPickup: '',
-            paymentError: ''
+            paymentError: '',
+            cartLocation: '',
+            applicationId: ''
         };
     }
 
@@ -69,6 +72,9 @@ export class ShoppingCart extends Component<IProps, IState> {
             this.props.cartAction(new CartAction({ task: 'disable' }));
             this.populateAmount();
         } else {
+            if (this.state.cartLocation.length === 0 && this.context.square) {
+                this.setState({ cartLocation: this.context.square[0].locationId, applicationId: this.context.square[0].applicationId });
+            }
             this.props.cartAction(new CartAction({ task: 'enable' }));
         }
     }
@@ -82,17 +88,20 @@ export class ShoppingCart extends Component<IProps, IState> {
         this.setState({ cartPhone: event.target.value.replace('(', '').replace(')', '').replace(' ', '').replace('-', '') });
     }
 
+    handleLocationChange = (event: any) => {
+        const location = this.context.square.find(x => x.locationId === event.target.value);
+        this.setState({
+            cartLocation: event.target.value,
+            applicationId: location.applicationId
+        });
+    }
 
     infoSubmitHandler = event => {
         event.preventDefault();
         event.target.className += ' was-validated';
         const htmlValid = (document.getElementById(this.cartInfoFormId) as HTMLFormElement).checkValidity();
 
-        const validPhone = RegularExpressions.phone.test(this.state.cartPhone);
-        (document.getElementById(this.cartPhoneId) as HTMLFormElement).setCustomValidity(validPhone ? '' : 'invalid phone');
-
-        if (htmlValid && validPhone) {
-            this.setState({ infoSendingState: 'waiting' });
+        if (htmlValid) {
             this.setCartState('payment');
         } else {
             this.setState({ infoSendingState: 'input-error' });
@@ -110,17 +119,19 @@ export class ShoppingCart extends Component<IProps, IState> {
 
         const pickups = Array.from(this.pickupValues.keys()).filter(x => x <= settings.minutesUntilClose);
         const pickupsClassName = pickups.length > 1 ? '' : 'invisible'; 
+        const locationClassName = settings.square && settings.square.length > 1 ? '' : 'invisible';
         const orderClassName = 'cart-section ' + (this.state.cartState === 'order' ? 'visible' : 'invisible');
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
         const submitDisabled = !this.canSubmitPayment();
         const paymentErrorMessagePrefex = 'Error - nothing charged';
         const total = `$${(Number.parseFloat(this.state.amountInCents)/100).toFixed(2)}`;
-
+        
         return (cart.isHidden ? '' :
             <div id='cart'>
                 <a id='cart-closer' onClick={this.toggleCart}>
                     <FontAwesomeIcon icon='caret-down' />
+                    
                 </a>
                 <div className={orderClassName}>
                     <ul>
@@ -150,16 +161,8 @@ export class ShoppingCart extends Component<IProps, IState> {
                     </ul>
                     <div id='cart-total' className='cart-section'>
                         <div>
-                            <span>SubTotal:</span>
-                            <span>{cart.subTotalCost}</span>
-                        </div>
-                        <div>
-                            <span>Tax & Fees:</span>
-                            <span>{cart.taxCost}</span>
-                        </div>
-                        <div>
-                            <strong>Total:</strong>
-                            <strong>{cart.totalCost}</strong>
+                            <strong>SubTotal:</strong>
+                            <strong>{cart.subTotalCost}</strong>
                         </div>
                     </div>
                     <div id='cart-checkout-button' className='cart-section'>
@@ -168,19 +171,27 @@ export class ShoppingCart extends Component<IProps, IState> {
                         </MDBBtn>
                     </div>
                 </div>
-                <form id={this.cartInfoFormId} className={infoFormClassName} onSubmit={this.infoSubmitHandler} noValidate>
+                <form id={this.cartInfoFormId} className={infoFormClassName} onSubmit={(e) => this.infoSubmitHandler(e)} noValidate>
                     <fieldset className="sq-fieldset">
+                        <div className={locationClassName}>
+                            <span className='sq-label'>Location</span>
+                            <select defaultValue={settings.square[0].locationId} id='cartLocation' name='cartLocation' className='form-control' onChange={this.handleLocationChange}>
+                                {settings.square.map(location =>
+                                    <option key={`location-opt-${location.locationId}`} value={location.locationId}>{location.name}</option>
+                                )}
+                            </select>
+                        </div>
                         <div>
-                            <span className='sq-label'>First Name</span>
+                            <span className='sq-label'>First Name*</span>
                             <input required min='2' id='cartFirstName' name='cartFirstName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
                         <div>
-                            <span className='sq-label'>Last Name</span>
+                            <span className='sq-label'>Last Name*</span>
                             <input required min='2' id='cartLastName' name='cartLastName' type='text' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
                         <div>
                             <span className='sq-label'>Phone Number</span>
-                            <input required id={this.cartPhoneId} name={this.cartPhoneId} type='text' className='form-control sq-form-style' onChange={this.handlePhoneChange} />
+                            <input id={this.cartPhoneId} name={this.cartPhoneId} type='text' className='form-control sq-form-style' onChange={this.handlePhoneChange} />
                         </div>
                         <div>
                             <span className='sq-label'>Email</span>
@@ -210,45 +221,37 @@ export class ShoppingCart extends Component<IProps, IState> {
                     </div>
                 </form>
                 <div id='cart-payment-form' className={paymentFormClassName}>
-                    <SquarePaymentForm
-                        formId='square-form'
-                        apiWrapper=''
-                        sandbox={settings.squareSandbox}
-                        applicationId={settings.squareApplicationId}
-                        locationId={settings.squareLocationId}
-                        cardNonceResponseReceived={this.cardNonceResponseReceived}
-                        createVerificationDetails={() => this.createVerificationDetails()}>
-                        <fieldset className="sq-fieldset">
-                            <CreditCardNumberInput />
-                            <div className="sq-form-third">
-                                <CreditCardExpirationDateInput />
-                            </div>
-
-                            <div className="sq-form-third">
-                                <CreditCardPostalCodeInput />
-                            </div>
-
-                            <div className="sq-form-third">
-                                <CreditCardCVVInput />
-                            </div>
-                        </fieldset>
-                        <FormAlerts sendingState={this.state.paymentSendingState}
-                            errorMessage={`${paymentErrorMessagePrefex}${this.state.paymentError.length > 0 ? ` - ${this.state.paymentError}` : ''}`}
-                            sentMessage='Your food will be ready shortly!' />
-                        <div className='cart-square-buttons'>
-                            <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
-                                <FontAwesomeIcon icon='chevron-circle-left' /> Back
+                    {this.state.cartState !== 'payment' ? '' :
+                        this.context.square.filter(x => x.locationId === this.state.cartLocation).map(location => 
+                        <SquarePaymentForm
+                            formId={`square-form-${location.locationId}`}
+                            apiWrapper=''
+                            sandbox={location.applicationId.indexOf('sandbox') === 0}
+                            applicationId={location.applicationId}
+                            locationId={location.locationId}
+                            cardNonceResponseReceived={this.cardNonceResponseReceived}
+                            createVerificationDetails={() => this.createVerificationDetails()}>
+                            <fieldset className="sq-fieldset">
+                                {location.locationId}
+                                <CreditCardNumberInput />
+                                <div className="sq-form-third"><CreditCardExpirationDateInput /></div>
+                                <div className="sq-form-third"><CreditCardPostalCodeInput /></div>
+                                <div className="sq-form-third"><CreditCardCVVInput /></div>
+                            </fieldset>
+                            <FormAlerts sendingState={this.state.paymentSendingState}
+                                errorMessage={`${paymentErrorMessagePrefex}${this.state.paymentError.length > 0 ? ` - ${this.state.paymentError}` : ''}`}
+                                sentMessage='Your food will be ready shortly!' />
+                            <div className='cart-square-buttons'>
+                                <button className='sq-creditcard back' onClick={() => this.setCartState('info')} disabled={submitDisabled}>
+                                    <FontAwesomeIcon icon='chevron-circle-left' /> Back
                             </button>
-                            {submitDisabled ?
-                                <button className='sq-creditcard' disabled={true}>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
-                                </button> :
-                                <CreditCardSubmitButton>
-                                    <FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}
-                                </CreditCardSubmitButton>
-                            }
-                        </div>
-                    </SquarePaymentForm>
+                                {submitDisabled ?
+                                    <button className='sq-creditcard' disabled={true}><FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}</button> :
+                                    <CreditCardSubmitButton><FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}</CreditCardSubmitButton>
+                                }
+                            </div>
+                        </SquarePaymentForm>
+                    )}
                 </div>
                 }
             </div>
@@ -280,6 +283,7 @@ export class ShoppingCart extends Component<IProps, IState> {
             BuyerVerificationToken: buyerVerificationToken,
             Note: this.state.cartNote,
             PickUpInMinutes: this.state.cartPickup,
+            LocationId: this.state.cartLocation,
             Items: this.props.cart.items.map(item => new Object({
                 Quantity: item.quantity,
                 Name: item.name,

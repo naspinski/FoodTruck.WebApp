@@ -15,7 +15,6 @@ export class SiteSettings {
     logoImageUrl: string = '';
     bannerImageUrl: string = '';
     faviconImageUrl: string = '';
-    homeUrl: string = '';
     contactPhone: string = '';
     minutesUntilClose: number = 0;
 
@@ -26,9 +25,7 @@ export class SiteSettings {
     siblings: SiblingSite[] = [];
     social: Object = {};
 
-    squareSandbox: boolean = true;
-    squareApplicationId: string = '';
-    squareLocationId: string = '';
+    square: SquareLocation[] = [];
     
     public get deliveryServiceImageToUrlMap(): Map<string, string> {
         return new Map<string, string>(Object.entries(this.deliveryServiceImageToUrl));
@@ -44,6 +41,17 @@ export class SiteSettings {
     }
 
     constructor(init?: Partial<SiteSettings>) {
+        Object.assign(this, init);
+    }
+}
+
+export class SquareLocation {
+
+    name: string = '';
+    applicationId: string = '';
+    locationId: string = '';
+
+    constructor(init?: Partial<SquareLocation>) {
         Object.assign(this, init);
     }
 }

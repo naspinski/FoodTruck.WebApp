@@ -11,7 +11,7 @@ export class Cart {
     name: string = '';
     email: string = '';
     phone: string = '';
-    tax: number = 0;
+    //tax: number = 0;
     disabled: boolean = false;
     
     public get itemCount(): number {
@@ -25,10 +25,10 @@ export class Cart {
         return CartUtil.formatter.format(this.subTotal);
     }
 
-    public get taxAmount(): number { return this.tax * this.subTotal }
-    public get taxCost(): string { return CartUtil.formatter.format(this.taxAmount) }
-    public get total(): number { return this.subTotal + this.taxAmount }
-    public get totalCost(): string { return CartUtil.formatter.format(this.total) }
+    //public get taxAmount(): number { return this.tax * this.subTotal }
+    //public get taxCost(): string { return CartUtil.formatter.format(this.taxAmount) }
+    //public get total(): number { return this.subTotal + this.taxAmount }
+    //public get totalCost(): string { return CartUtil.formatter.format(this.total) }
 
     
     constructor(init?: Partial<Cart>) {
@@ -49,10 +49,11 @@ export class Cart {
 
     populate(action: CartAction) {
         this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
-        fetch('api/payment/tax')
-            .then((response) => response.text())
-            .then((tax) => this.tax = parseFloat(tax) / 100)
-            .catch(error => console.error('error', error));
+        //add this back in if you want to precalculate tax
+        //fetch('api/payment/tax')
+        //    .then((response) => response.text())
+        //    .then((tax) => this.tax = parseFloat(tax) / 100)
+        //    .catch(error => console.error('error', error));
     }
 
     add(action: CartAction, quantity?: number) {

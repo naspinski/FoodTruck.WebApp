@@ -18,7 +18,6 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string LogoImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
-        public string HomeUrl { get; set; }
         public string ContactPhone { get; set; } 
 
         public bool IsBrickAndMortar { get; set; }
@@ -33,9 +32,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
 
-        public bool SquareSandbox { get; set; }
-        public string SquareApplicationId { get; set; }
-        public string SquareLocationId { get; set; }
+        public IEnumerable<SquareLocation> Square { get; set; }
 
         private int TimeZoneOffsetFromUtcInHours;
         private int StopOrderingMinutesToClose;
@@ -51,10 +48,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             StopOrderingMinutesToClose = 30;
             Int32.TryParse(system.Settings[SettingName.StopOrderingMinutesToClose], out StopOrderingMinutesToClose);
 
-            HomeUrl = azureSettings.HomeUrl ?? string.Empty;
-            SquareSandbox = !squareSettings.UseProductionApi;
-            SquareApplicationId = SquareSandbox ? squareSettings.SandboxApplicationId : squareSettings.ProductionApplicationId;
-            SquareLocationId = SquareSandbox ? squareSettings.SandboxLocationId : squareSettings.ProductionLocationId;
+            Square = squareSettings.Locations.Select(x => (SquareLocation)x);
 
             Title = system.Settings[SettingName.Title];
             SubTitle = system.Settings[SettingName.SubTitle];

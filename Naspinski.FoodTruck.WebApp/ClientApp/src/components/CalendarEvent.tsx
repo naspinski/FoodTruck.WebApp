@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import * as React from 'react';
 import { Event } from '../models/Event';
 import { Location } from '../models/Location';
@@ -16,20 +16,11 @@ interface IProps {
     isGoogleMapsLoaded: boolean
 }
 
-interface IState {
-    isMapHidden: boolean,
-    modal: boolean,
-    sendTo: string,
-    isValidEmailOrPhone: boolean,
-    sendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error'
-}
-
 const CalendarEvent = ({ event, id, googleMapsApiKey, isGoogleMapsLoaded }: IProps) => {
 
     const [isMapHidden, setIsMapHidden] = useState(true);
     const [modal, setModal] = useState(false);
     const [sendTo, setSendTo] = useState('');
-    const [isValidEmailOrPhone, setIsValidEmailOrPhone] = useState(true);
     const [sendingState, setSendingState] = useState<'waiting' | 'sending' | 'sent' | 'error' | 'input-error'>('waiting');
     
     const formId: string = `subscribe-${id}`;

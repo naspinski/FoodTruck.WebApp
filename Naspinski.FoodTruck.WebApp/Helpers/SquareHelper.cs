@@ -15,22 +15,24 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
         public SquareClient Client;
 
         public string LocationId;
-        public string AccessToken;
-        public Square.Environment Env;
-        public bool UseProduction { get { return Env == Square.Environment.Production; } }
+        private string _accessToken;
+        private Square.Environment _env;
+        public bool UseProduction { get { return _env == Square.Environment.Production; } }
 
 
         private const double DEBUG_TAX = 6.9;
 
-        public SquareHelper(SquareSettings squareSettings)
+        public SquareHelper(SquareSettings squareSettings, string locationId)
         {
-            Env = squareSettings.UseProductionApi ? Square.Environment.Production : Square.Environment.Sandbox;
-            AccessToken = squareSettings.UseProductionApi ? squareSettings.ProductionAccessToken : squareSettings.SandboxAccessToken;
-            LocationId = squareSettings.UseProductionApi ? squareSettings.ProductionLocationId : squareSettings.SandboxLocationId;
+            var settings = squareSettings.Locations.FirstOrDefault(x => x.LocationId.Equals(locationId, StringComparison.InvariantCultureIgnoreCase));
+
+            _env = settings.ApplicationId.StartsWith("sandbox") ? Square.Environment.Sandbox : Square.Environment.Production;
+            _accessToken = settings.AccessToken;
+            LocationId = settings.LocationId;
 
             Client = new SquareClient.Builder()
-                .Environment(Env)
-                .AccessToken(AccessToken)
+                .Environment(_env)
+                .AccessToken(_accessToken)
                 .Build();
         }
 
