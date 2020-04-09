@@ -210,11 +210,11 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private string GetBody(Data.Models.Payment.Order order, string name, SystemModel settings, bool isCustomer)
         {
             var n = Environment.NewLine;
-            name = string.IsNullOrWhiteSpace(name) ? order.Email : name;
             var title = settings.Get(SettingName.Title);
+            var customerInfo = string.Join(", ", new[] { name, order.Email, order.Phone }.Where(x => !string.IsNullOrWhiteSpace(x)));
             return isCustomer
-                ? $"{name}, here is your Order Confirmation:{n}{n}{order.FullText}{n}{n}Thank you!{n}-{title}"
-                : $"Order for {name}{n}{n}{order.FullText}";
+                ? $"{title} Order Confirmation:{n}{n}{order.FullText}{n}{n}Thank you!{n}-{title}"
+                : $"Order for {customerInfo}{n}{n}{order.FullText}";
         }
     }
 }
