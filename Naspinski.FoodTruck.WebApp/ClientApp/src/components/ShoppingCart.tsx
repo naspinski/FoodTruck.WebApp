@@ -197,7 +197,7 @@ export class ShoppingCart extends Component<IProps, IState> {
                             <input id={this.cartPhoneId} name={this.cartPhoneId} type='text' className='form-control sq-form-style' onChange={this.handlePhoneChange} />
                         </div>
                         <div>
-                            <span className='sq-label'>Email</span>
+                            <span className='sq-label'>Email*</span>
                             <input required id={this.cartEmailId} name={this.cartEmailId} type='email' className='form-control sq-form-style' onChange={this.handleChange} />
                         </div>
                         <div className={pickupsClassName}>
