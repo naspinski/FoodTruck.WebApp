@@ -1,4 +1,5 @@
 ﻿using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,14 +33,14 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
 
-        public IEnumerable<SquareLocation> Square { get; set; }
+        public IEnumerable<SquareLocationModel> Square { get; set; }
 
         private int TimeZoneOffsetFromUtcInHours;
         private int StopOrderingMinutesToClose;
         
         private SystemModel _system;
         
-        public SettingsModel(AzureSettings azureSettings, SquareSettings squareSettings, SystemModel system, FoodTruckContext context)
+        public SettingsModel(AzureSettings azureSettings, IEnumerable<SquareLocationModel> squareLocations, SystemModel system, FoodTruckContext context)
         {
             _system = system;
             
@@ -48,7 +49,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             StopOrderingMinutesToClose = 30;
             Int32.TryParse(system.Settings[SettingName.StopOrderingMinutesToClose], out StopOrderingMinutesToClose);
 
-            Square = squareSettings.Locations.Select(x => (SquareLocation)x);
+            Square = squareLocations.Select(x => new SquareLocationModel() { Name = x.Name, ApplicationId = x.ApplicationId, LocationId = x.LocationId });
 
             Title = system.Settings[SettingName.Title];
             SubTitle = system.Settings[SettingName.SubTitle];

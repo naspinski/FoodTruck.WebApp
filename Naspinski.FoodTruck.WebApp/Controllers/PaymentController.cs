@@ -4,6 +4,8 @@ using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Payment;
+using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
+using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Naspinski.FoodTruck.WebApp.Helpers;
 using Naspinski.FoodTruck.WebApp.Models;
 using Naspinski.Messaging.Email;
@@ -25,30 +27,35 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private readonly OrderHandler _handler;
         private readonly SettingHandler _settingHandler;
         private readonly AzureSettings _azureSettings;
-        private SquareSettings _squareSettings;
+        private readonly IEnumerable<SquareLocationModel> _squareLocations;
 
         private Data.Models.Payment.Order _order;
 
-        public PaymentController(FoodTruckContext context, SquareSettings squareSettings, AzureSettings azureSettings) : base(context)
+        public PaymentController(FoodTruckContext context, AzureSettings azureSettings) : base(context)
         {
             _handler = new OrderHandler(context, "system");
             _azureSettings = azureSettings;
-            _settingHandler = new SettingHandler(_context);
-            _squareSettings = squareSettings;
+            _settingHandler = new SettingHandler(context);
+            _squareLocations = new SquareLocationHandler(context, "system").GetAll();
+        }
+
+        private SquareLocationModel GetSquareLocation(string locationId)
+        {
+            return _squareLocations.FirstOrDefault(x => x.LocationId.Equals(locationId, StringComparison.InvariantCultureIgnoreCase));
         }
 
         [HttpGet]
         [Route("tax")]
         public async Task<decimal> GetTaxPercentage(string l)
         {
-            var square = new SquareHelper(_squareSettings, l);
+            var square = new SquareHelper(GetSquareLocation(l));
             var settings = new SystemModel(new SettingHandler(this._context).Get(new[] { SettingName.SquareOnlineTaxId }));
             return await square.GetAdditiveTaxPercentage();
         }
 
         private async Task<CreateOrderRequest> GetOrderRequest(PaymentModel model, bool saveOrder)
         {
-            var square = new SquareHelper(_squareSettings, model.LocationId);
+            var square = new SquareHelper(GetSquareLocation(model.LocationId));
             var taxes = await square.GetTaxes();
             taxes = taxes ?? new List<CatalogObject>();
             var tax = await square.GetAdditiveTaxPercentage(taxes);
@@ -60,7 +67,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [Route("amount")]
         public async Task<long> GetAmount(PaymentModel model)
         {
-            var square = new SquareHelper(_squareSettings, model.LocationId);
+            var square = new SquareHelper(GetSquareLocation(model.LocationId));
             var orderRequest = await GetOrderRequest(model, true);
             return square.GetTotalInCents(orderRequest);
         }
@@ -70,7 +77,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public async Task<IActionResult> Pay(PaymentModel model)
         {
             var system = new SystemModel(_settingHandler.GetAll());
-            var settings = new SettingsModel(_azureSettings, _squareSettings, system, _context);
+            var settings = new SettingsModel(_azureSettings, _squareLocations, system, _context);
             try
             {
                 if(!settings.IsOrderingOn)
@@ -81,7 +88,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 if (!string.Equals(system.Settings[SettingName.IsOrderingOn], true.ToString(), StringComparison.OrdinalIgnoreCase))
                     throw new InvalidOperationException("Online ordering is currently unavailable");
 
-                var square = new SquareHelper(_squareSettings, model.LocationId);
+                var square = new SquareHelper(GetSquareLocation(model.LocationId));
                 var isBrickAndMortar = string.Equals(system.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
                 var orderRequest = await GetOrderRequest(model, true);
                 var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);

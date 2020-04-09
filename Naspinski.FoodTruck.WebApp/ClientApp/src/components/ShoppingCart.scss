@@ -93,6 +93,14 @@
         }
     }
 
+    div.bold {
+        margin: 1rem 0;
+        span.sq-label {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    }
+
     .cart-square-buttons {
         display: flex;
         justify-content: space-between;

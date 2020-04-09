@@ -7,6 +7,8 @@ using Naspinski.FoodTruck.Data;
 using Microsoft.EntityFrameworkCore;
 using Elmah.Io.AspNetCore;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using System.Collections.Generic;
+using Naspinski.FoodTruck.Data.Distribution.Models.System;
 
 namespace Naspinski.FoodTruck.WebApp
 {
@@ -32,7 +34,6 @@ namespace Naspinski.FoodTruck.WebApp
             });
 
             services.AddSingleton(Configuration.GetSection("AzureSettings").Get<AzureSettings>());
-            services.AddSingleton(Configuration.GetSection("SquareSettings").Get<SquareSettings>());
             
             var elmah = Configuration.GetSection("ElmahSettings").Get<ElmahSettings>();
             services.AddElmahIo(o => { o.ApiKey = elmah.ApiKey; o.LogId = elmah.LogId; });

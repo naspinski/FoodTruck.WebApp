@@ -1,5 +1,6 @@
 ﻿using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Access.AdditionalModels;
+using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Square;
 using Square.Models;
 using System;
@@ -22,13 +23,11 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
 
         private const double DEBUG_TAX = 6.9;
 
-        public SquareHelper(SquareSettings squareSettings, string locationId)
+        public SquareHelper(SquareLocationModel location)
         {
-            var settings = squareSettings.Locations.FirstOrDefault(x => x.LocationId.Equals(locationId, StringComparison.InvariantCultureIgnoreCase));
-
-            _env = settings.ApplicationId.StartsWith("sandbox") ? Square.Environment.Sandbox : Square.Environment.Production;
-            _accessToken = settings.AccessToken;
-            LocationId = settings.LocationId;
+            _env = location.ApplicationId.StartsWith("sandbox") ? Square.Environment.Sandbox : Square.Environment.Production;
+            _accessToken = location.AccessToken;
+            LocationId = location.LocationId;
 
             Client = new SquareClient.Builder()
                 .Environment(_env)

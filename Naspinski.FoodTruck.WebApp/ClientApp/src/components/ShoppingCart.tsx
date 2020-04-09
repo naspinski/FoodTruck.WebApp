@@ -117,9 +117,12 @@ export class ShoppingCart extends Component<IProps, IState> {
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
 
-        const pickups = Array.from(this.pickupValues.keys()).filter(x => x <= settings.minutesUntilClose);
+        const pickups = settings.isBrickAndMortar
+            ? Array.from(this.pickupValues.keys()).filter(x => x <= settings.minutesUntilClose)
+            : Array.from(this.pickupValues.keys());
         const pickupsClassName = pickups.length > 1 ? '' : 'invisible'; 
-        const locationClassName = settings.square && settings.square.length > 1 ? '' : 'invisible';
+        const isMultipleLocations = settings.square && settings.square.length > 1;
+        const locationClassName = isMultipleLocations ? '' : 'invisible';
         const orderClassName = 'cart-section ' + (this.state.cartState === 'order' ? 'visible' : 'invisible');
         const infoFormClassName = 'needs-validation cart-section ' + (this.state.cartState === 'info' ? 'visible' : 'invisible');
         const paymentFormClassName = 'cart-section ' + (this.state.cartState === 'payment' ? 'visible' : 'invisible');
@@ -232,7 +235,10 @@ export class ShoppingCart extends Component<IProps, IState> {
                             cardNonceResponseReceived={this.cardNonceResponseReceived}
                             createVerificationDetails={() => this.createVerificationDetails()}>
                             <fieldset className="sq-fieldset">
-                                {location.locationId}
+                                    {!isMultipleLocations ? '' :
+                                        <div className='bold'>
+                                            <span className='sq-label'>Location: {location.name}</span>
+                                        </div>}
                                 <CreditCardNumberInput />
                                 <div className="sq-form-third"><CreditCardExpirationDateInput /></div>
                                 <div className="sq-form-third"><CreditCardPostalCodeInput /></div>
