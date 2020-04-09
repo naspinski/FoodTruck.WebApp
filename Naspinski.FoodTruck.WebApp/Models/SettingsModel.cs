@@ -66,7 +66,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             {
                 IsBrickAndMortar = SetBool(SettingName.BrickAndMortarMode, true);
                 IsApplyOn = SetBool(SettingName.IsApplyOn);
-                IsOrderingOn = SetBool(SettingName.IsOrderingOn);
+                IsOrderingOn = SetBool(SettingName.IsOrderingOn) && squareLocations.Any();
                 IsTextOn = SetBool(SettingName.IsTextOn);
 
                 GoogleMapsApiKey = _system.Get(SettingName.GoogleMapsApiKey);
