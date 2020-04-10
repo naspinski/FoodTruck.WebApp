@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import * as React from 'react';
 import { MDBNavLink, MDBFooter, MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import StoreHours from './StoreHours';

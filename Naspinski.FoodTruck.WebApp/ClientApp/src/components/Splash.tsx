@@ -28,9 +28,8 @@ const Splash = () => {
         </a>
 
     const links = Utilities.getLinks(context);
-    console.log(links);
 
-    const menuLink = links.has('/menu') ? '' :
+    const menuLink = !links.has('/menu') ? '' :
         <NavLink to='/menu'>
             <MDBBtn color='secondary'>
                 <FontAwesomeIcon icon='hamburger' /> {settings.showCart ? 'Order for Pickup!' : 'Menu'}
@@ -39,14 +38,14 @@ const Splash = () => {
 
     const conditionalLink = settings.isBrickAndMortar ?
         (
-            links.has('/calendar') ? '' :
+            !links.has('/calendar') ? '' :
                 <NavLink to='/calendar'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='calendar' /> Calendar
                     </MDBBtn>
                 </NavLink>
         ) : (
-            links.has('/specials') ? '' :
+            !links.has('/specials') ? '' :
                 <NavLink to='/specials'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='star' /> Calendar

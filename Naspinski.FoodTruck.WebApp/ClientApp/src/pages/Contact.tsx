@@ -8,7 +8,6 @@ import './Contact.scss';
 import { MDBRow, MDBCol, MDBBtnGroup, MDBBtn } from 'mdbreact';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { SiteSettings } from '../models/SiteSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SiteContext from '../models/SiteContext';
 

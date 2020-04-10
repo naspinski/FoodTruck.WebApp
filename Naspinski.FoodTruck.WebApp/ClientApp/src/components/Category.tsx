@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import * as React from 'react';
 import Item from './Item';
 import { MenuCategory } from '../models/MenuModels';

@@ -1,20 +1,15 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import * as React from 'react';
 import './NavMenu.scss';
 import { NavLink } from 'react-router-dom';
 import { MDBNavbar, MDBNavLink, MDBNavItem, MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBCollapse, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem, MDBHamburgerToggler, MDBBtn } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Cart, CartAction } from '../models/CartModels';
+import { CartAction } from '../models/CartModels';
 import SiteContext from '../models/SiteContext';
-import { SiteSettings } from '../models/SiteSettings';
 import { Utilities } from '../Utility';
 
 interface IProps {
     cartAction: (action: CartAction) => void,
-}
-
-interface IState {
-    isMenuOpen: boolean
 }
 
 const NavMenu = ({ cartAction }: IProps) => {

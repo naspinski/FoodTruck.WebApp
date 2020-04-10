@@ -1,14 +1,13 @@
 import { Component } from 'react';
 import * as React from 'react';
 import './ShoppingCart.scss';
-import { CartAction, Cart } from '../models/CartModels';
+import { CartAction } from '../models/CartModels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SquarePaymentForm, CreditCardNumberInput, CreditCardExpirationDateInput, CreditCardPostalCodeInput, CreditCardCVVInput, CreditCardSubmitButton } from 'react-square-payment-form'
 import 'react-square-payment-form/lib/default.css'
 import { MDBBtn } from 'mdbreact';
 import FormAlerts from './FormAlerts';
 import SiteContext from '../models/SiteContext';
-import { SiteSettings } from '../models/SiteSettings';
 
 interface IProps {
     cartAction: (action: CartAction) => void
