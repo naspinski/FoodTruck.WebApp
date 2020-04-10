@@ -7,6 +7,7 @@ import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faPinterestSquare
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import SiteContext from '../models/SiteContext';
 import { Utilities } from '../Utility';
+import { NavLink } from 'react-router-dom';
 
 
 const Footer = () => {
@@ -75,7 +76,7 @@ const Footer = () => {
             </MDBContainer>
             <div className="footer-copyright text-center py-3 primary-color">
                 <MDBContainer fluid>
-                    &copy; {new Date().getFullYear()} Copyright {settings.title} | developed by <a href="https://naspinski.net">Stan Naspinski</a>
+                    &copy; {new Date().getFullYear()} Copyright {settings.title} | <NavLink to='/terms'>Terms</NavLink> | developed by <a href="https://naspinski.net">Stan Naspinski</a>
                 </MDBContainer>
             </div>
         </MDBFooter>

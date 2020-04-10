@@ -8,18 +8,18 @@ import SiteContext from './models/SiteContext';
 
 import './custom.scss'
 import { SiteState } from './models/SiteState'
+import { CartAction } from './models/CartModels';
 
 import Layout from './components/Layout';
 import Main from './pages/Main';
-import Contact from './pages/Contact';
 import Menu from './pages/Menu';
+import Contact from './pages/Contact';
+import Terms from './pages/Terms';
 import Spinner from './components/Spinner';
-
-import { library } from '@fortawesome/fontawesome-svg-core';
 import Specials from './components/Specials';
 import Calendar from './components/Calendar';
-import { CartAction } from './models/CartModels';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
     faCommentAlt, faDownload, faMapMarkerAlt, faCalendar, faHamburger, faEnvelope, faTrashAlt, faPhone, faShoppingCart, faCog,
     faExternalLinkAlt, faChevronCircleRight, faChevronCircleLeft, faStar, faInfoCircle, faExclamationCircle, faThumbsUp, faTimes, faCaretDown
@@ -65,6 +65,7 @@ export default class App extends Component<{}, SiteState> {
                         <Route path='/specials' render={x => <Specials containerClassName='primary-color' />} />
                         <Route path='/calendar' render={x => <Calendar containerClassName='primary-color' />} />
                         <Route path='/contact' component={Contact} />
+                        <Route path='/terms' component={Terms} />
                     </Layout>
                 </React.Fragment>
             </SiteContext.Provider>
@@ -83,7 +84,10 @@ export default class App extends Component<{}, SiteState> {
         fetch('api/settings')
             .then((resp) => resp.json())
             .then((data) => {
-                this.setState({ settings: new SiteSettings(data) });
+                const settings = new SiteSettings(data);
+                const cart = this.state.cart;
+                cart.initStorage(settings.title);
+                this.setState({ settings: settings, cart: cart });
 
                 const options: LoaderOptions = { /* todo */ };
                 const loader = new Loader(data.googleMapsApiKey, options);

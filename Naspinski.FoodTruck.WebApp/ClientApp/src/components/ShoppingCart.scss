@@ -72,7 +72,7 @@
     #cart-checkout-button {
         text-align: center;
 
-        button {
+        button.secondary-dark {
             background-color: $secondary-color-dark !important;
         }
     }
@@ -91,10 +91,26 @@
         select {
             background-color: #f5f5f5
         }
+
+        div.check input {
+            width: 38px;
+        }
+
+        .half {
+            float: left;
+            width: calc((100% - 10px) / 2);
+            padding: 0;
+            margin: 0 10px 0 0;
+        }
+
+        div.half:last-of-type {
+            margin-right: 0;
+        }
     }
 
     div.bold {
         margin: 1rem 0;
+
         span.sq-label {
             font-weight: bold;
             font-size: 1.2em;

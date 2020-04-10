@@ -1,8 +1,10 @@
 import * as React from 'react';
 import Alert from './Alert';
 
+export type FormAlertStates = 'waiting' | 'sending' | 'sent' | 'error' | 'input-error';
+
 interface IProps {
-    sendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error'
+    sendingState: FormAlertStates,
     sendingMessage?: string,
     sentMessage?: string,
     errorMessage?: string,

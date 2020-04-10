@@ -19,4 +19,16 @@ export class Utilities {
         links.set('contact', '/contact');
         return links;
     }
+
+    public static Sanitize(str): string {
+        return str === null ? '' : str.replace(/\W/g, '');
+    }
+}
+
+type SendingStates = 'waiting' | 'sending' | 'sent' | 'error' | 'input-error';
+
+export class Enums {
+    public static get SendingStates() {
+        return this.SendingStates;
+    }
 }

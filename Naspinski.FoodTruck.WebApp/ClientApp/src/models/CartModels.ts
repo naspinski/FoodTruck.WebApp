@@ -1,17 +1,16 @@
 import { MenuPrice, MenuItem, MenuCategory, MenuOption } from './MenuModels';
+import { Utilities } from '../Utility';
 
 export class Cart {
-    storageKey: string = 'ft_cart';
+    storageKey: string = '';
     isHidden: boolean = true;
     isWorking: boolean = false;
     items: CartItem[] = [];
     isStorageEnabled: boolean = typeof (Storage) !== undefined;
-    termsAcknowledged: boolean = false;
-    menuItems: MenuItem[];
+    //menuItems: MenuItem[];
     name: string = '';
     email: string = '';
     phone: string = '';
-    //tax: number = 0;
     disabled: boolean = false;
     
     public get itemCount(): number {
@@ -25,11 +24,6 @@ export class Cart {
         return CartUtil.formatter.format(this.subTotal);
     }
 
-    //public get taxAmount(): number { return this.tax * this.subTotal }
-    //public get taxCost(): string { return CartUtil.formatter.format(this.taxAmount) }
-    //public get total(): number { return this.subTotal + this.taxAmount }
-    //public get totalCost(): string { return CartUtil.formatter.format(this.total) }
-
     
     constructor(init?: Partial<Cart>) {
         Object.assign(this, init);
@@ -42,19 +36,17 @@ export class Cart {
             case 'toggle': this.isHidden = !this.isHidden; break;
             case 'add': this.add(action); break;
             case 'remove': this.remove(action); break;
-            case 'populate-items': this.populate(action); break;
+            case 'clear': this.clear(); break;
+            //case 'populate-items': this.populate(action); break;
             default: console.warn(`${action.task} is not implemented yet`);
         }
     }
 
-    populate(action: CartAction) {
-        this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
-        //add this back in if you want to precalculate tax
-        //fetch('api/payment/tax')
-        //    .then((response) => response.text())
-        //    .then((tax) => this.tax = parseFloat(tax) / 100)
-        //    .catch(error => console.error('error', error));
-    }
+    //populate(action: CartAction) {
+    //    this.storageKey = 'ft-' + action.key;
+    //    this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
+    //    this.load();
+    //}
 
     add(action: CartAction, quantity?: number) {
         if (!this.disabled) {
@@ -62,12 +54,12 @@ export class Cart {
             var item = new CartItem();
             item.loadFromAction(action);
             let existing = this.items.find(x => x.key === item.key);
-            console.log('existing', item.key);
             if (existing === undefined) {
                 this.items.push(item);
             } else {
                 existing.quantity += quantity;
             }
+            this.writeToStorage();
         }
     }
 
@@ -75,6 +67,33 @@ export class Cart {
         if (!this.disabled) {
             this.items = this.items.filter(x => x.key !== action.key);
             this.isHidden = this.itemCount === 0 ? true : this.isHidden;
+        }
+    }
+
+    public initStorage(title: string) {
+        this.storageKey = `ft-${Utilities.Sanitize(title)}`;
+        this.load();
+    }
+
+    public load(): void {
+        if (this.isStorageEnabled && this.storageKey.length > 0 && localStorage.getItem(this.storageKey) !== undefined && localStorage.getItem(this.storageKey) !== null) {
+            const items = JSON.parse(localStorage.getItem(this.storageKey));
+            this.items = items === null ? [] : items.map(x => new CartItem(x));
+        }
+    }
+
+    writeToStorage() {
+        if (this.isStorageEnabled && this.storageKey.length > 0) {
+            console.log('writing', JSON.stringify(this.items), 'to ' + this.storageKey);
+            localStorage.setItem(this.storageKey, JSON.stringify(this.items));
+        }
+    }
+
+    clear() {
+        this.items = []
+        this.isHidden = true;
+        if (this.isStorageEnabled && this.storageKey.length > 0) {
+            localStorage.removeItem(this.storageKey);
         }
     }
 }
@@ -160,7 +179,7 @@ export class CartUtil {
 }
 
 export class CartAction {
-    task: 'add' | 'remove' | 'pay' | 'toggle' | 'populate-items' | 'disable' | 'enable';
+    task: 'add' | 'remove' | 'pay' | 'toggle' | 'clear' | 'disable' | 'enable';
     price: MenuPrice = new MenuPrice();
     item: MenuItem = new MenuItem();
     key: string = '';

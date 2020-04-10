@@ -3,7 +3,7 @@ import NavMenu from './NavMenu';
 import Footer from './Footer';
 import { MDBContainer } from 'mdbreact';
 import { CartAction } from '../models/CartModels';
-import { ShoppingCart } from './ShoppingCart';
+import ShoppingCart from './ShoppingCart';
 import SiteContext from '../models/SiteContext';
 
 interface IProps {

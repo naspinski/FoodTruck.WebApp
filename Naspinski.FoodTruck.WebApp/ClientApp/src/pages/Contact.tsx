@@ -1,9 +1,9 @@
-import { Component, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { Location } from '../models/Location';
 import Address from './../components/Address';
 import Map from './../components/Map';
-import FormAlerts from './../components/FormAlerts';
+import FormAlerts, { FormAlertStates } from './../components/FormAlerts';
 import './Contact.scss';
 import { MDBRow, MDBCol, MDBBtnGroup, MDBBtn } from 'mdbreact';
 import DatePicker from 'react-datepicker';
@@ -27,13 +27,12 @@ const Contact = () => {
     const context = React.useContext(SiteContext);
 
     const [location, setLocation] = useState(new Location());
-    const [googleMapsApiKey, setGoogleMapsApiKey] = useState(context.settings.googleMapsApiKey);
     const [type, setType] = useState<'Contact' | 'Apply' | 'Book'>('Contact')
     const [contactEmail, setContactEmail] = useState('');
     const [message, setMessage] = useState('');
     const [attachment, setAttachment] = useState(null);
     const [date, setDate] = useState(null);
-    const [sendingState, setSendingState] = useState<'waiting' | 'sending' | 'sent' | 'error' | 'input-error'>('waiting');
+    const [sendingState, setSendingState] = useState<FormAlertStates>('waiting');
     
     useEffect(() => {
         fetch('api/location')

@@ -29,7 +29,7 @@ const Splash = () => {
 
     const links = Utilities.getLinks(context);
 
-    const menuLink = !links.has('/menu') ? '' :
+    const menuLink = !links.has('menu') ? '' :
         <NavLink to='/menu'>
             <MDBBtn color='secondary'>
                 <FontAwesomeIcon icon='hamburger' /> {settings.showCart ? 'Order for Pickup!' : 'Menu'}
@@ -38,20 +38,21 @@ const Splash = () => {
 
     const conditionalLink = settings.isBrickAndMortar ?
         (
-            !links.has('/calendar') ? '' :
+            !links.has('calendar') ? '' :
                 <NavLink to='/calendar'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='calendar' /> Calendar
                     </MDBBtn>
                 </NavLink>
         ) : (
-            !links.has('/specials') ? '' :
+            !links.has('specials') ? '' :
                 <NavLink to='/specials'>
                     <MDBBtn color='pink'>
                         <FontAwesomeIcon icon='star' /> Calendar
                     </MDBBtn>
                 </NavLink>
         );
+    const hideDelivery = !settings.isBrickAndMortar || !settings.deliveryServiceImageToUrlMap || settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder;
 
     return <div className='primary-color'>
         <MDBRow className='inner-container pt4'>
@@ -74,8 +75,8 @@ const Splash = () => {
                         </MDBBtn>
                     </NavLink>
                 </p>
-                <p className='pl1'>
-                    {!settings || !settings.deliveryServiceImageToUrlMap || settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder ? '' :
+                <div className='pl1'>
+                    {hideDelivery ? '' :
                         <React.Fragment>
                             <h5 className='b i serif'>Delivery</h5>
                             {Array.from(settings.deliveryServiceImageToUrlMap.keys()).map((svc: string) =>
@@ -85,7 +86,7 @@ const Splash = () => {
                             )}
                         </React.Fragment>
                     }
-                </p>
+                </div>
             </MDBCol>
         </MDBRow>
     </div>

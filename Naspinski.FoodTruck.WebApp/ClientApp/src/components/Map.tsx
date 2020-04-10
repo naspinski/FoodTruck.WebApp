@@ -1,4 +1,4 @@
-import { Component, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import * as React from 'react';
 import { Location } from '../models/Location';
 import SiteContext from '../models/SiteContext';

@@ -75,6 +75,7 @@
     <None Remove="ClientApp\src\models\SpecialsDaily.ts" />
     <None Remove="ClientApp\src\models\Utility.ts" />
     <None Remove="ClientApp\src\pages\Menu.tsx" />
+    <None Remove="ClientApp\src\pages\Terms.tsx" />
   </ItemGroup>
 
   <ItemGroup>

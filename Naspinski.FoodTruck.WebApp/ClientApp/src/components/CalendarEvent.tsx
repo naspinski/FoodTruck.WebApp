@@ -6,7 +6,7 @@ import Address from './Address';
 import Map from './Map';
 import { MDBBtn, MDBRow, MDBCol, MDBContainer, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import FormAlerts from './../components/FormAlerts';
+import FormAlerts, { FormAlertStates } from './../components/FormAlerts';
 import { RegularExpressions } from '../Utility';
 
 interface IProps {
@@ -19,7 +19,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
     const [isMapHidden, setIsMapHidden] = useState(true);
     const [modal, setModal] = useState(false);
     const [sendTo, setSendTo] = useState('');
-    const [sendingState, setSendingState] = useState<'waiting' | 'sending' | 'sent' | 'error' | 'input-error'>('waiting');
+    const [sendingState, setSendingState] = useState<FormAlertStates>('waiting');
     
     const formId: string = `subscribe-${id}`;
     const sendToId: string = `${formId}-send-to`;
