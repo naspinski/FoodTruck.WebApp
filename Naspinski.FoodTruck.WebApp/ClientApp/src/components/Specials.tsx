@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Special } from './Special';
+import Special from './Special';
 import { SpecialModel } from '../models/SpecialModel';
 import { MDBRow, MDBCol } from 'mdbreact';
 import SiteContext from '../models/SiteContext';
