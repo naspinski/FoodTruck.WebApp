@@ -2,7 +2,7 @@ import { Component, useState, useEffect } from 'react';
 import * as React from 'react';
 import { Location } from '../models/Location';
 import Address from './../components/Address';
-import { Map } from './../components/Map';
+import Map from './../components/Map';
 import FormAlerts from './../components/FormAlerts';
 import './Contact.scss';
 import { MDBRow, MDBCol, MDBBtnGroup, MDBBtn } from 'mdbreact';

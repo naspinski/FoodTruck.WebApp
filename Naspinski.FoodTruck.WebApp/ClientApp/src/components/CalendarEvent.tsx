@@ -3,7 +3,7 @@ import * as React from 'react';
 import { EventModel } from '../models/Event';
 import { Location } from '../models/Location';
 import Address from './Address';
-import { Map } from './Map';
+import Map from './Map';
 import { MDBBtn, MDBRow, MDBCol, MDBContainer, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from 'mdbreact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FormAlerts from './../components/FormAlerts';
