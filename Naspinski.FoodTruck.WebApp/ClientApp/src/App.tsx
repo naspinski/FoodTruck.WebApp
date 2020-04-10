@@ -7,11 +7,12 @@ import { LoaderOptions, Loader } from 'google-maps';
 import SiteContext from './models/SiteContext';
 
 import './custom.scss'
+import { SiteState } from './models/SiteState'
+
 import Layout from './components/Layout';
 import Main from './pages/Main';
-import { Contact } from './pages/Contact';
+import Contact from './pages/Contact';
 import Menu from './pages/Menu';
-import { SiteState } from './models/SiteState'
 import Spinner from './components/Spinner';
 
 import { library } from '@fortawesome/fontawesome-svg-core';

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState, useEffect } from 'react';
 import * as React from 'react';
 import { Location } from '../models/Location';
 import Address from './../components/Address';
@@ -22,147 +22,143 @@ interface IState {
     sendingState: 'waiting' | 'sending' | 'sent' | 'error' | 'input-error'
 }
 
-export class Contact extends Component<{}, IState> {
+const Contact = () => {
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            location: new Location(),
-            googleMapsApiKey: props.googleMapsApiKey,
-            type: 'Contact',
-            contactEmail: '',
-            message: '',
-            attachment: null,
-            date: null,
-            sendingState: 'waiting'
+    const context = React.useContext(SiteContext);
+
+    const [location, setLocation] = useState(new Location());
+    const [googleMapsApiKey, setGoogleMapsApiKey] = useState(context.settings.googleMapsApiKey);
+    const [type, setType] = useState<'Contact' | 'Apply' | 'Book'>('Contact')
+    const [contactEmail, setContactEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [attachment, setAttachment] = useState(null);
+    const [date, setDate] = useState(null);
+    const [sendingState, setSendingState] = useState<'waiting' | 'sending' | 'sent' | 'error' | 'input-error'>('waiting');
+    
+    useEffect(() => {
+        fetch('api/location')
+            .then((resp) => resp.json())
+            .then((data) => setLocation(new Location(data)));
+    }, []);
+
+    const handleAttachmentChange = (event: any) => {
+        if (event.target.files) {
+            setAttachment(event.target.files[0]);
         }
     }
 
-    static contextType = SiteContext;
+    const formId = 'contact-form';
 
-    apply = () => { this.setState({ type: 'Apply' }); }
-    contact = () => { this.setState({ type: 'Contact' }); }
-    book = () => { this.setState({ type: 'Book' }); }
-
-    handleChange = (event: any) => { this.setState({ [event.target.name]: event.target.value } as React.ComponentState); }
-    handleAttachmentChange = (event: any) => { if (event.target.files) this.setState({ attachment: event.target.files[0] }); }
-    handleDateChange = (date: any) => { this.setState({ date: date }); };
-
-    formId = 'contact-form';
-
-    handleSubmit = (event: any) => {
+    const handleSubmit = (event: any) => {
         event.preventDefault();
         event.target.className += ' was-validated';
-        let isValid = (document.getElementById(this.formId) as HTMLFormElement).checkValidity();
+        let isValid = (document.getElementById(formId) as HTMLFormElement).checkValidity();
         if (isValid) {
-            this.setState({ sendingState: 'sending' });
+           setSendingState('sending');
 
             const payload = {
-                email: this.state.contactEmail,
-                message: this.state.message,
-                type: this.state.type
+                Email: contactEmail,
+                Message: message,
+                Type: type
             }
 
             let options: any = {
                 method: 'post'
             };
 
-            if (this.state.attachment !== null) {
-                let formData = new FormData();
-                formData.append('Email', payload.email);
-                formData.append('Message', payload.message);
-                formData.append('Type', payload.type);
-                formData.append('Attachment', this.state.attachment);
-                options.body = formData;
-            } else {
-                options.body = JSON.stringify(payload);
-                options.headers = { 'Content-Type': 'application/json' };
+            
+            let formData = new FormData();
+            formData.append('Email', payload.Email);
+            formData.append('Message', payload.Message);
+            formData.append('Type', payload.Type);
+            if (type === 'Book') {
+                formData.append('DateTime', date);
             }
+            if (type === 'Apply' && attachment !== null) {
+                formData.append('Attachment', attachment);
+            }
+            options.body = formData;
 
             fetch('api/contact', options)
                 .then(response => {
-                    this.setState({ sendingState: response.status === 200 ? 'sent' : 'error' });
+                    setSendingState(response.status === 200 ? 'sent' : 'error');
                 })
                 .catch(error => {
                     console.error('error', error);
-                    this.setState({ sendingState: 'error' })
+                    setSendingState('error')
                 });
         } else {
-            this.setState({ sendingState: 'input-error' })
+            setSendingState('input-error')
         }
     }
 
-    componentDidMount() {
-        this.populate();
-    }
+    const settings = context.settings;
 
-    render() {
-        const settings = this.context.settings;
-
-        const address = this.state.location && this.state.location.address && this.state.location.address.length > 0
-            ? <div>
-                <h3 className='b'>
-                    <FontAwesomeIcon icon='map-marker-alt' /> Location
-                </h3>
-                <Map location={this.state.location} id='contact-map' zoom={11} />
-                <div className='b'>
-                    <Address location={this.state.location} />
-                </div>
+    const address = location && location.address && location.address.length > 0
+        ? <div>
+            <h3 className='b'>
+                <FontAwesomeIcon icon='map-marker-alt' /> Location
+            </h3>
+            <Map location={location} id='contact-map' zoom={11} />
+            <div className='b'>
+                <Address location={location} />
             </div>
-            : '';
+        </div>
+        : '';
 
-        const dateTimePicker = this.state.type !== 'Book' ? '' :
-            <div className='pt2 b'>
-                <label htmlFor='date'>Date/Time</label>
-                <DatePicker id='date'
-                    showTimeSelect
-                    dateFormat='MM/dd/yyyy HH:mm'
-                    popperPlacement='top'
-                    className='form-control'
-                    selected={this.state.date}
-                    onChange={this.handleDateChange}
-                />
-            </div>;
+    const dateTimePicker = type !== 'Book' ? '' :
+        <div className='pt2 b'>
+            <label htmlFor='date'>Date/Time</label>
+            <DatePicker id='date'
+                showTimeSelect
+                dateFormat='MM/dd/yyyy HH:mm'
+                popperPlacement='top'
+                className='form-control'
+                selected={date}
+                onChange={setDate}
+            />
+        </div>;
 
-        const phone = settings.contactPhone.length === 0 ? '' :
-            <React.Fragment>
-                <h3 className='b'>
-                    <FontAwesomeIcon icon='phone' /> Phone
-                </h3>
-                <address className='f4 pt2 left pl2'>
-                    <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
-                </address>
-            </React.Fragment>;
+    const phone = settings.contactPhone.length === 0 ? '' :
+        <React.Fragment>
+            <h3 className='b'>
+                <FontAwesomeIcon icon='phone' /> Phone
+            </h3>
+            <address className='f4 pt2 left pl2'>
+                <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
+            </address>
+        </React.Fragment>;
 
-        const disableSend = this.state.sendingState === 'sending' || this.state.sendingState === 'sent';
+    const disableSend = sendingState === 'sending';
 
-        return (
-            <div id='contact' className='primary-color pb2'>
-                <div className='inner-container'>
-                    <h2 className='border-dotted bottom'>Contact</h2>
-                    <MDBRow>
-                        <MDBCol md='6'>
-                            <div className='ph2'>
-                                <h3 className='b'>
-                                    <FontAwesomeIcon icon='envelope' /> Get in touch
-                                </h3>
-                                {settings.isBrickAndMortar && !settings.isApplyOn ? '' :
-                                    <MDBBtnGroup>
-                                        <MDBBtn active={this.state.type === 'Contact'} onClick={this.contact}>Info</MDBBtn>
-                                        {settings.isBrickAndMortar ? '' : <MDBBtn active={this.state.type === 'Book'} onClick={this.book}>Book</MDBBtn>}
-                                        {settings.isApplyOn ? <MDBBtn active={this.state.type === 'Apply'} onClick={this.apply}>Apply</MDBBtn> : ''}
-                                    </MDBBtnGroup>
-                                }
-                                <form id={this.formId} onSubmit={this.handleSubmit} className='ph1 needs-validation' noValidate>
-                                    <div className='pt2 b'>
-                                        <label htmlFor='contactEmail'>Email Address</label>
-                                        <input type='email' id='contactEmail' className='form-control validate' onChange={this.handleChange} required />
-                                    </div>
-                                    {dateTimePicker}
-                                    <div className='pt2 b'>
-                                        <label htmlFor='message'>Message</label>
-                                        <textarea id='message' className='form-control' onChange={this.handleChange} required />
-                                    </div>
+    return (
+        <div id='contact' className='primary-color pb2'>
+            <div className='inner-container'>
+                <h2 className='border-dotted bottom'>Contact</h2>
+                <MDBRow>
+                    <MDBCol md='6'>
+                        <div className='ph2'>
+                            <h3 className='b'>
+                                <FontAwesomeIcon icon='envelope' /> Get in touch
+                            </h3>
+                            {settings.isBrickAndMortar && !settings.isApplyOn ? '' :
+                                <MDBBtnGroup>
+                                    <MDBBtn active={type === 'Contact'} onClick={() => setType('Contact')}>Info</MDBBtn>
+                                    {settings.isBrickAndMortar ? '' : <MDBBtn active={type === 'Book'} onClick={() => setType('Book')}>Book</MDBBtn>}
+                                    {settings.isApplyOn ? <MDBBtn active={type === 'Apply'} onClick={() => setType('Apply')}>Apply</MDBBtn> : ''}
+                                </MDBBtnGroup>
+                            }
+                            <form id={formId} onSubmit={handleSubmit} className='ph1 needs-validation' noValidate>
+                                <div className='pt2 b'>
+                                    <label htmlFor='contactEmail'>Email Address</label>
+                                    <input type='email' id='contactEmail' className='form-control validate' onChange={e => setContactEmail(e.target.value)} required />
+                                </div>
+                                {dateTimePicker}
+                                <div className='pt2 b'>
+                                    <label htmlFor='message'>Message</label>
+                                    <textarea id='message' className='form-control' onChange={e => setMessage(e.target.value)} required />
+                                </div>
+                                {type !== 'Apply' ? '' :
                                     <div className='input-group pt3 b'>
                                         <div className='input-group-prepend'>
                                             <span className='input-group-text' id='AttachmentPre'>Upload</span>
@@ -172,38 +168,33 @@ export class Contact extends Component<{}, IState> {
                                                 className='custom-file-input'
                                                 id='Attachment' name='Attachment'
                                                 aria-describedby='AttachmentPre'
-                                                onChange={this.handleAttachmentChange} />
+                                                onChange={handleAttachmentChange} />
                                             <label className='custom-file-label' htmlFor='Attachment'>Attachment</label>
                                         </div>
                                     </div>
-                                    <div className='pt2 flex justify-between'>
-                                        <div className='pt1'>
-                                            <FormAlerts sendingState={this.state.sendingState} sentMessage='Message sent, we will be in touch shortly!' />
-                                        </div>
-                                        <div>
-                                            <MDBBtn color='pink' type='submit' disabled={disableSend} >
-                                                <FontAwesomeIcon icon='chevron-circle-right' /> Send
-                                            </MDBBtn>
-                                        </div>
+                                }
+                                <div className='pt2 flex justify-between'>
+                                    <div className='pt1'>
+                                        <FormAlerts sendingState={sendingState} sentMessage='Message sent, we will be in touch shortly!' />
                                     </div>
-                                </form>
-                            </div>
-                        </MDBCol>
-                        <MDBCol md='6'>
-                            <div className='ph2'>
-                                {address}
-                                {phone}
-                            </div>
-                        </MDBCol>
-                    </MDBRow>
-                </div>
+                                    <div>
+                                        <MDBBtn color='pink' type='submit' disabled={disableSend} >
+                                            <FontAwesomeIcon icon='chevron-circle-right' /> Send
+                                        </MDBBtn>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </MDBCol>
+                    <MDBCol md='6'>
+                        <div className='ph2'>
+                            {address}
+                            {phone}
+                        </div>
+                    </MDBCol>
+                </MDBRow>
             </div>
-        );
-    }
-
-    async populate() {
-        await fetch('api/location')
-            .then((resp) => resp.json())
-            .then((data) => this.setState({ location: new Location(data) }));
-    }
+        </div>
+    );
 }
+export default Contact;
