@@ -12,10 +12,14 @@ const Category = ({ category, cartAction }: IProps) => {
 
     category = new MenuCategory(category);
 
+    const description = () => {
+        return { __html: category.description };
+    }
+
     const header = category.sanitizedNamed.length === 0 ? <div className='border-dotted bottom'></div> :
         <React.Fragment>
             <h3 className='b amber-text darken-2 pl1 pt3 mt2 border-dotted top serif'>{category.name}</h3>
-            <div className='border-dotted bottom pa1'>{category.description}</div>
+            <div className='border-dotted bottom pa1' dangerouslySetInnerHTML={description()}></div>
         </React.Fragment>;
 
     const items = category.menuItems === undefined ? '' :

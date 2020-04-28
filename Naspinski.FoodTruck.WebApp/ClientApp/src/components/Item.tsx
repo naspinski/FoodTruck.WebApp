@@ -4,6 +4,7 @@ import ItemPriceButton from './ItemPriceButton';
 import { MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 import { CartAction } from '../models/CartModels';
 import SiteContext from '../models/SiteContext';
+import ModalImage from "react-modal-image";
 
 interface IProps {
     item: MenuItem,
@@ -33,7 +34,11 @@ const Item = ({ item, cartAction }: IProps) => {
     let count = 0;
     const img = !item.hasImage ? '' :
         <MDBCol md='1'>
-            <img className='menu-image' src={item.imageLocation} alt={item.name} />
+            <ModalImage
+                className='menu-image'
+                small={item.imageLocation}
+                large={item.imageLocation}
+                alt={item.name} />
         </MDBCol>
 
     const parts = !item.comboParts === null || item.comboParts.length === 0 ? '' :
@@ -63,8 +68,12 @@ const Item = ({ item, cartAction }: IProps) => {
         })}
         </div>;
 
+    const description = () => {
+        return { __html: item.description };
+    }
+
     return (
-        <div className='pa1'>
+        <div className='pa1 pt3'>
             <MDBRow>
                 <MDBCol md='6'>
                     <h5 className='b serif'>{item.name}</h5>
@@ -77,7 +86,7 @@ const Item = ({ item, cartAction }: IProps) => {
             <MDBRow className='pl2'>
                 {img}
                 <MDBCol md={item.hasImage ? '11' : '12'} className='tal'>
-                    <div>{item.description}</div>
+                    <div dangerouslySetInnerHTML={description()}></div>
                     <div>{parts}</div>
                 </MDBCol>
             </MDBRow>
