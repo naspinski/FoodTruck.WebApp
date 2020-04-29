@@ -88,7 +88,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                     </div>
                 </MDBCol>
                 <MDBCol md='4'>
-                    <h4 className='b serif mv0 pt2'>{event.location.name}</h4>
+                    <h4 className='b serif mv0 pt2 ttc'>{event.location.name}</h4>
                     <Address location={event.location} />
                     <div className='pl0'>
                         <MDBBtn size='sm' onClick={toggleModal}>
