@@ -77,14 +77,14 @@ const Item = ({ item, cartAction }: IProps) => {
             <MDBRow>
                 <MDBCol md='12'>
                     <h5 className='b serif fl'>{item.name}</h5>
-                    <span className="fr">{prices}</span>
+                    <span className="fr ttc">{prices}</span>
                 </MDBCol>
             </MDBRow>
 
             <MDBRow className='pl2'>
                 {img}
                 <MDBCol md={item.hasImage ? '11' : '12'} className='tal'>
-                    <div dangerouslySetInnerHTML={description()}></div>
+                    <div className="ttl" dangerouslySetInnerHTML={description()}></div>
                     <div>{parts}</div>
                 </MDBCol>
             </MDBRow>
