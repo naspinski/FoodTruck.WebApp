@@ -61,7 +61,7 @@ const Item = ({ item, cartAction }: IProps) => {
             const fill = !settings.showCart ? text
                 : <ItemPriceButton item={item} price={price} text={text} disabled={cart.disabled} handlePriceClick={handlePriceClick} />;
             return (
-                <div className='price-container dib ml2' key={`item-${item.id}-price-${price.id}`}>
+                <div className='price-container dib ml2 ttc' key={`item-${item.id}-price-${price.id}`}>
                     {fill}
                 </div>
             );
