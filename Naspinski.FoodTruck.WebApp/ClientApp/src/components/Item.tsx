@@ -75,11 +75,9 @@ const Item = ({ item, cartAction }: IProps) => {
     return (
         <div className='pa1 pt3'>
             <MDBRow>
-                <MDBCol md='6'>
-                    <h5 className='b serif'>{item.name}</h5>
-                </MDBCol>
-                <MDBCol md='6' className='tr'>
-                    {prices}
+                <MDBCol md='12'>
+                    <h5 className='b serif fl'>{item.name}</h5>
+                    <span className="fr">{prices}</span>
                 </MDBCol>
             </MDBRow>
 
