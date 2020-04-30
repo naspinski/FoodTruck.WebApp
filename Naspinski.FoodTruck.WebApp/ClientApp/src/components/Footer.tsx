@@ -76,7 +76,7 @@ const Footer = () => {
             </MDBContainer>
             <div className="footer-copyright text-center py-3 primary-color">
                 <MDBContainer fluid>
-                    &copy; {new Date().getFullYear()} Copyright {settings.title} | <NavLink to='/terms'>Terms</NavLink> | developed by <a href="https://naspinski.net">Stan Naspinski</a>
+                    &copy; {new Date().getFullYear()} Copyright {settings.title} | <NavLink to='/terms'>Terms</NavLink> | <a href="https://github.com/naspinski/FoodTruck.WebApp">Food Truck Web Application</a> developed by <a href="https://naspinski.net">Stan Naspinski</a>
                 </MDBContainer>
             </div>
         </MDBFooter>
