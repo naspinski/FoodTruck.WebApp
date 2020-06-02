@@ -31,7 +31,7 @@ const Splash = () => {
 
     const menuLink = !links.has('menu') ? '' :
         <NavLink to='/menu'>
-            <MDBBtn color='secondary'>
+            <MDBBtn color='amber'>
                 <FontAwesomeIcon icon='hamburger' /> {settings.showCart ? 'Order for Pickup!' : 'Menu'}
             </MDBBtn>
         </NavLink>;
@@ -70,7 +70,7 @@ const Splash = () => {
                     {menuDownload}
                     {conditionalLink}
                     <NavLink to='/contact'>
-                        <MDBBtn color='amber'>
+                        <MDBBtn color='secondary'>
                             <FontAwesomeIcon icon='envelope' /> Contact{settings.isBrickAndMortar ? '' : '/Book'}
                         </MDBBtn>
                     </NavLink>
