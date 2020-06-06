@@ -119,9 +119,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     }
                     catch(Square.Exceptions.ApiException ex)
                     {
-                        if (ex.InnerException != null)
-                            ex.InnerException.Ship(this.HttpContext);
                         new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)).Ship(this.HttpContext);
+                        new Exception("Response: " + JsonConvert.SerializeObject(ex.HttpContext.Response)).Ship(this.HttpContext);
                         throw ex;
                     }
                     catch(Exception) { throw; }
