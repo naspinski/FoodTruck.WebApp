@@ -135,6 +135,9 @@ namespace Naspinski.FoodTruck.WebApp.Models
         /// <param name="time">time in HH:mm AM/PM format</param>
         private DateTime GetTodaysDateTimeFrom(string time, int timeZoneOffsetFromUtcInHours)
         {
+#if !DEBUG
+            timeZoneOffsetFromUtcInHours = 0;
+#endif
             time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
             return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(0 - timeZoneOffsetFromUtcInHours);
         }
