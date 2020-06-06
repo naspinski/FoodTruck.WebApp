@@ -69,7 +69,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public async Task<long> GetAmount(PaymentModel model)
         {
             var square = new SquareHelper(GetSquareLocation(model.LocationId));
-            var orderRequest = await GetOrderRequest(model, true);
+            var orderRequest = await GetOrderRequest(model, false);
             return square.GetTotalInCents(orderRequest);
         }
 
@@ -117,11 +117,11 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     {
                         paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
                         if (paymentResponse.Errors != null && paymentResponse.Errors.Any())
-                            paymentResponse.Errors.ToList().ForEach(x => new Exception(JsonConvert.SerializeObject(x)).Ship(this.HttpContext));
+                            paymentResponse.Errors.ToList().ForEach(x => Log(new Exception(JsonConvert.SerializeObject(x))));
                     }
                     catch(Square.Exceptions.ApiException ex)
                     {
-                        new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)).Ship(this.HttpContext);
+                        Log(new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)));
                         throw ex;
                     }
                     catch(Exception) { throw; }
@@ -134,6 +134,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     catch(Exception ex) // order and payment went through, there was a DB error
                     {
                         ex.Ship(this.HttpContext);
+                        throw;
                     }
                 }
 
