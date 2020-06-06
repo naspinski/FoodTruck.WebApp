@@ -16,6 +16,7 @@ export class SiteSettings {
     faviconImageUrl: string = '';
     contactPhone: string = '';
     minutesUntilClose: number = 0;
+    debug: object = {};
 
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};

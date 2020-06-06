@@ -32,6 +32,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
+        public object Debug { get; set; }
 
         public IEnumerable<SquareLocationModel> Square { get; set; }
 
@@ -116,6 +117,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
 
             var open = GetTodaysDateTimeFrom(today.Open, TimeZoneOffsetFromUtcInHours);
             var stopOrders = GetTodaysDateTimeFrom(today.Close, TimeZoneOffsetFromUtcInHours).AddMinutes(0 - StopOrderingMinutesToClose);
+
+            Debug = new { now, open, stopOrders };
 
             var stillTakingOrders = now >= open && now < stopOrders;
 
