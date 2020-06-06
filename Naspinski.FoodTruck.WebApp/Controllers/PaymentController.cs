@@ -11,6 +11,7 @@ using Naspinski.FoodTruck.WebApp.Models;
 using Naspinski.Messaging.Email;
 using Naspinski.Messaging.Sms;
 using Naspinski.Messaging.Sms.Twilio;
+using Newtonsoft.Json;
 using Square.Models;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,20 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                         orderId: squareOrder.Order.Id,
                         note: note);
 
-                    var paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                    CreatePaymentResponse paymentResponse = null;
+                    try
+                    {
+                        paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                    }
+                    catch(Square.Exceptions.ApiException ex)
+                    {
+                        if (ex.InnerException != null)
+                            ex.InnerException.Ship(this.HttpContext);
+                        new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)).Ship(this.HttpContext);
+                        throw ex;
+                    }
+                    catch(Exception) { throw; }
+
                     try
                     {
                         _order = _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
