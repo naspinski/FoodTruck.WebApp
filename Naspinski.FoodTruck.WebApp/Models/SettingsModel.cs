@@ -114,14 +114,14 @@ namespace Naspinski.FoodTruck.WebApp.Models
             if (string.IsNullOrEmpty(today.Open) || string.IsNullOrEmpty(today.Close))
                 return false;
 
-            var open = GetTodaysDateTimeFrom(today.Open);
-            var stopOrders = GetTodaysDateTimeFrom(today.Close).AddMinutes(0 - StopOrderingMinutesToClose);
+            var open = GetTodaysDateTimeFrom(today.Open, TimeZoneOffsetFromUtcInHours);
+            var stopOrders = GetTodaysDateTimeFrom(today.Close, TimeZoneOffsetFromUtcInHours).AddMinutes(0 - StopOrderingMinutesToClose);
 
             var stillTakingOrders = now >= open && now < stopOrders;
 
             MinutesUntilClose = 0;
             if (stillTakingOrders && IsBrickAndMortar)
-                MinutesUntilClose = (int)(GetTodaysDateTimeFrom(today.Close) - now).TotalMinutes;
+                MinutesUntilClose = (int)(GetTodaysDateTimeFrom(today.Close, TimeZoneOffsetFromUtcInHours) - now).TotalMinutes;
 
             if (!IsBrickAndMortar && IsOrderingOn)
                 return true;
@@ -133,10 +133,10 @@ namespace Naspinski.FoodTruck.WebApp.Models
         /// get today's datetime given an am/pm string
         /// </summary>
         /// <param name="time">time in HH:mm AM/PM format</param>
-        private DateTime GetTodaysDateTimeFrom(string time)
+        private DateTime GetTodaysDateTimeFrom(string time, int timeZoneOffsetFromUtcInHours)
         {
             time = $"{DateTime.Now.Date.ToShortDateString()} {time}";
-            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(0);
+            return DateTime.ParseExact(time, "M/d/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).AddHours(0 - timeZoneOffsetFromUtcInHours);
         }
     }
 
