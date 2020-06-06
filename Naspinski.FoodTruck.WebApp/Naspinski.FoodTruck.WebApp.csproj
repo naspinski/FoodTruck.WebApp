@@ -28,7 +28,6 @@
     <PackageReference Include="Naspinski.Maps" Version="1.0.20200606.132104" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20200606.132258" />
     <PackageReference Include="SendGrid" Version="9.15.1" />
-    <PackageReference Include="Square" Version="5.3.0" />
     <PackageReference Include="Twilio.AspNet.Core" Version="5.33.1" />
   </ItemGroup>
 
@@ -84,6 +83,14 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="bin\Square.dll" />
+    <None Include="bin\Square.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Square">
+      <HintPath>bin\Square.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
