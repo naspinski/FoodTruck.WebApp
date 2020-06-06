@@ -125,7 +125,7 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
                 .Where(x => x.Type == "ADDITIVE")
                 .Sum(x => Decimal.Parse(x.Percentage));
 
-            return Convert.ToInt32(subtotalInCents * (1 + tax / 100));
+            return Convert.ToInt32(Math.Ceiling(subtotalInCents * (1 + tax / 100)));
         }
 
         public string ToRfc3339String(DateTime dateTime)

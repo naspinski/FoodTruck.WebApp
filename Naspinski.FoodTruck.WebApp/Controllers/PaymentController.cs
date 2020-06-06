@@ -116,11 +116,12 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     try
                     {
                         paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
+                        if (paymentResponse.Errors != null && paymentResponse.Errors.Any())
+                            paymentResponse.Errors.ToList().ForEach(x => new Exception(JsonConvert.SerializeObject(x)).Ship(this.HttpContext));
                     }
                     catch(Square.Exceptions.ApiException ex)
                     {
                         new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)).Ship(this.HttpContext);
-                        new Exception("Response: " + JsonConvert.SerializeObject(ex.HttpContext.Response)).Ship(this.HttpContext);
                         throw ex;
                     }
                     catch(Exception) { throw; }
