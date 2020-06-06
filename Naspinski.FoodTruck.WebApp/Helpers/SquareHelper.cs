@@ -61,11 +61,16 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
         {
             var _taxes = taxes ?? await GetTaxes();
 
-            return _taxes == null 
-                ? Convert.ToDecimal(0)
+            var includedTaxes = _taxes == null
+                ? new List<CatalogTax>()
                 : _taxes.Select(x => x.TaxData)
-                    .Where(x => x.InclusionType == inclusion_type && !string.IsNullOrWhiteSpace(x.Percentage))
-                    .Sum(x => Decimal.Parse(x.Percentage));
+                    .Where(x =>
+                        x.InclusionType == inclusion_type
+                        && !string.IsNullOrWhiteSpace(x.Percentage)
+                        && !x.Name.ToLower().Contains("liquor")
+                        && !x.Name.ToLower().Contains("alcohol"));
+
+            return includedTaxes.Sum(x => Decimal.Parse(x.Percentage));
         }
 
         public async Task<CreateOrderRequest> GetCreateOrderRequest(PaymentModel model, Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)
