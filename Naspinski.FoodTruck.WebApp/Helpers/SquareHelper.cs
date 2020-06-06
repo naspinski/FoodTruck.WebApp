@@ -107,7 +107,7 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
             var squareOrder = new Square.Models.Order(LocationId,
                 taxes: _taxes,
                 referenceId: order.Id.ToString(),
-                customerId: model.Email,  
+                customerId: model.Email.Replace("@","_at_").Replace(".","-"),  
                 lineItems: orderLineItems, 
                 fulfillments: fulfill
             );
