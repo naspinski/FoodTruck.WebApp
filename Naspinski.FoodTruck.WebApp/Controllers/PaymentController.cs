@@ -45,15 +45,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return _squareLocations.FirstOrDefault(x => x.LocationId.Equals(locationId, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        [HttpGet]
-        [Route("tax")]
-        public async Task<decimal> GetTaxPercentage(string l)
-        {
-            var square = new SquareHelper(GetSquareLocation(l));
-            var settings = new SystemModel(new SettingHandler(this._context).Get(new[] { SettingName.SquareOnlineTaxId }));
-            return await square.GetAdditiveTaxPercentage();
-        }
-
         private async Task<CreateOrderRequest> GetOrderRequest(PaymentModel model, bool saveOrder)
         {
             var square = new SquareHelper(GetSquareLocation(model.LocationId));
@@ -61,7 +52,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             taxes = taxes ?? new List<CatalogObject>();
             var tax = await square.GetAdditiveTaxPercentage(taxes);
             _order = _handler.Submit(model.OrderType, model, tax, square.UseProduction, deferSave: !saveOrder);
-            return await square.GetCreateOrderRequest(model, _order, Guid.NewGuid(), taxes);
+            return square.GetCreateOrderRequest(model, _order, Guid.NewGuid(), taxes);
         }
 
         [HttpPost]
@@ -70,7 +61,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             var square = new SquareHelper(GetSquareLocation(model.LocationId));
             var orderRequest = await GetOrderRequest(model, false);
-            return square.GetTotalInCents(orderRequest);
+            var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);
+            return squareOrder.Order.TotalMoney.Amount ?? 0;
         }
 
         [HttpPost]
@@ -95,16 +87,13 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);
                 
                 var note = $"ONLINE ORDER - ID: {_order.Id}";
-                var amount = new Money(square.GetTotalInCents(orderRequest), "USD");
 
-                if (amount.Amount == 0)
-                {
+                if (squareOrder.Order.TotalMoney.Amount == 0)
                     _handler.TransactionApproved(_order.Id, "NO_PAYMENT");
-                }
                 else
                 {
                     var paymentRequest = new CreatePaymentRequest(
-                        amountMoney: amount,
+                        amountMoney: squareOrder.Order.TotalMoney,
                         idempotencyKey: Guid.NewGuid().ToString(),
                         sourceId: model.Nonce,
                         verificationToken: model.BuyerVerificationToken,
@@ -112,25 +101,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                         orderId: squareOrder.Order.Id,
                         note: note);
 
-                    CreatePaymentResponse paymentResponse = null;
-                    try
-                    {
-                        paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
-                        if (paymentResponse.Errors != null && paymentResponse.Errors.Any())
-                            paymentResponse.Errors.ToList().ForEach(x => Log(new Exception(JsonConvert.SerializeObject(x))));
-                    }
-                    catch(Square.Exceptions.ApiException ex)
-                    {
-                        Log(new Exception("Request: " + JsonConvert.SerializeObject(ex.HttpContext.Request)));
-                        try
-                        {
-                            Log(new Exception("Response: " + JsonConvert.SerializeObject(ex.HttpContext.Response)));
-                        }
-                        catch { }
-                        throw ex;
-                    }
-                    catch(Exception) { throw; }
-
+                    var paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
                     try
                     {
                         _order = _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);

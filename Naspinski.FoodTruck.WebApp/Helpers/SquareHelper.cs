@@ -15,6 +15,8 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
     {
         public SquareClient Client;
 
+        public static string[] EXCLUDE = { "liquor", "alcohol" };
+
         public string LocationId;
         private string _accessToken;
         private Square.Environment _env;
@@ -67,19 +69,17 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
                     .Where(x =>
                         x.InclusionType == inclusion_type
                         && !string.IsNullOrWhiteSpace(x.Percentage)
-                        && !x.Name.ToLower().Contains("liquor")
-                        && !x.Name.ToLower().Contains("alcohol"));
+                        && !EXCLUDE.Any(y => x.Name.ToLower().Contains(y)));
 
             return includedTaxes.Sum(x => Decimal.Parse(x.Percentage));
         }
 
-        public async Task<CreateOrderRequest> GetCreateOrderRequest(PaymentModel model, Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)
+        public CreateOrderRequest GetCreateOrderRequest(PaymentModel model, Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)
         {
-            var add = await GetAdditiveTaxPercentage(taxes);
-            var inc = await GetInclusiveTaxPercentage(taxes);
             var orderLineItems = order.Items.Select(x => x.ToOrderLineItem()).ToList();
 
             var _taxes = (taxes ?? new List<CatalogObject>())
+                .Where(x => !EXCLUDE.Any(y => x.TaxData.Name.ToLower().Contains(y)))
                 .Select(x => new OrderLineItemTax(
                     name: x.TaxData.Name,
                     type: x.TaxData.InclusionType,
@@ -122,15 +122,20 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
             return orderRequest;
         }
 
-        public int GetTotalInCents(CreateOrderRequest orderRequest)
+        public int EstimateTotalInCents(CreateOrderRequest orderRequest)
         {
             var subtotalInCents = orderRequest.Order.LineItems.Sum(x => Convert.ToInt32(x.BasePriceMoney.Amount * Int32.Parse(x.Quantity)));
 
             var tax = orderRequest.Order.Taxes
-                .Where(x => x.Type == "ADDITIVE")
-                .Sum(x => Decimal.Parse(x.Percentage));
+                .Where(x => x.Type == "ADDITIVE"
+                    && !EXCLUDE.Any(y => x.Name.ToLower().Contains(y)))
+                    .Sum(x => Decimal.Parse(x.Percentage));
 
-            return Convert.ToInt32(Math.Round(subtotalInCents * (1 + tax / 100)));
+            var taxPlusTotal = 1 + tax / 100;
+            var totalInCents = subtotalInCents * taxPlusTotal;
+            var roundedTotalInCents = Math.Round(totalInCents);
+            var intTotal = Convert.ToInt32(roundedTotalInCents);
+            return intTotal;
         }
 
         public string ToRfc3339String(DateTime dateTime)

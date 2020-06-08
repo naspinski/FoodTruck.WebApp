@@ -352,7 +352,6 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                         </SquarePaymentForm>
                     )}
             </div>
-            }
         </div>
     );
 }
