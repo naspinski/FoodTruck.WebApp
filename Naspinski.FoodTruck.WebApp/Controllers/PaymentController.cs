@@ -89,7 +89,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 var note = $"ONLINE ORDER - ID: {_order.Id}";
 
                 if (squareOrder.Order.TotalMoney.Amount == 0)
-                    _handler.TransactionApproved(_order.Id, "NO_PAYMENT");
+                    _handler.TransactionApproved(_order.Id, string.Empty, "NO_PAYMENT");
                 else
                 {
                     var paymentRequest = new CreatePaymentRequest(
@@ -104,7 +104,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                     var paymentResponse = await square.Client.PaymentsApi.CreatePaymentAsync(paymentRequest);
                     try
                     {
-                        _order = _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id);
+                        _order = _handler.TransactionApproved(_order.Id, paymentResponse.Payment.Id, paymentResponse.Payment.OrderId);
                         _order.SetFullText();
                     }
                     catch(Exception ex) // order and payment went through, there was a DB error
