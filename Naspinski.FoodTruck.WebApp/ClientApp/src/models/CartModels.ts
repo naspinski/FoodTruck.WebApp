@@ -42,12 +42,6 @@ export class Cart {
         }
     }
 
-    //populate(action: CartAction) {
-    //    this.storageKey = 'ft-' + action.key;
-    //    this.menuItems = action.categories.reduce((collection: MenuItem[], category: MenuCategory) => collection.concat(category.menuItems), []);
-    //    this.load();
-    //}
-
     add(action: CartAction, quantity?: number) {
         if (!this.disabled) {
             quantity = quantity ?? 1;
@@ -84,7 +78,6 @@ export class Cart {
 
     writeToStorage() {
         if (this.isStorageEnabled && this.storageKey.length > 0) {
-            console.log('writing', JSON.stringify(this.items), 'to ' + this.storageKey);
             localStorage.setItem(this.storageKey, JSON.stringify(this.items));
         }
     }
