@@ -2,9 +2,6 @@
   "name": "naspinski.foodtruck.webapp",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "0.12.x"
-  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "@fortawesome/free-brands-svg-icons": "^5.12.1",
@@ -29,6 +26,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-square-payment-form": "^0.6.1",
+    "rimraf": "^3.0.2",
     "tachyons": "^4.11.1"
   },
   "devDependencies": {
@@ -40,7 +38,6 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.18.3",
-    "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   },
   "eslintConfig": {
