@@ -2,6 +2,9 @@
   "name": "naspinski.foodtruck.webapp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "0.12.x"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "@fortawesome/free-brands-svg-icons": "^5.12.1",
