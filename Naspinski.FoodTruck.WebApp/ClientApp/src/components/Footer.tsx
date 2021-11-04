@@ -27,8 +27,12 @@ const Footer = () => {
             default: icon = faCommentAlt;
         }
 
+        const href = settings.socialMap.get(network).startsWith('http')
+            ? settings.socialMap.get(network)
+            : `https://${network}.com/${settings.socialMap.get(network)}`
+
         return (
-            <a key={`social-link-${network}`} href={settings.socialMap.get(network)} title={network} className='db'>
+            <a key={`social-link-${network}`} href={href} title={network} className='db'>
                 <FontAwesomeIcon className='f3' icon={icon} /> <span className='pb1 pl1'>{network}</span>
             </a>
         )
