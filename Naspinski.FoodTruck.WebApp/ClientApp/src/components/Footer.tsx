@@ -32,8 +32,12 @@ const Footer = () => {
             : `https://${network}.com/${settings.socialMap.get(network)}`
 
         return (
-            <a key={`social-link-${network}`} href={href} title={network} className='db'>
-                <FontAwesomeIcon className='f3' icon={icon} /> <span className='pb1 pl1'>{network}</span>
+            <a target="_blank" key={`social-link-${network}`} href={href} title={network} className='db'>
+                <FontAwesomeIcon className='f3' icon={icon} />
+                <span className='pb1 pl1'>{network}</span>&nbsp;
+                <sup>
+                    <FontAwesomeIcon icon='external-link-alt' className='' />
+                </sup>
             </a>
         )
     });
