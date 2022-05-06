@@ -9,7 +9,7 @@ const Main = () => {
     const context = React.useContext(SiteContext);
 
     return (
-        <div>
+        <div id="main-page">
             <Splash />
             {context.settings.isBrickAndMortar
                 ? <Specials containerClassName='panel-2' />

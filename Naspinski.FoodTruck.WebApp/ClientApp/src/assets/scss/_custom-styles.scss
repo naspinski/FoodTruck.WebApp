@@ -1,1 +1,23 @@
 // Your custom styles
+
+
+html, body, #root, div.main-container {
+    height: 100%;
+}
+
+div.main-container {
+    display: flex;
+    flex-direction: column;
+    border: solid 1px red;
+}
+
+div.center-body {
+    flex: 1;
+}
+
+#main-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

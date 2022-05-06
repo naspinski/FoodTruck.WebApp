@@ -17,10 +17,10 @@ const Layout = ({ cartAction, children }: IProps) => {
 
     return (
         <React.Fragment>
-            <MDBContainer fluid className='ph0'>
+            <MDBContainer fluid className='ph0 main-container'>
                 <NavMenu cartAction={cartAction} />
                 <ShoppingCart cartAction={cartAction} />
-                <MDBContainer fluid className='pt5 ph0'>
+                <MDBContainer fluid className='pt5 ph0 center-body'>
                     {children}
                 </MDBContainer>
                 <Footer />
