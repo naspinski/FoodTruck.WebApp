@@ -1,14 +1,12 @@
+using Elmah.Io.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Naspinski.FoodTruck.Data;
-using Microsoft.EntityFrameworkCore;
-using Elmah.Io.AspNetCore;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using System.Collections.Generic;
-using Naspinski.FoodTruck.Data.Distribution.Models.System;
 
 namespace Naspinski.FoodTruck.WebApp
 {
