@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaRoot>$(SpaRoot)\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
@@ -36,55 +36,55 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="bin\**" />
-    <Content Remove="ClientApp\src\assets\scss\**" />
+    <Content Remove="$(SpaRoot)\src\assets\scss\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="bin\**" />
-    <None Remove="ClientApp\src\assets\scss\**" />
+    <None Remove="$(SpaRoot)\src\assets\scss\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="bin\**" />
-    <Compile Remove="ClientApp\src\assets\scss\**" />
+    <Compile Remove="$(SpaRoot)\src\assets\scss\**" />
     <EmbeddedResource Remove="bin\**" />
-    <EmbeddedResource Remove="ClientApp\src\assets\scss\**" />
+    <EmbeddedResource Remove="$(SpaRoot)\src\assets\scss\**" />
     <TypeScriptCompile Remove="bin\**" />
-    <TypeScriptCompile Remove="ClientApp\src\assets\scss\**" />
+    <TypeScriptCompile Remove="$(SpaRoot)\src\assets\scss\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\Address.tsx" />
-    <None Remove="ClientApp\src\components\Alert.tsx" />
-    <None Remove="ClientApp\src\components\Calendar.tsx" />
-    <None Remove="ClientApp\src\components\CalendarEvent.tsx" />
-    <None Remove="ClientApp\src\components\Category.tsx" />
-    <None Remove="ClientApp\src\components\Contact.tsx" />
-    <None Remove="ClientApp\src\components\Counter.tsx" />
-    <None Remove="ClientApp\src\components\Faq.tsx" />
-    <None Remove="ClientApp\src\components\Footer.tsx" />
-    <None Remove="ClientApp\src\components\FormAlerts.tsx" />
-    <None Remove="ClientApp\src\components\Item.tsx" />
-    <None Remove="ClientApp\src\components\ItemPriceButton.tsx" />
-    <None Remove="ClientApp\src\components\Map.tsx" />
-    <None Remove="ClientApp\src\components\ShoppingCart.tsx" />
-    <None Remove="ClientApp\src\components\Special.tsx" />
-    <None Remove="ClientApp\src\components\Specials.tsx" />
-    <None Remove="ClientApp\src\components\Spinner.tsx" />
-    <None Remove="ClientApp\src\missing-declarations.t.ts" />
-    <None Remove="ClientApp\src\models\BaseModel.ts" />
-    <None Remove="ClientApp\src\models\Event.ts" />
-    <None Remove="ClientApp\src\models\ISystemState.ts" />
-    <None Remove="ClientApp\src\models\MenuModels.ts" />
-    <None Remove="ClientApp\src\models\SiblingSite.ts" />
-    <None Remove="ClientApp\src\models\SpecialModel.ts" />
-    <None Remove="ClientApp\src\models\SpecialsDaily.ts" />
-    <None Remove="ClientApp\src\models\Utility.ts" />
-    <None Remove="ClientApp\src\pages\Menu.tsx" />
-    <None Remove="ClientApp\src\pages\Terms.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Address.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Alert.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Calendar.tsx" />
+    <None Remove="$(SpaRoot)\src\components\CalendarEvent.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Category.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Contact.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Counter.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Faq.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Footer.tsx" />
+    <None Remove="$(SpaRoot)\src\components\FormAlerts.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Item.tsx" />
+    <None Remove="$(SpaRoot)\src\components\ItemPriceButton.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Map.tsx" />
+    <None Remove="$(SpaRoot)\src\components\ShoppingCart.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Special.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Specials.tsx" />
+    <None Remove="$(SpaRoot)\src\components\Spinner.tsx" />
+    <None Remove="$(SpaRoot)\src\missing-declarations.t.ts" />
+    <None Remove="$(SpaRoot)\src\models\BaseModel.ts" />
+    <None Remove="$(SpaRoot)\src\models\Event.ts" />
+    <None Remove="$(SpaRoot)\src\models\ISystemState.ts" />
+    <None Remove="$(SpaRoot)\src\models\MenuModels.ts" />
+    <None Remove="$(SpaRoot)\src\models\SiblingSite.ts" />
+    <None Remove="$(SpaRoot)\src\models\SpecialModel.ts" />
+    <None Remove="$(SpaRoot)\src\models\SpecialsDaily.ts" />
+    <None Remove="$(SpaRoot)\src\models\Utility.ts" />
+    <None Remove="$(SpaRoot)\src\pages\Menu.tsx" />
+    <None Remove="$(SpaRoot)\src\pages\Terms.tsx" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Remove="ClientApp\src\models\SiteContext.ts" />
+    <TypeScriptCompile Remove="$(SpaRoot)\src\models\SiteContext.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -92,10 +92,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ClientApp\src\Utility.js">
+    <None Update="$(SpaRoot)\src\Utility.js">
       <DependentUpon>Utility.ts</DependentUpon>
     </None>
-    <None Update="ClientApp\src\models\MenuPrice.js.map">
+    <None Update="$(SpaRoot)\src\models\MenuPrice.js.map">
       <DependentUpon>MenuPrice.js</DependentUpon>
     </None>
   </ItemGroup>
