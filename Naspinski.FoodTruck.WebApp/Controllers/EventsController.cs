@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using static Naspinski.FoodTruck.Data.Constants;
 
@@ -28,7 +29,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<EventModel> Get()
+        public async Task<IEnumerable<EventModel>> Get()
         {
             var settings = new Data.Access.Queries.Settings.Get(_context, new[]
             {
@@ -49,10 +50,8 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             var iCalEvents = new List<EventModel>();
             var systemEvents = new List<EventModel>();
 
-            Parallel.Invoke(
-                () => systemEvents = GetSystemEvents(displayDaysIntoFuture),
-                () => iCalEvents = GetICalEvents(iCalUrl, displayDaysIntoFuture, offset)
-            );
+            systemEvents = GetSystemEvents(displayDaysIntoFuture);
+            iCalEvents = await GetICalEvents(iCalUrl, displayDaysIntoFuture, offset);
 
             return iCalEvents.Union(systemEvents).OrderBy(x => x.Begins);
         }
@@ -62,13 +61,13 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             return _handler.GetAll(DateTime.Now.Date, DateTime.Now.AddDays(displayDaysIntoFuture > 0 ? displayDaysIntoFuture : 1)).ToList();
         }
 
-        public List<EventModel> GetICalEvents(string iCalUrl, int displayDaysIntoFuture, int offset)
+        public async Task<List<EventModel>> GetICalEvents(string iCalUrl, int displayDaysIntoFuture, int offset)
         {
             var events = new List<EventModel>();
             if (string.IsNullOrWhiteSpace(iCalUrl)) return events;
 
             string iCal = string.Empty;
-            using (WebClient client = new WebClient()) { iCal = client.DownloadString(iCalUrl); }
+            using (var client = new HttpClient()) { iCal = await client.GetStringAsync(iCalUrl); }
 
             var calendar = Calendar.Load(iCal);
             if (calendar != null)
