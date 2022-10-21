@@ -16,7 +16,11 @@ const Item = ({ item, cartAction }: IProps) => {
     const context = React.useContext(SiteContext);
     const cart = context.cart;
     const settings = context.settings;
-    item.comboParts.filter(x => x.options.length > 0).forEach(cp => cp.options[0].selected = true);
+    item.comboParts.filter(x => x.options.length > 0).forEach(cp => {
+        if (cp.options.filter(o => o.selected === true).length === 0) {
+            cp.options[0].selected = true;
+        }
+    });
 
     const handlePriceClick = (item: MenuItem, price: MenuPrice) => {
         let action = new CartAction();
