@@ -126,12 +126,22 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
 
         private void DoNotification(Data.Models.Payment.Order order, SystemModel settings, bool sendText, string name = "")
         {
-            Parallel.Invoke(
-                () => ConfirmationEmail(order, settings, name),
-                () => { if (sendText) ConfirmationText(order, settings, name); },
-                () => ConfirmationEmail(order, settings, name, false),
-                () => { if (sendText) ConfirmationText(order, settings, name, false); }
-            );
+            try
+            {
+                Parallel.Invoke(
+                    () => ConfirmationEmail(order, settings, name),
+                    () => { if (sendText) ConfirmationText(order, settings, name); },
+                    () => ConfirmationEmail(order, settings, name, false),
+                    () => { if (sendText) ConfirmationText(order, settings, name, false); }
+                );
+            }
+            catch (AggregateException agg)
+            {
+                if (agg.InnerExceptions.Any())
+                    throw new Exception(string.Join(", ", agg.InnerExceptions.Select(ex => ex.Message)));
+
+                throw new Exception("An unknown error has occured, plase call to see if your order was placed");
+            }
         }
 
         private void ConfirmationEmail(Data.Models.Payment.Order order, SystemModel settings, string name, bool isCustomer = true)
