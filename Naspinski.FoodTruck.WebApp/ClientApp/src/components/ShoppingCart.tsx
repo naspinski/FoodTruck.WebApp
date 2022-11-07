@@ -4,7 +4,6 @@ import './ShoppingCart.scss';
 import { CartAction } from '../models/CartModels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CreditCard, PaymentForm } from 'react-square-web-payments-sdk'
-import 'react-square-payment-form/lib/default.css'
 import { MDBBtn } from 'mdbreact';
 import FormAlerts, { FormAlertStates } from './FormAlerts';
 import SiteContext from '../models/SiteContext';
@@ -102,7 +101,7 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     const isLocationAndPickups = pickups.length > 1 && isMultipleLocations;
     const pickupsClassName = pickups.length > 1 ? (isLocationAndPickups ? 'half' : '') : 'invisible'; 
     const locationClassName = isMultipleLocations ? (isLocationAndPickups ? 'half' : '') : 'invisible';
-    const orderClassName = 'cart-section ' + (cartState === 'order' ? 'visible' : 'invisible');
+    const orderClassName = 'cart-section ' + (cartState === 'order' ? 'visible' : 'invisible') + ' pb-3';
     const infoFormClassName = 'needs-validation cart-section ' + (cartState === 'info' ? 'visible' : 'invisible');
     const paymentFormClassName = 'cart-section ' + (cartState === 'payment' ? 'visible' : 'invisible');
     const paymentErrorMessagePrefex = 'Error - nothing charged';
@@ -284,12 +283,12 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                 </fieldset>
                 <FormAlerts sendingState={infoSendingState} inputErrorMessage={cartInfoError} />
                 <div className='cart-square-buttons'>
-                    <button className='sq-creditcard back' onClick={(event) => { event.preventDefault(); updateCartState('order') }}>
+                    <MDBBtn onClick={(event) => { event.preventDefault(); updateCartState('order') }}>
                         <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                    </button>
-                    <button type='submit' className='sq-creditcard'>
+                    </MDBBtn>
+                    <MDBBtn type='submit' className='secondary-dark'>
                         <FontAwesomeIcon icon='chevron-circle-right' /> Payment
-                    </button>
+                    </MDBBtn>
                 </div>
             </form>
             {/*cardTokenizeResponseReceived={(token, buyer) => { console.info({ token, buyer }); }}*/}
@@ -317,21 +316,18 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                                 }
                             })}>
                             {paymentSendingState !== 'waiting' ? '' :
-                                <fieldset className="sq-fieldset">
-                                    {!isMultipleLocations ? '' :
-                                        <div className='bold'>
-                                            <span className='sq-label'>Location: {location.name}</span>
-                                        </div>}
+                                <fieldset>
+                                    {!isMultipleLocations ? '' : <h3 className="b">Location: {location.name}</h3>}
                                     <CreditCard />
                                 </fieldset>}
                             <FormAlerts sendingState={paymentSendingState}
                                 errorMessage={`${paymentErrorMessagePrefex}${paymentError.length > 0 ? ` - ${paymentError}` : ''}`}
                                 sentMessage='Your food will be ready shortly!' />
-                            <div className='cart-square-buttons mt-1'>
-                                <button className='sq-creditcard back' onClick={() => updateCartState('info')}>
+                            <div className='cart-square-buttons mt-1 justify-outside'>
+                                <MDBBtn onClick={() => updateCartState('info')}>
                                     <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                                </button>
-                                <div className='f3 pt-2'>Total: {total}</div>
+                                </MDBBtn>
+                                <h3>Total: {total}</h3>
                             </div>
                         </PaymentForm>
                     )}
