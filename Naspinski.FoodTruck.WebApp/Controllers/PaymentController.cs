@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Access.AdditionalModels;
-using Naspinski.FoodTruck.Data.Distribution.Handlers.Menu;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.Payment;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
@@ -11,7 +10,6 @@ using Naspinski.FoodTruck.WebApp.Models;
 using Naspinski.Messaging.Email;
 using Naspinski.Messaging.Sms;
 using Naspinski.Messaging.Sms.Twilio;
-using Newtonsoft.Json;
 using Square.Models;
 using System;
 using System.Collections.Generic;
@@ -59,10 +57,17 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         [Route("amount")]
         public async Task<long> GetAmount(PaymentModel model)
         {
-            var square = new SquareHelper(GetSquareLocation(model.LocationId));
-            var orderRequest = await GetOrderRequest(model, false);
-            var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);
-            return squareOrder.Order.TotalMoney.Amount ?? 0;
+            try
+            {
+                var square = new SquareHelper(GetSquareLocation(model.LocationId));
+                var orderRequest = await GetOrderRequest(model, false);
+                var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(orderRequest);
+                return squareOrder.Order.TotalMoney.Amount ?? 0;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [HttpPost]
@@ -84,7 +89,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 var square = new SquareHelper(GetSquareLocation(model.LocationId));
                 var isBrickAndMortar = string.Equals(system.Settings[SettingName.BrickAndMortarMode], true.ToString(), StringComparison.OrdinalIgnoreCase);
                 var orderRequest = await GetOrderRequest(model, true);
-                var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(square.LocationId, orderRequest);
+                var squareOrder = await square.Client.OrdersApi.CreateOrderAsync(orderRequest);
                 
                 var note = $"ONLINE ORDER - ID: {_order.Id}";
 
