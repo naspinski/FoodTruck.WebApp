@@ -71,18 +71,18 @@
 
     #cart-checkout-button {
         text-align: center;
-
-        button.secondary-dark {
-            background-color: $secondary-color-dark !important;
-        }
     }
 
-    #cart-info-form, .sq-payment-form {
-        margin: auto;
+    button.secondary-dark {
+        background-color: $secondary-color-dark !important;
     }
 
     #cart-info-form {
-        width: 380px;
+        margin: 0;
+    }
+
+    #cart-info-form {
+        
 
         .sq-fieldset {
             padding-bottom: 1rem
@@ -119,8 +119,19 @@
 
     .cart-square-buttons {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         padding-bottom: 1rem;
+
+        &.justify-outside {
+            justify-content: space-between;
+            padding-left: 7px;
+            right: 7px;
+
+            h3 {
+                font-weight:bold;
+                padding:8px;
+            }
+        }
 
         button.sq-creditcard {
             margin: 0;

@@ -3,12 +3,12 @@ import * as React from 'react';
 import './ShoppingCart.scss';
 import { CartAction } from '../models/CartModels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SquarePaymentForm, CreditCardNumberInput, CreditCardExpirationDateInput, CreditCardPostalCodeInput, CreditCardCVVInput, CreditCardSubmitButton } from 'react-square-payment-form'
-import 'react-square-payment-form/lib/default.css'
+import { CreditCard, PaymentForm } from 'react-square-web-payments-sdk'
 import { MDBBtn } from 'mdbreact';
 import FormAlerts, { FormAlertStates } from './FormAlerts';
 import SiteContext from '../models/SiteContext';
 import { NavLink } from 'react-router-dom';
+import { TokenResult, VerifyBuyerResponseDetails } from '@square/web-payments-sdk-types';
 
 interface IProps {
     cartAction: (action: CartAction) => void
@@ -35,7 +35,7 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     const [paymentSendingState, setPaymentSendingState] = useState<FormAlertStates>('waiting');
     const [amountInCents, setAmountInCents] = useState('');
     const [paymentError, setPaymentError] = useState('');
-    const [paymentFormLoaded, setPaymentFormLoaded] = useState(false);
+    //const [paymentFormLoaded, setPaymentFormLoaded] = useState(false);
     const [cartAck, setCartAck] = useState(false);
     const [cartInfoError, setCartInfoError] = useState('Input Error');
     
@@ -52,13 +52,11 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     
     const toggleCart = () => cartAction(new CartAction({ task: 'toggle' }));
     
-    const formLoaded = () => setPaymentFormLoaded(true);
-    const canSubmitPayment = () => { return paymentSendingState !== 'sending' && paymentSendingState !== 'sent' && paymentFormLoaded; }
+    const canSubmitPayment = () => { return paymentSendingState !== 'sending' && paymentSendingState !== 'sent' }
 
     const updateCartState = (state: CartStates) => {
         setCartState(state);
         if (state === 'payment') {
-            setPaymentFormLoaded(false);
             cartAction(new CartAction({ task: 'disable' }));
             populateAmount();
         } else {
@@ -74,7 +72,6 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     }
 
     const handleLocationChange = (event: any) => {
-        const location = settings.square.find(x => x.locationId === event.target.value);
         setCartLocation(event.target.value);
     }
 
@@ -104,25 +101,23 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     const isLocationAndPickups = pickups.length > 1 && isMultipleLocations;
     const pickupsClassName = pickups.length > 1 ? (isLocationAndPickups ? 'half' : '') : 'invisible'; 
     const locationClassName = isMultipleLocations ? (isLocationAndPickups ? 'half' : '') : 'invisible';
-    const orderClassName = 'cart-section ' + (cartState === 'order' ? 'visible' : 'invisible');
+    const orderClassName = 'cart-section ' + (cartState === 'order' ? 'visible' : 'invisible') + ' pb-3';
     const infoFormClassName = 'needs-validation cart-section ' + (cartState === 'info' ? 'visible' : 'invisible');
     const paymentFormClassName = 'cart-section ' + (cartState === 'payment' ? 'visible' : 'invisible');
-    const submitDisabled = !canSubmitPayment();
     const paymentErrorMessagePrefex = 'Error - nothing charged';
     const total = isNaN(Number.parseFloat(amountInCents)) ? '[calculating]' : `$${(Number.parseFloat(amountInCents)/100).toFixed(2)}`;
 
-    //
-    // Square code (https://square.github.io/react-square-payment-form/docs/paymentform)
-    //
-    const cardNonceResponseReceived = (errors: any, nonce: string, cardData: any, buyerVerificationToken: string) => {
+    const cardTokenizeResponseReceived = (props: TokenResult, verifiedBuyer?: VerifyBuyerResponseDetails) => {
         if (canSubmitPayment()) {
-            if (errors) {
+            if (props.errors) {
                 setPaymentSendingState('error');
-                setPaymentError(errors.map(error => error.message).join(', '))
+                setPaymentError(props.errors.map(error => error.message).join(', '))
                 return
             } else {
                 setPaymentError('');
-                sendPayment(nonce, buyerVerificationToken);
+                console.log('props', props)
+                console.log('verifiedBuyer', verifiedBuyer)
+                sendPayment(props.token, verifiedBuyer.token)
             }
         }
     }
@@ -168,24 +163,6 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                     console.error('error', error);
                     setPaymentSendingState('error')
                 });
-        }
-    }
-
-    const createVerificationDetails = () => {
-        return {
-            amount: amountInCents,
-            currencyCode: 'USD',
-            intent: 'CHARGE',
-            billingContact: {
-                familyName: cartLastName,
-                givenName: cartFirstName,
-                email: cartEmail,
-                country: 'US',
-                city: '',
-                addressLines: [''],
-                postalCode: '',
-                phone: cartPhone
-            }
         }
     }
 
@@ -306,50 +283,53 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                 </fieldset>
                 <FormAlerts sendingState={infoSendingState} inputErrorMessage={cartInfoError} />
                 <div className='cart-square-buttons'>
-                    <button className='sq-creditcard back' onClick={(event) => { event.preventDefault(); updateCartState('order') }}>
+                    <MDBBtn onClick={(event) => { event.preventDefault(); updateCartState('order') }}>
                         <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                    </button>
-                    <button type='submit' className='sq-creditcard'>
+                    </MDBBtn>
+                    <MDBBtn type='submit' className='secondary-dark'>
                         <FontAwesomeIcon icon='chevron-circle-right' /> Payment
-                    </button>
+                    </MDBBtn>
                 </div>
             </form>
+            {/*cardTokenizeResponseReceived={(token, buyer) => { console.info({ token, buyer }); }}*/}
             <div id='cart-payment-form' className={paymentFormClassName}>
                 {cartState !== 'payment' ? '' :
                     settings.square.filter(x => x.locationId === cartLocation).map(location =>
-                        <SquarePaymentForm
+                        <PaymentForm
                             key={`spf-${location.locationId}`}
-                            formId={`square-form-${location.locationId}`}
-                            apiWrapper=''
-                            sandbox={location.applicationId.indexOf('sandbox') === 0}
                             applicationId={location.applicationId}
                             locationId={location.locationId}
-                            cardNonceResponseReceived={cardNonceResponseReceived}
-                            paymentFormLoaded={formLoaded}
-                            createVerificationDetails={() => createVerificationDetails()}>
-                            <fieldset className="sq-fieldset">
-                                {!isMultipleLocations ? '' :
-                                    <div className='bold'>
-                                        <span className='sq-label'>Location: {location.name}</span>
-                                    </div>}
-                                <CreditCardNumberInput />
-                                <div className="sq-form-third"><CreditCardExpirationDateInput /></div>
-                                <div className="sq-form-third"><CreditCardPostalCodeInput /></div>
-                                <div className="sq-form-third"><CreditCardCVVInput /></div>
-                            </fieldset>
+                            cardTokenizeResponseReceived={cardTokenizeResponseReceived}
+                            createVerificationDetails={() => ({
+                                amount: amountInCents,
+                                currencyCode: "USD",
+                                intent: 'CHARGE',
+                                billingContact: {
+                                    addressLines: [''],
+                                    familyName: cartLastName,
+                                    givenName: cartFirstName,
+                                    email: cartEmail,
+                                    country: 'US',
+                                    city: '',
+                                    postalCode: '',
+                                    phone: cartPhone
+                                }
+                            })}>
+                            {paymentSendingState !== 'waiting' ? '' :
+                                <fieldset>
+                                    {!isMultipleLocations ? '' : <h3 className="b">Location: {location.name}</h3>}
+                                    <CreditCard />
+                                </fieldset>}
                             <FormAlerts sendingState={paymentSendingState}
                                 errorMessage={`${paymentErrorMessagePrefex}${paymentError.length > 0 ? ` - ${paymentError}` : ''}`}
                                 sentMessage='Your food will be ready shortly!' />
-                            <div className='cart-square-buttons'>
-                                <button className='sq-creditcard back' onClick={() => updateCartState('info')} disabled={submitDisabled}>
+                            <div className='cart-square-buttons mt-1 justify-outside'>
+                                <MDBBtn onClick={() => updateCartState('info')}>
                                     <FontAwesomeIcon icon='chevron-circle-left' /> Back
-                                </button>
-                                {submitDisabled ?
-                                    <button className='sq-creditcard' disabled={true}><FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}</button> :
-                                    <CreditCardSubmitButton><FontAwesomeIcon icon='chevron-circle-right' /> Pay {total}</CreditCardSubmitButton>
-                                }
+                                </MDBBtn>
+                                <h3>Total: {total}</h3>
                             </div>
-                        </SquarePaymentForm>
+                        </PaymentForm>
                     )}
             </div>
         </div>
