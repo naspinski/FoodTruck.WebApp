@@ -35,7 +35,6 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     const [paymentSendingState, setPaymentSendingState] = useState<FormAlertStates>('waiting');
     const [amountInCents, setAmountInCents] = useState('');
     const [paymentError, setPaymentError] = useState('');
-    //const [paymentFormLoaded, setPaymentFormLoaded] = useState(false);
     const [cartAck, setCartAck] = useState(false);
     const [cartInfoError, setCartInfoError] = useState('Input Error');
     
