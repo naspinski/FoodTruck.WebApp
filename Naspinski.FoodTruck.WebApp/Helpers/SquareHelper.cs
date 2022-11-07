@@ -1,5 +1,4 @@
-﻿using Naspinski.FoodTruck.Data;
-using Naspinski.FoodTruck.Data.Access.AdditionalModels;
+﻿using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Square;
 using Square.Models;
@@ -21,9 +20,6 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
         private string _accessToken;
         private Square.Environment _env;
         public bool UseProduction { get { return _env == Square.Environment.Production; } }
-
-
-        private const double DEBUG_TAX = 6.9;
 
         public SquareHelper(SquareLocationModel location)
         {
@@ -96,15 +92,15 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
             else
                 pickUpInMinutes = 10;
 
-            var pickupDetails = new OrderFulfillmentPickupDetails(
-                recipient: new OrderFulfillmentRecipient(displayName: model.Name, emailAddress: model.Email, phoneNumber: model.Phone),
+            var pickupDetails = new FulfillmentPickupDetails(
+                recipient: new FulfillmentRecipient(displayName: model.Name, emailAddress: model.Email, phoneNumber: model.Phone),
                 scheduleType: (isScheduled ? "SCHEDULED" : "ASAP"),
                 prepTimeDuration: "P10M", // 10 minutes
                 pickupAt: ToRfc3339String(DateTime.UtcNow.AddMinutes(pickUpInMinutes))
             );
 
-            var fulfill = new List<OrderFulfillment>() {
-                new OrderFulfillment(
+            var fulfill = new List<Fulfillment>() {
+                new Fulfillment(
                     type: "PICKUP",
                     pickupDetails:  pickupDetails
                    )};
