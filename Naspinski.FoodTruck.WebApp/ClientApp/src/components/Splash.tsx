@@ -52,6 +52,14 @@ const Splash = () => {
                     </MDBBtn>
                 </NavLink>
         );
+
+    const merchLink = !settings.merchUrl ? '' :
+        <a href={settings.merchUrl} target="_blank">
+            <MDBBtn color='deep-orange'>
+                <FontAwesomeIcon icon='store' /> Merch
+            </MDBBtn>
+        </a>
+
     const hideDelivery = !settings.isBrickAndMortar || !settings.deliveryServiceImageToUrlMap || settings.deliveryServiceImageToUrlMap.size === 0 || !settings.isValidTimeForOnlineOrder;
 
     return <div className='primary-color'>
@@ -74,6 +82,7 @@ const Splash = () => {
                             <FontAwesomeIcon icon='envelope' /> Contact{settings.isBrickAndMortar ? '' : '/Book'}
                         </MDBBtn>
                     </NavLink>
+                    {merchLink}
                 </p>
                 <div className='pl1'>
                     {hideDelivery ? '' :
