@@ -81,6 +81,7 @@
     <None Remove="$(SpaRoot)\src\models\Utility.ts" />
     <None Remove="$(SpaRoot)\src\pages\Menu.tsx" />
     <None Remove="$(SpaRoot)\src\pages\Terms.tsx" />
+    <None Remove="ClientApp\src\pages\ViewMenu.tsx" />
   </ItemGroup>
 
   <ItemGroup>

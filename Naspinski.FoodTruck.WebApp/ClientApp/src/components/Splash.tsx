@@ -20,12 +20,23 @@ const Splash = () => {
     
     let serviceCount = 0;
 
-    const menuDownload = menuUrl === null || menuUrl.length === 0 ? '' : 
-        <a href={menuUrl}>
-            <MDBBtn color='default'>
-                <FontAwesomeIcon icon='download' /> Download Menu
-            </MDBBtn>
-        </a>
+    const menuDownload = menuUrl === null || menuUrl.length < 4 || menuUrl.indexOf('.') === -1 ? '' :
+        (
+            menuUrl.split('.')[menuUrl.split('.').length - 1].toLowerCase() === 'pdf' ?
+            (
+                <a href={menuUrl}>
+                    <MDBBtn color='default'>
+                        <FontAwesomeIcon icon='download' /> Download Menu
+                    </MDBBtn>
+                </a>
+            ) : (
+                <NavLink to='/view-menu'>
+                    <MDBBtn color='default'>
+                        <FontAwesomeIcon icon='download' /> Download Menu
+                    </MDBBtn>
+                </NavLink>
+            )
+        )
 
     const links = Utilities.getLinks(context);
 
