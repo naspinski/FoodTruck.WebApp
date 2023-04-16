@@ -31,8 +31,8 @@
   "devDependencies": {
     "ajv": "^6.12.6",
     "cross-env": "^7.0.1",
-    "eslint": "^6.6.0",
-    "eslint-config-react-app": "^5.2.0",
+    "eslint": "^8.0.0",
+    "eslint-config-react-app": "^5.2.1",
     "eslint-plugin-flowtype": "^4.6.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
