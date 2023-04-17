@@ -21,7 +21,7 @@ const ViewMenu = () => {
             </div>
         )
 
-    return <div className='primary-color'>
+    return <div id="view-menu" className='primary-color'>
         <MDBRow className='inner-container pt4'>
             <MDBCol md='12' className="tc ph3 pb3 center">
                 {menuImage}
