@@ -1,8 +1,11 @@
 import { MDBCol, MDBRow } from 'mdbreact';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import SiteContext from '../models/SiteContext';
 
 const ViewMenu = () => {
+
+    const context = React.useContext(SiteContext);
 
     const [menuImageUrl, setMenuImageUrl] = useState(null);
     useEffect(() => {
