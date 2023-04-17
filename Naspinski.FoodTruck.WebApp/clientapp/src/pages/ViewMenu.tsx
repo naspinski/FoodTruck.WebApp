@@ -13,9 +13,14 @@ const ViewMenu = () => {
         fetch('api/menu-url/image')
             .then((response) => {
                 console.log(response)
+                console.log(response.text())
                 response.text()
             })
-            .then((data) => setMenuImageUrl(data));
+            .then((data) => {
+                console.log('setMenuImageUrl')
+                console.log(data)
+                setMenuImageUrl(data)
+            );
     }, []);
 
     const menuImage = menuImageUrl === null || menuImageUrl.length < 4 ? 'No Menu Image Uploaded' :
