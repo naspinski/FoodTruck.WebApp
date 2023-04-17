@@ -1,16 +1,20 @@
 import { MDBCol, MDBRow } from 'mdbreact';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import SiteContext from '../models/SiteContext';
+//import SiteContext from '../models/SiteContext';
 
 const ViewMenu = () => {
 
-    const context = React.useContext(SiteContext);
+    //const context = React.useContext(SiteContext);
 
     const [menuImageUrl, setMenuImageUrl] = useState(null);
     useEffect(() => {
+        console.log('useEffect menu')
         fetch('api/menu-url/image')
-            .then((response) => response.text())
+            .then((response) => {
+                console.log(response)
+                response.text()
+            })
             .then((data) => setMenuImageUrl(data));
     }, []);
 
