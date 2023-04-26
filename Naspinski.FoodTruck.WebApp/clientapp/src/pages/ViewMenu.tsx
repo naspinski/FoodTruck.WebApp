@@ -6,21 +6,14 @@ import { useEffect, useState } from 'react';
 const ViewMenu = () => {
 
     //const context = React.useContext(SiteContext);
+    console.log('ViewMenu')
 
     const [menuImageUrl, setMenuImageUrl] = useState(null);
     useEffect(() => {
         console.log('useEffect menu')
         fetch('api/menu-url/image')
-            .then((response) => {
-                console.log(response)
-                console.log(response.text())
-                response.text()
-            })
-            .then((data) => {
-                console.log('setMenuImageUrl')
-                console.log(data)
-                setMenuImageUrl(data)
-            );
+            .then((response) => response.text())
+            .then((data) => setMenuImageUrl(data));
     }, []);
 
     const menuImage = menuImageUrl === null || menuImageUrl.length < 4 ? 'No Menu Image Uploaded' :
