@@ -12,11 +12,9 @@ using Naspinski.Messaging.Sms;
 using Naspinski.Messaging.Sms.Twilio;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using static Naspinski.FoodTruck.Data.Constants;
-using static Naspinski.FoodTruck.Data.Models.Storage.Document;
 
 namespace Naspinski.FoodTruck.WebApp.Controllers
 {
@@ -99,21 +97,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 throw new NotImplementedException($"Subscription.Type of {subscription.Type} is not implemented yet");
 
             return subscription;
-        }
-
-        [HttpGet]
-        [Route("menu-url/{filter?}")]
-        public string MenuUrl(string filter = "")
-        {
-            var menus = new DocumentHandler(_context, "system").GetAll(DocCategory.Menu).OrderByDescending(x => x.LastModified).Select(x => x.Location);
-            var imageFilter = new[] { "jpg", "jpeg", "png" };
-            if (menus != null && menus.Any())
-            {
-                if (filter == "image")
-                    return menus.FirstOrDefault(x => imageFilter.Any(ext => x.ToLower().EndsWith(ext)));
-                return menus.First();
-            }
-            return string.Empty;
         }
 
         [HttpGet]

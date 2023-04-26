@@ -19,6 +19,10 @@ export class SiteSettings {
     merchUrl: string = '';
     debug: object = {};
 
+    menuUrl: string = '';
+    imageMenuUrl: string = '';
+    isLatestMenuImage: boolean = false;
+
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};
     googleMapsApiKey: string = '';
