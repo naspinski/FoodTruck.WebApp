@@ -1,10 +1,13 @@
 ﻿using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
+using Naspinski.FoodTruck.Data.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using static Naspinski.FoodTruck.Data.Constants;
+using static Naspinski.FoodTruck.Data.Models.Storage.Document;
 
 namespace Naspinski.FoodTruck.WebApp.Models
 {
@@ -19,7 +22,10 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string LogoImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
-        public string ContactPhone { get; set; } 
+        public string ContactPhone { get; set; }
+        public string MenuUrl { get; set; }
+        public string ImageMenuUrl { get; set; }
+        public bool IsLatestMenuImage => !MenuUrl.ToLower().EndsWith(".pdf");
 
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
@@ -88,6 +94,14 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 }
 
                 IsValidTimeForOnlineOrder = GetIsValidTimeForOnlineOrder();
+            }
+
+            var menus = new DocumentHandler(context, "system").GetAll(DocCategory.Menu).OrderByDescending(x => x.LastModified).Select(x => x.Location);
+            var imageFilter = new[] { "jpg", "jpeg", "png" };
+            if (menus != null && menus.Any())
+            {
+                ImageMenuUrl =  menus.FirstOrDefault(x => imageFilter.Any(ext => x.ToLower().EndsWith(ext)));
+                MenuUrl = menus.First();
             }
         }
 

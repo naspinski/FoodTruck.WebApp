@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { MDBBtn, MDBRow, MDBCol } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,23 +7,16 @@ import { Utilities } from '../Utility';
 
 const Splash = () => {
 
-    const [menuUrl, setMenuUrl] = useState(null);
-    useEffect(() => {
-        fetch('api/menu-url')
-            .then((response) => response.text())
-            .then((data) => setMenuUrl(data));
-    }, []);
-
     const context = React.useContext(SiteContext);
     const settings = context.settings;
     
     let serviceCount = 0;
 
-    const menuDownload = menuUrl === null || menuUrl.length < 4 || menuUrl.indexOf('.') === -1 ? '' :
+    const menuDownload = settings.menuUrl === null || settings.menuUrl.length < 4 || settings.menuUrl.indexOf('.') === -1 ? '' :
         (
-            menuUrl.split('.')[menuUrl.split('.').length - 1].toLowerCase() === 'pdf' ?
+            settings.isLatestMenuImage ?
             (
-                <a href={menuUrl}>
+                <a href={settings.menuUrl}>
                     <MDBBtn color='default'>
                         <FontAwesomeIcon icon='download' /> Download Menu
                     </MDBBtn>
