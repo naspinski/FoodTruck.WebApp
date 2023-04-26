@@ -16,17 +16,17 @@ const Splash = () => {
         (
             settings.isLatestMenuImage ?
             (
-                <a href={settings.menuUrl}>
-                    <MDBBtn color='default'>
-                        <FontAwesomeIcon icon='download' /> Download Menu
-                    </MDBBtn>
-                </a>
-            ) : (
                 <NavLink to='/view-menu'>
                     <MDBBtn color='default'>
                         <FontAwesomeIcon icon='download' /> Download Menu
                     </MDBBtn>
                 </NavLink>
+            ) : (
+                <a href={settings.menuUrl}>
+                    <MDBBtn color='default'>
+                        <FontAwesomeIcon icon='download' /> Download Menu
+                    </MDBBtn>
+                </a>
             )
         )
 
