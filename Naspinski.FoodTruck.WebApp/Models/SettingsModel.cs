@@ -100,8 +100,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
             var imageFilter = new[] { "jpg", "jpeg", "png" };
             if (menus != null && menus.Any())
             {
-                ImageMenuUrl =  menus.FirstOrDefault(x => imageFilter.Any(ext => x.ToLower().EndsWith(ext)));
-                MenuUrl = menus.First();
+                ImageMenuUrl =  menus.FirstOrDefault(x => imageFilter.Any(ext => x.ToLower().EndsWith(ext))) ?? string.Empty;
+                MenuUrl = menus.First() ?? string.Empty;
             }
         }
 
