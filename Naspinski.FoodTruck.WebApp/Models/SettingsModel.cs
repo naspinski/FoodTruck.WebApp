@@ -1,10 +1,13 @@
 ﻿using Naspinski.FoodTruck.Data;
+using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
+using Naspinski.FoodTruck.Data.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using static Naspinski.FoodTruck.Data.Constants;
+using static Naspinski.FoodTruck.Data.Models.Storage.Document;
 
 namespace Naspinski.FoodTruck.WebApp.Models
 {
@@ -19,7 +22,10 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string LogoImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
-        public string ContactPhone { get; set; } 
+        public string ContactPhone { get; set; }
+        public string MenuUrl { get; set; } = string.Empty;
+        public string ImageMenuUrl { get; set; } = string.Empty;
+        public bool IsLatestMenuImage => !MenuUrl.ToLower().EndsWith(".pdf");
 
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
@@ -32,6 +38,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public Dictionary<string, string> Social { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, Schedule> Schedule { get; set; }  = new Dictionary<string, Schedule>();
         public bool ShowSchedule { get { return Schedule.Any(x => !x.Value.Hours.Equals("closed", StringComparison.InvariantCultureIgnoreCase)); } }
+        public string MerchUrl { get; set; }
         public object Debug { get; set; }
 
         public IEnumerable<SquareLocationModel> Square { get; set; }
@@ -62,7 +69,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
             BannerImageUrl = system.Settings[SettingName.BannerImageUrl];
             FaviconImageUrl = system.Settings[SettingName.FaviconImageUrl];
             ContactPhone = system.Settings[SettingName.ContactPhone];
-            
+            MerchUrl = system.Settings[SettingName.MerchUrl];
+
             if (system != null)
             {
                 IsBrickAndMortar = SetBool(SettingName.BrickAndMortarMode, true);
@@ -86,6 +94,14 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 }
 
                 IsValidTimeForOnlineOrder = GetIsValidTimeForOnlineOrder();
+            }
+
+            var menus = new DocumentHandler(context, "system").GetAll(DocCategory.Menu).OrderByDescending(x => x.LastModified).Select(x => x.Location);
+            var imageFilter = new[] { "jpg", "jpeg", "png" };
+            if (menus != null && menus.Any())
+            {
+                ImageMenuUrl =  menus.FirstOrDefault(x => imageFilter.Any(ext => x.ToLower().EndsWith(ext))) ?? string.Empty;
+                MenuUrl = menus.First() ?? string.Empty;
             }
         }
 

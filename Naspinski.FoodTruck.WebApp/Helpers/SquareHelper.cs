@@ -1,5 +1,6 @@
 ﻿using Naspinski.FoodTruck.Data.Access.AdditionalModels;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
+using Naspinski.FoodTruck.Data.Models.Menu;
 using Square;
 using Square.Models;
 using System;
@@ -73,6 +74,9 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
         public CreateOrderRequest GetCreateOrderRequest(PaymentModel model, Data.Models.Payment.Order order, Guid guid, IEnumerable<CatalogObject> taxes)
         {
             var orderLineItems = order.Items.Select(x => x.ToOrderLineItem()).ToList();
+
+            if (!string.IsNullOrWhiteSpace(order.Note))
+                orderLineItems.Add(new OrderLineItem(1.ToString(), null, "Order Note", null, order.Note, null, null, null, null, null, null, null, null, new Money(0, "USD")));
 
             var _taxes = (taxes ?? new List<CatalogObject>())
                 .Where(x => !EXCLUDE.Any(y => x.TaxData.Name.ToLower().Contains(y)))
