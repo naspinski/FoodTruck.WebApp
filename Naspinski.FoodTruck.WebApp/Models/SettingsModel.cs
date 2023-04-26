@@ -23,8 +23,8 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string BannerImageUrl { get; set; }
         public string FaviconImageUrl { get; set; }
         public string ContactPhone { get; set; }
-        public string MenuUrl { get; set; }
-        public string ImageMenuUrl { get; set; }
+        public string MenuUrl { get; set; } = string.Empty;
+        public string ImageMenuUrl { get; set; } = string.Empty;
         public bool IsLatestMenuImage => !MenuUrl.ToLower().EndsWith(".pdf");
 
         public bool IsBrickAndMortar { get; set; }
