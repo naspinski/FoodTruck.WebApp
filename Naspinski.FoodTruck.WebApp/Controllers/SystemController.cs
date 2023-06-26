@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static Naspinski.FoodTruck.Data.Constants;
-using static Naspinski.FoodTruck.Data.Models.Storage.Document;
 
 namespace Naspinski.FoodTruck.WebApp.Controllers
 {
@@ -98,16 +97,6 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 throw new NotImplementedException($"Subscription.Type of {subscription.Type} is not implemented yet");
 
             return subscription;
-        }
-
-        [HttpGet]
-        [Route("menu-url")]
-        public string MenuUrl()
-        {
-            var menu = new DocumentHandler(_context, "system").GetAll(DocCategory.Menu);
-            if (menu != null && menu.Any())
-                return menu.OrderByDescending(x => x.LastModified).First().Location;
-            return string.Empty;
         }
 
         [HttpGet]

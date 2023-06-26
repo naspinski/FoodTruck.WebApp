@@ -15,6 +15,7 @@ import Main from './pages/Main';
 import Menu from './pages/Menu';
 import Contact from './pages/Contact';
 import Terms from './pages/Terms';
+import ViewMenu from './pages/ViewMenu';
 import Spinner from './components/Spinner';
 import Specials from './components/Specials';
 import Calendar from './components/Calendar';
@@ -66,6 +67,7 @@ export default class App extends Component<{}, SiteState> {
                         <Route path='/calendar' render={x => <Calendar containerClassName='primary-color' />} />
                         <Route path='/contact' component={Contact} />
                         <Route path='/terms' component={Terms} />
+                        <Route path='/view-menu' component={ViewMenu} />
                     </Layout>
                 </React.Fragment>
             </SiteContext.Provider>
