@@ -76,7 +76,7 @@ namespace Naspinski.FoodTruck.WebApp.Helpers
             var orderLineItems = order.Items.Select(x => x.ToOrderLineItem()).ToList();
 
             if (!string.IsNullOrWhiteSpace(order.Note))
-                orderLineItems.Add(new OrderLineItem(1.ToString(), null, "Order Note", null, order.Note, null, null, null, null, null, null, null, null, new Money(0, "USD")));
+                orderLineItems.Add(new OrderLineItem(1.ToString(), null, "Order Note", null, order.Note, null, null, null, null, null, null, null, null, basePriceMoney: new Money(0, "USD")));
 
             var _taxes = (taxes ?? new List<CatalogObject>())
                 .Where(x => !EXCLUDE.Any(y => x.TaxData.Name.ToLower().Contains(y)))

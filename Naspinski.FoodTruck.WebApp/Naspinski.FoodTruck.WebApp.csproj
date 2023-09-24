@@ -11,25 +11,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.AspNetCore" Version="4.3.48" />
+    <PackageReference Include="Elmah.Io.AspNetCore" Version="5.0.56" />
     <PackageReference Include="Ical.Net" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.4">
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.10" />
     <PackageReference Include="Naspinski.Data" Version="1.0.20220924.151235" />
-    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20230301.203703" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20230301.203703" />
-    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20230301.203703" />
-    <PackageReference Include="Naspinski.Maps" Version="1.0.20220924.172130" />
+    <PackageReference Include="Naspinski.FoodTruck.Data" Version="1.0.20230924.182902" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Access" Version="1.0.20230924.182902" />
+    <PackageReference Include="Naspinski.FoodTruck.Data.Distribution" Version="1.0.20230924.182902" />
+    <PackageReference Include="Naspinski.Maps" Version="1.0.20230924.180634" />
     <PackageReference Include="Naspinski.Messaging" Version="1.0.20220924.171907" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
-    <PackageReference Include="Square" Version="23.0.0" />
-    <PackageReference Include="Twilio.AspNet.Core" Version="6.0.0" />
+    <PackageReference Include="Square" Version="30.0.0" />
+    <PackageReference Include="Twilio.AspNet.Core" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
