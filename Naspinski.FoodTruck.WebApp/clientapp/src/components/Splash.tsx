@@ -51,7 +51,7 @@ const Splash = () => {
             !links.has('specials') ? '' :
                 <NavLink to='/specials'>
                     <MDBBtn color='pink'>
-                        <FontAwesomeIcon icon='star' /> Calendar
+                        <FontAwesomeIcon icon='star' /> Specials
                     </MDBBtn>
                 </NavLink>
         );
