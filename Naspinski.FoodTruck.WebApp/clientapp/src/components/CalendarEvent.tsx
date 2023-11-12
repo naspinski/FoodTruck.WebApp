@@ -78,6 +78,8 @@ const CalendarEvent = ({ event, id }: IProps) => {
             <FontAwesomeIcon icon='map-marker-alt' /> {isMapHidden ? 'map' : 'hide'}
         </MDBBtn>
 
+    console.log('modal', modal)
+
     return (
         <MDBContainer tag='div' className='border-dotted bottom pa3'>
             <MDBRow>
@@ -92,7 +94,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                     <Address location={event.location} />
                     <div className='pl0'>
                         <MDBBtn size='sm' onClick={toggleModal}>
-                            <FontAwesomeIcon icon='star' /> Subscribe
+                            <FontAwesomeIcon icon='star' /> Subscribe [{ modal ? 'true' : 'false' }]
                             </MDBBtn>
                         {mapButton}
                     </div>
@@ -105,7 +107,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                     />
                 </MDBCol>
             </MDBRow>
-            <MDBModal isOpen={modal} toggle={toggleModal}>
+            <MDBModal isOpen={modal} setopen={setModal}>
                 <form id={formId} className='needs-validation' onSubmit={submitHandler} noValidate>
                     <MDBModalHeader className='b' toggle={toggleModal}>Subscribe to {event.location.name}</MDBModalHeader>
                     <MDBModalBody>
@@ -121,7 +123,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                         </div>
                         <MDBBtn color='pink' type='submit'>
                             <FontAwesomeIcon icon='chevron-circle-right' /> Subscribe
-                            </MDBBtn>
+                        </MDBBtn>
                     </MDBModalFooter>
                 </form>
             </MDBModal>
