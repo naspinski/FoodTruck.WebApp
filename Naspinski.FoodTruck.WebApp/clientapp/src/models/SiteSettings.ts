@@ -25,6 +25,7 @@ export class SiteSettings {
 
     deliveryServiceImageToUrl: Object = {};
     schedule: Object = {};
+    todaysOpenTime: Date = new Date();
     googleMapsApiKey: string = '';
     social: Object = {};
 

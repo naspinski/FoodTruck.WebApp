@@ -55,7 +55,17 @@
         text-align: center;
         background-color: $secondary-color-dark;
         color: $white;
-        margin-bottom: .5rem
+        margin-bottom: .5rem;
+
+        .pre-order {
+            font-size: 1rem;
+            padding-left: .5rem;
+
+            .warning {
+                margin: 0 .5rem;
+                color: $warning-color;
+            }
+        }
     }
 
     #cart-total {

@@ -28,7 +28,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public SettingsModel Get()
         {
             var system = new SystemModel(_handler.GetAll());
-            return new SettingsModel(_azureSettings, _squareLocations, system, _context);
+            return new SettingsModel(_squareLocations, system, _context);
         }
     }
 }

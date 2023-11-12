@@ -1,7 +1,6 @@
 ﻿using Naspinski.FoodTruck.Data;
 using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
-using Naspinski.FoodTruck.Data.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,7 +25,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string MenuUrl { get; set; } = string.Empty;
         public string ImageMenuUrl { get; set; } = string.Empty;
         public bool IsLatestMenuImage => !MenuUrl.ToLower().EndsWith(".pdf");
-
+        public DateTime TodaysOpenTime { get; set; }
         public bool IsBrickAndMortar { get; set; }
         public bool IsOrderingOn { get; set; }
         public bool IsTextOn { get; set; }
@@ -48,7 +47,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         
         private SystemModel _system;
         
-        public SettingsModel(AzureSettings azureSettings, IEnumerable<SquareLocationModel> squareLocations, SystemModel system, FoodTruckContext context)
+        public SettingsModel(IEnumerable<SquareLocationModel> squareLocations, SystemModel system, FoodTruckContext context)
         {
             _system = system;
             
@@ -91,6 +90,10 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 {
                     var day = ((DayOfWeek)d).ToString();
                     Schedule.Add(day, new Schedule(day, system.Settings));
+                    if (d == (int)DateTime.Now.DayOfWeek)
+                    {
+                        TodaysOpenTime = DateTime.Parse(system.Settings[$"{day}Open"]);
+                    }
                 }
 
                 IsValidTimeForOnlineOrder = GetIsValidTimeForOnlineOrder();

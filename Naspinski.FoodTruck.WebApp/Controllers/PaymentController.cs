@@ -75,7 +75,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         public async Task<IActionResult> Pay(PaymentModel model)
         {
             var system = new SystemModel(_settingHandler.GetAll());
-            var settings = new SettingsModel(_azureSettings, _squareLocations, system, _context);
+            var settings = new SettingsModel(_squareLocations, system, _context);
             try
             {
                 if(!settings.IsOrderingOn)
