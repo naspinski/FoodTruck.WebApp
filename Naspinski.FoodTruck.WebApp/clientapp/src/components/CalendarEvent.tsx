@@ -8,6 +8,7 @@ import { MDBBtn, MDBRow, MDBCol, MDBContainer, MDBModal, MDBModalHeader, MDBModa
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FormAlerts, { FormAlertStates } from './../components/FormAlerts';
 import { RegularExpressions } from '../Utility';
+import { NavLink } from 'react-router-dom';
 
 interface IProps {
     event: EventModel,
@@ -94,7 +95,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                     <Address location={event.location} />
                     <div className='pl0'>
                         <MDBBtn size='sm' onClick={toggleModal}>
-                            <FontAwesomeIcon icon='star' /> Subscribe [{ modal ? 'true' : 'false' }]
+                            <FontAwesomeIcon icon='star' /> Subscribe
                             </MDBBtn>
                         {mapButton}
                     </div>
@@ -115,6 +116,9 @@ const CalendarEvent = ({ event, id }: IProps) => {
                             <label htmlFor={sendToId}>Email Address or Phone Number</label>
                             <input required min='5' id={sendToId} type='text' className='form-control' onChange={handleSendToChange} />
                             <div className="invalid-feedback">{errorMessage}</div>
+                        </div>
+                        <div className="pt1 terms-container">
+                            subscribing implies consent to our <NavLink to='/terms'>terms</NavLink>
                         </div>
                     </MDBModalBody>
                     <MDBModalFooter className='flex justify-between'>
