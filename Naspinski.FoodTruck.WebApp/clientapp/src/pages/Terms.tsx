@@ -19,6 +19,10 @@ const Terms = () => {
                     <h3>Modifications of This Terms & Conditions</h3>
                     {context.settings.title} reserves the right to change, modify, amend, and/or update these Terms & Conditions at any time with or without prior notice. Your use of this Website following any such changes, modifications, amendments, and/or updates, and/or, where applicable, your affirmative consent when prompted, constitutes your unconditional agreement to follow and be bound by these Terms & Conditions as so changed, modified, amended, and/or updated. You are responsible for reviewing these Terms & Conditions each time you use or access any portion of this Website, and at any time you are prompted to do so.
 
+                    <h3>Messaging</h3>
+                    By agreeing to terms and submitting a form, you are consenting to reveive text updates for subscriptions and order status from Twilio autodialer.
+                    Consent is not a condition of purchase. Message and data rates may apply. Unsubscribe any time by clicking links provided in text messages.
+
                     <h3>Links</h3>
                     {context.settings.title} is not affiliated or associated with the sponsors, owners, or producers of any third-party websites linked to or from this Website. These linked sites are not under our control and {context.settings.title} explicitly disclaims any responsibility for the accuracy, content, or availability of the information, products, and/or services found on or through such third-party sites. {context.settings.title}'s urges you to review the terms and conditions and privacy policy posted on any site you visit before using the site or providing any personal data about yourself. {context.settings.title}'s does not endorse and has not taken any steps to confirm the accuracy or reliability of any of the information, products, or services contained on or through such third party sites. {context.settings.title}'s does not make any representations or warranties as to the security of any information (such as credit card and other sensitive information) you might give on any third-party site.
 
