@@ -184,13 +184,15 @@ const ShoppingCart = ({ cartAction }: IProps) => {
     }
 
     const openTime = (): string =>
-        new Date(settings.todaysOpenTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        settings.todaysOpenTime
+            ? new Date(settings.todaysOpenTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+            : '';
 
     return (cart.isHidden ? <React.Fragment></React.Fragment> :
         <div id='cart'>
             <a id='cart-closer' onClick={toggleCart}>
                 <FontAwesomeIcon icon='caret-down' />
-                {new Date() >= new Date(settings.todaysOpenTime) ? '' :
+                {new Date() >= settings.todaysOpenTime === null || new Date(settings.todaysOpenTime) ? '' :
                     <span className='pre-order'>
                         <FontAwesomeIcon icon='exclamation-triangle' className='warning' />
                         Pre-order will not be prepared until opening time of {openTime()}

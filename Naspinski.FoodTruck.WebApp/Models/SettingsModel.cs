@@ -90,9 +90,11 @@ namespace Naspinski.FoodTruck.WebApp.Models
                 {
                     var day = ((DayOfWeek)d).ToString();
                     Schedule.Add(day, new Schedule(day, system.Settings));
-                    if (d == (int)DateTime.Now.DayOfWeek)
+                    if (d == (int)DateTime.Now.DayOfWeek
+                        && system.Settings[$"{day}Open"] != null
+                        && DateTime.TryParse(system.Settings[$"{day}Open"], out DateTime _dateTime))
                     {
-                        TodaysOpenTime = DateTime.Parse(system.Settings[$"{day}Open"]);
+                        TodaysOpenTime = _dateTime;
                     }
                 }
 
