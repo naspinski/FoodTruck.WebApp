@@ -113,9 +113,7 @@ const ShoppingCart = ({ cartAction }: IProps) => {
                 setPaymentError(props.errors.map(error => error.message).join(', '))
                 return
             } else {
-                setPaymentError('');
-                console.log('props', props)
-                console.log('verifiedBuyer', verifiedBuyer)
+                setPaymentError('')
                 sendPayment(props.token, verifiedBuyer.token)
             }
         }

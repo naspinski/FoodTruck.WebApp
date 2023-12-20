@@ -79,8 +79,6 @@ const CalendarEvent = ({ calendarEvent, id }: IProps) => {
             <FontAwesomeIcon icon='map-marker-alt' /> {isMapHidden ? 'map' : 'hide'}
         </MDBBtn>
 
-    console.log('modal', modal)
-
     return (
         <MDBContainer tag='div' className='border-dotted bottom pa3'>
             <MDBRow>
