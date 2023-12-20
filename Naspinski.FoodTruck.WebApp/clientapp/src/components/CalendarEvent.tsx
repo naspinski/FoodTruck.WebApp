@@ -11,11 +11,11 @@ import { RegularExpressions } from '../Utility';
 import { NavLink } from 'react-router-dom';
 
 interface IProps {
-    event: EventModel,
+    calendarEvent: EventModel,
     id: number
 }
 
-const CalendarEvent = ({ event, id }: IProps) => {
+const CalendarEvent = ({ calendarEvent, id }: IProps) => {
 
     const [isMapHidden, setIsMapHidden] = useState(true);
     const [modal, setModal] = useState(false);
@@ -48,7 +48,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    Location: event.location.name,
+                    Location: calendarEvent.location.name,
                     Subscriber: sendTo
                 })
             })
@@ -64,16 +64,16 @@ const CalendarEvent = ({ event, id }: IProps) => {
         }
     };
 
-    event = new EventModel(event);
+    calendarEvent = new EventModel(calendarEvent);
 
     const errorMessage = 'You must supply a valid email or phone number'
 
-    const time = event.beginsTime && event.beginsTime.length > 0 ?
+    const time = calendarEvent.beginsTime && calendarEvent.beginsTime.length > 0 ?
         <div className='f5'>
-            {event.beginsTime}{event.endsTime && event.endsTime.length > 0 ? ' - ' + event.endsTime : ''}
+            {calendarEvent.beginsTime}{calendarEvent.endsTime && calendarEvent.endsTime.length > 0 ? ' - ' + calendarEvent.endsTime : ''}
         </div> : '';
 
-    const location = new Location(event.location);
+    const location = new Location(calendarEvent.location);
     const mapButton = !location.isValidForMap  ? '' :
         <MDBBtn size='sm' onClick={mapVisibilityChange}>
             <FontAwesomeIcon icon='map-marker-alt' /> {isMapHidden ? 'map' : 'hide'}
@@ -86,22 +86,22 @@ const CalendarEvent = ({ event, id }: IProps) => {
             <MDBRow>
                 <MDBCol md='3'>
                     <div className='left-frame'>
-                        <h4 className='b'>{event.beginsMonth} {event.beginsDay}</h4>
+                        <h4 className='b'>{calendarEvent.beginsMonth} {calendarEvent.beginsDay}</h4>
                         {time}
                     </div>
                 </MDBCol>
                 <MDBCol md='4'>
-                    <h4 className='b serif mv0 pt2 ttc'>{event.location.name}</h4>
-                    <Address location={event.location} />
+                    <h4 className='b serif mv0 pt2 ttc'>{calendarEvent.location.name}</h4>
+                    <Address location={calendarEvent.location} />
                     <div className='pl0'>
                         <MDBBtn size='sm' onClick={toggleModal}>
                             <FontAwesomeIcon icon='star' /> Subscribe
-                            </MDBBtn>
+                         </MDBBtn>
                         {mapButton}
                     </div>
                 </MDBCol>
                 <MDBCol md='5' className='pb1'>
-                    <Map location={event.location}
+                    <Map location={calendarEvent.location}
                         id={`calendar-map-${id}`}
                         zoom={11}
                         isHidden={isMapHidden}
@@ -110,7 +110,7 @@ const CalendarEvent = ({ event, id }: IProps) => {
             </MDBRow>
             <MDBModal isOpen={modal} setopen={setModal}>
                 <form id={formId} className='needs-validation' onSubmit={submitHandler} noValidate>
-                    <MDBModalHeader className='b' toggle={toggleModal}>Subscribe to {event.location.name}</MDBModalHeader>
+                    <MDBModalHeader className='b' toggle={toggleModal}>Subscribe to {calendarEvent.location.name}</MDBModalHeader>
                     <MDBModalBody>
                         <div className='pt2 b'>
                             <label htmlFor={sendToId}>Email Address or Phone Number</label>

@@ -20,7 +20,7 @@ const Terms = () => {
                     {context.settings.title} reserves the right to change, modify, amend, and/or update these Terms & Conditions at any time with or without prior notice. Your use of this Website following any such changes, modifications, amendments, and/or updates, and/or, where applicable, your affirmative consent when prompted, constitutes your unconditional agreement to follow and be bound by these Terms & Conditions as so changed, modified, amended, and/or updated. You are responsible for reviewing these Terms & Conditions each time you use or access any portion of this Website, and at any time you are prompted to do so.
 
                     <h3>Messaging</h3>
-                    By agreeing to terms and submitting a form, you are consenting to reveive text updates for subscriptions and order status from Twilio autodialer.
+                    By agreeing to terms and submitting a form, you are consenting to receive text updates for subscriptions and order status from Twilio autodialer.
                     Consent is not a condition of purchase. Message and data rates may apply. Unsubscribe any time by clicking links provided in text messages.
 
                     <h3>Links</h3>

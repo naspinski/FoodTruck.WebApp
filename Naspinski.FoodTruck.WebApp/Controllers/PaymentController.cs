@@ -8,8 +8,6 @@ using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Naspinski.FoodTruck.WebApp.Helpers;
 using Naspinski.FoodTruck.WebApp.Models;
 using Naspinski.Messaging.Email;
-using Naspinski.Messaging.Sms;
-using Naspinski.Messaging.Sms.Twilio;
 using Square.Models;
 using System;
 using System.Collections.Generic;
@@ -26,6 +24,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         private readonly OrderHandler _handler;
         private readonly SettingHandler _settingHandler;
         private readonly AzureSettings _azureSettings;
+        private SystemModel _settings;
         private readonly IEnumerable<SquareLocationModel> _squareLocations;
 
         private Data.Models.Payment.Order _order;
@@ -36,6 +35,12 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             _azureSettings = azureSettings;
             _settingHandler = new SettingHandler(context);
             _squareLocations = new SquareLocationHandler(context, "system").GetAll();
+
+            _settings = new SystemModel(_settingHandler.Get(new[] {
+                SettingName.TwilioAuthToken,
+                SettingName.TwilioPhoneNumber,
+                SettingName.TwilioSid
+            }));
         }
 
         private SquareLocationModel GetSquareLocation(string locationId)
@@ -66,7 +71,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             }
             catch(Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -182,24 +187,24 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
         {
             try
             {
-                var twilio = new TwilioHelper(settings.Get(SettingName.TwilioAuthToken), settings.Get(SettingName.TwilioSid), settings.Get(SettingName.TwilioPhoneNumber));
+                if (isCustomer && !string.IsNullOrWhiteSpace(order.Phone))
+                    SmsHelper.Send(GetBody(order, name, settings, true), order.Phone, _settings);
 
-                if (twilio.IsValid)
+                if (!isCustomer)
                 {
-                    ISmsSender smsSender = new TwilioSmsSender(twilio.Sid, twilio.AuthToken);
-                    if (isCustomer && !string.IsNullOrWhiteSpace(order.Phone))
-                        smsSender.Send(twilio.Phone, order.Phone, GetBody(order, name, settings, true));
-
-                    if (!isCustomer)
+                    var phoneNumbersString = settings.Get(SettingName.OrderNotificationPhoneNumbers);
+                    if (!string.IsNullOrWhiteSpace(phoneNumbersString))
                     {
-                        var phoneNumbersString = settings.Get(SettingName.OrderNotificationPhoneNumbers);
-                        if (!string.IsNullOrWhiteSpace(phoneNumbersString))
+                        var phoneNumbers = phoneNumbersString.Split(new[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries).Where(x => x.Length == 10 && x.All(c => char.IsDigit(c)));
+                        foreach (var phoneNumber in phoneNumbers)
                         {
-                            var phoneNumbers = phoneNumbersString.Split(new[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries).Where(x => x.Length == 10 && x.All(c => char.IsDigit(c)));
-                            foreach (var phoneNumber in phoneNumbers)
+                            try
                             {
-                                try { smsSender.Send(twilio.Phone, $"+1{phoneNumber}", GetBody(order, name, settings, false)); }
-                                catch (Exception ex) { Log(ex); }
+                                SmsHelper.Send(GetBody(order, name, settings, false), phoneNumber, _settings);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log(ex);
                             }
                         }
                     }

@@ -6,10 +6,9 @@ using Naspinski.FoodTruck.Data.Distribution.Handlers.System;
 using Naspinski.FoodTruck.Data.Distribution.Models.Events;
 using Naspinski.FoodTruck.Data.Distribution.Models.System;
 using Naspinski.FoodTruck.Data.Models.System;
+using Naspinski.FoodTruck.WebApp.Helpers;
 using Naspinski.FoodTruck.WebApp.Models;
 using Naspinski.Messaging.Email;
-using Naspinski.Messaging.Sms;
-using Naspinski.Messaging.Sms.Twilio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,12 +85,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
             }
             else if (subscription.Type == Subscription.Types.Text)
             {
-                var twilio = new TwilioHelper(_settings.Get(SettingName.TwilioAuthToken), _settings.Get(SettingName.TwilioSid), _settings.Get(SettingName.TwilioPhoneNumber));
-                if (!twilio.IsValid)
-                    throw new Exception("Twilio is not properly set up");
-
-                ISmsSender smsSender = new TwilioSmsSender(twilio);
-                smsSender.Send(twilio.Phone, $"+1{subscription.Subscriber}", message);
+                SmsHelper.Send(message, subscription.Subscriber, _settings);
             }
             else
                 throw new NotImplementedException($"Subscription.Type of {subscription.Type} is not implemented yet");
