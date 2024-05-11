@@ -142,7 +142,7 @@ namespace Naspinski.FoodTruck.WebApp.Controllers
                 var contactEmail = system.Settings[SettingName.ContactEmail];
                 EmailSender.Send(_azureSettings.SendgridApiKey,
                     $"{system.Settings[SettingName.Title]} - {model.Type} - {model.Email}",
-                    MakeMessage(model), contactEmail, model.Email,
+                    MakeMessage(model), contactEmail, contactEmail,
                     model.Attachment == null || model.Attachment.Length == 0 ? null : new[] { model.Attachment });
             }
             return Ok();
