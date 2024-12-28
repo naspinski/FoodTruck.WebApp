@@ -1,0 +1,19 @@
+{
+  "solution": "Naspinski.FoodTruck.WebApp.sln",
+  "solutionFolder": null,
+  "mappings": {
+    "Naspinski.Messaging": "../Messaging/Naspinski.Messaging/Naspinski.Messaging.csproj"
+  },
+  "restore": [
+    {
+      "name": "Naspinski.FoodTruck.WebApp",
+      "packages": [
+        {
+          "packageName": "Naspinski.Messaging",
+          "version": "1.0.20220924.171907"
+        }
+      ]
+    }
+  ],
+  "removeProjects": true
+}

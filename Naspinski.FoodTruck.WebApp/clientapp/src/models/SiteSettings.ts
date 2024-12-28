@@ -20,6 +20,7 @@ export class SiteSettings {
     debug: object = {};
 
     menuUrl: string = '';
+    menuTopText: string = '';
     imageMenuUrl: string = '';
     isLatestMenuImage: boolean = false;
 

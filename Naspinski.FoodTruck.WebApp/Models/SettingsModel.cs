@@ -23,6 +23,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
         public string FaviconImageUrl { get; set; }
         public string ContactPhone { get; set; }
         public string MenuUrl { get; set; } = string.Empty;
+        public string MenuTopText { get; set; } = string.Empty;
         public string ImageMenuUrl { get; set; } = string.Empty;
         public bool IsLatestMenuImage => !MenuUrl.ToLower().EndsWith(".pdf");
         public DateTime TodaysOpenTime { get; set; }
@@ -69,6 +70,7 @@ namespace Naspinski.FoodTruck.WebApp.Models
             FaviconImageUrl = system.Settings[SettingName.FaviconImageUrl];
             ContactPhone = system.Settings[SettingName.ContactPhone];
             MerchUrl = system.Settings[SettingName.MerchUrl];
+            MenuTopText = system.Settings[SettingName.MenuTopText];
 
             if (system != null)
             {
