@@ -18,9 +18,13 @@ const Menu = ({ cartAction }: IProps) => {
     const categories = context.menu.map(x => new MenuCategory(x));
 
     return (
-        <div id='menu' className='primary-color pb2'>
+        <div id='menu' className='primary-color pb2'>            
             <div className='inner-container border-dotted bottom mb2'>
                 <h2>Menu</h2>
+                {context.settings.menuTopText.length < 1
+                    ? ''
+                    : <div>{context.settings.menuTopText}</div>
+                }
                 {categories.map(category => <Category category={category} key={'cat-' + category.id} cartAction={cartAction} />)}
             </div>
         </div>
